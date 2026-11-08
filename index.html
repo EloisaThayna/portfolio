@@ -3,501 +3,383 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Portfólio de automação e IA aplicada a operações: CRM automático, painéis financeiros e de atendimento, monitor de automações. Dados fictícios.">
-<title>Casos de Automação</title>
-<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="Portfólio de automação e IA aplicada a marketing, vendas e atendimento: CRM que se preenche sozinho, painel financeiro, painel da diretoria e monitor de automações. Dados fictícios.">
+<title>Casos de automação</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:ital,wght@0,400..900;1,400..900&display=swap">
 <style>
-body{margin:0}
-/* Layout: sala de operações — uma coluna de leitura larga; cada caso é uma "ficha" com problema → fluxo → demonstração ao vivo → resultado. */
+/* Direção: sóbria. Fundo branco, texto quase preto, uma família só. A cor vem dos painéis e das demonstrações. */
 :root{
-  --bg:#EEF1F5; --surface:#FFFFFF; --sunk:#F6F8FA; --ink:#121A26; --muted:#5A6576; --line:#D9DFE7;
-  --accent:#2445D6; --accent-soft:#E2E8FF; --accent-ink:#FFFFFF;
-  --good:#1E7A4E; --good-soft:#DFF2E7; --warn:#935600; --warn-soft:#FBEFD8; --bad:#B42318; --bad-soft:#FCE6E3;
-  --chat-in:#FFFFFF; --chat-out:#DCF3E3;
-  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
-  --f-body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
-  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
-  --r:10px;
+  --papel:#FFFFFF; --tinta:#1C1C1A; --texto:#3A3A36; --cinza:#6B6B64; --linha:#E3E3DE; --area:#F5F5F2;
+  --ok:#2E7D4F; --ok-claro:#E3F1E8; --alerta:#94600A; --alerta-claro:#F8EDD8; --ruim:#B3261E; --ruim-claro:#F9E3E1;
+  --chat-cliente:#DDF1E3;
+  /* usados pelos gráficos das demonstrações */
+  --accent:#1C1C1A; --accent-soft:#E9E9E4;
+  --f:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
 }
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#0D1219; --surface:#151C27; --sunk:#111823; --ink:#E6EBF2; --muted:#97A2B2; --line:#263142;
-  --accent:#8AA2FF; --accent-soft:#1D2850; --accent-ink:#0D1219;
-  --good:#52C68F; --good-soft:#14301F; --warn:#F0B354; --warn-soft:#3A2C14; --bad:#F27A72; --bad-soft:#3D1D1B;
-  --chat-in:#1C2533; --chat-out:#1B3A29; color-scheme:dark }}
-:root[data-theme="dark"]{
-  --bg:#0D1219; --surface:#151C27; --sunk:#111823; --ink:#E6EBF2; --muted:#97A2B2; --line:#263142;
-  --accent:#8AA2FF; --accent-soft:#1D2850; --accent-ink:#0D1219;
-  --good:#52C68F; --good-soft:#14301F; --warn:#F0B354; --warn-soft:#3A2C14; --bad:#F27A72; --bad-soft:#3D1D1B;
-  --chat-in:#1C2533; --chat-out:#1B3A29; color-scheme:dark }
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
-.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-a{color:var(--accent)}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
-.mono{font-family:var(--f-mono)}
-.eyebrow{font:500 12px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
-button{font:inherit;cursor:pointer}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{animation:none!important;transition:none!important}}
+body{margin:0;background:var(--papel);color:var(--tinta);font:17.5px/1.6 var(--f);-webkit-font-smoothing:antialiased}
+.w{max-width:1120px;margin:0 auto;padding-left:max(22px,env(safe-area-inset-left,0px));padding-right:max(22px,env(safe-area-inset-right,0px))}
+a{color:inherit;text-decoration-thickness:1px;text-underline-offset:3px}
+a:hover{text-decoration-thickness:2px}
+h1,h2,h3,h4{margin:0;text-wrap:balance}
+p{margin:0}
+:focus-visible{outline:2px solid var(--tinta);outline-offset:3px}
+button{font:inherit;cursor:pointer;color:inherit}
+.mono{font-family:var(--f)}
 
 /* topo */
-.top{padding-block:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
-.top .mark{font:700 15px/1 var(--f-display);font-stretch:118%;letter-spacing:.02em}
-.top .mark span{color:var(--accent)}
-.li{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--f-body);color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:999px}
-.li svg{width:16px;height:16px;fill:currentColor}
-.li.vazio{border-style:dashed;color:var(--muted)}
+.nav{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:24px;font-size:15px}
+.nav b{font-weight:700}
+.nav ul{display:flex;gap:22px;list-style:none;margin:0;padding:0;color:var(--cinza)}
+.nav ul a{text-decoration:none}
+.nav ul a:hover{color:var(--tinta)}
+@media (max-width:560px){.nav ul li:not(:last-child){display:none}}
 
-/* hero */
-.hero{padding-block:28px 22px;display:grid;gap:22px}
-.hero h1{font-size:clamp(34px,6.2vw,64px);line-height:1.02;font-weight:800;font-stretch:112%;max-width:15ch}
-.hero h1 em{font-style:normal;color:var(--accent)}
-.hero p.lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:60ch;margin:0}
-.stack{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
-.stack li{font:500 12.5px/1 var(--f-mono);padding:7px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--line);color:var(--ink)}
-.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
-.facts div{background:var(--surface);padding:14px 16px}
-.facts b{display:block;font:700 26px/1.1 var(--f-display);font-stretch:110%;font-variant-numeric:tabular-nums}
-.facts span{font-size:13.5px;color:var(--muted)}
+.hero{padding-block:64px 36px;max-width:860px}
+.hero h1{font-size:clamp(38px,6vw,70px);line-height:1.03;font-weight:800;letter-spacing:-.028em;margin-bottom:26px}
+.hero .lede{font-size:clamp(18px,2vw,21px);line-height:1.55;color:var(--texto);max-width:36em}
+.hero .lede strong{color:var(--tinta);font-weight:700}
+.hero .ferramentas{margin-top:20px;font-size:15.5px;color:var(--cinza);max-width:44em}
 
-/* índice */
-.toc{display:flex;gap:8px;flex-wrap:wrap;padding-block:6px 4px}
-.toc a{font:500 13.5px/1 var(--f-body);text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;background:var(--sunk);border:1px solid var(--line)}
-.toc a:hover{border-color:var(--accent);color:var(--accent)}
+.vitrine{margin:0;background:var(--area);padding:clamp(18px,3.4vw,40px) clamp(18px,3.4vw,40px) 0;border-radius:4px;overflow:hidden}
+.vitrine img{display:block;width:100%;height:auto;aspect-ratio:1800/980;object-fit:cover;object-position:top;border-radius:4px 4px 0 0;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.legenda{font-size:14px;color:var(--cinza);margin-top:12px}
 
-/* caso */
-.caso{margin-block:34px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.caso-head{padding:22px 22px 4px;display:grid;gap:8px}
-.caso-head h2{font-size:clamp(24px,3.4vw,34px);line-height:1.1;font-weight:750;font-stretch:108%}
-.setor{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.tag{font:500 12px/1 var(--f-mono);padding:5px 8px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
-.tag.neutro{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
-.pv{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:12px 22px 6px}
-.pv>div{min-width:0}
-.pv h3{font:600 13px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
-.pv p{margin:0;max-width:62ch}
-@media (max-width:720px){.pv{grid-template-columns:1fr}}
+/* seções */
+.secao{padding-top:110px}
+.secao>h2{font-size:clamp(28px,3.6vw,40px);font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.secao>.intro{color:var(--cinza);margin-top:10px;max-width:40em}
 
-/* fluxo estilo nós */
-.fluxo{padding:12px 22px 4px;overflow-x:auto}
-.fluxo ol{list-style:none;margin:0;padding:0 0 6px;display:flex;align-items:stretch;gap:0;min-width:min-content}
-.fluxo li{display:flex;align-items:center}
-.no{border:1px solid var(--line);background:var(--sunk);border-radius:8px;padding:9px 12px;min-width:132px;max-width:190px}
-.no b{display:block;font:600 13.5px/1.25 var(--f-body)}
-.no small{display:block;font:12px/1.35 var(--f-mono);color:var(--muted);margin-top:3px}
-.no.gat{border-color:var(--accent);background:var(--accent-soft)}
-.liga{width:26px;height:2px;background:var(--line);position:relative;flex:none}
-.liga::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--line)}
+/* caso em destaque */
+.caso{padding-top:72px;margin-top:72px;border-top:1px solid var(--linha)}
+.secao>h2+.intro+.caso{margin-top:48px}
+.caso-txt{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,6fr);gap:20px 64px;align-items:start}
+@media (max-width:860px){.caso-txt{grid-template-columns:minmax(0,1fr)}}
+.onde{font-size:15px;color:var(--cinza);margin-bottom:10px}
+.caso h3{font-size:clamp(27px,3.2vw,38px);line-height:1.08;font-weight:800;letter-spacing:-.022em}
+.resultado{margin-top:18px;font-size:clamp(19px,1.9vw,22px);line-height:1.4;font-weight:600;color:var(--tinta);padding-left:16px;border-left:3px solid var(--tinta)}
+.relato p+p{margin-top:14px}
+.relato b{font-weight:700}
+.relato{color:var(--texto)}
 
-/* demo */
-.demo{margin:14px 22px 0;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);overflow:hidden}
-.demo-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
-.demo-bar .eyebrow{display:flex;align-items:center;gap:8px}
-.demo-bar .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block}
-.demo-body{padding:14px;min-width:0}
-.btn{border:0;background:var(--accent);color:var(--accent-ink);padding:9px 14px;border-radius:8px;font:600 14px/1 var(--f-body)}
-.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.btn:disabled{opacity:.55;cursor:default}
-.chips{display:flex;gap:6px;flex-wrap:wrap}
-.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 11px;border-radius:999px;font:500 13px/1 var(--f-body)}
-.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
-.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:16px 22px 22px}
-.res div{border-top:2px solid var(--ink);padding-top:8px}
-.res b{display:block;font:700 22px/1.15 var(--f-display);font-stretch:108%}
-.res span{font-size:14px;color:var(--muted)}
+/* etapas do fluxo: quebram linha em vez de rolar para o lado */
+.etapas{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:18px 20px;counter-reset:e}
+.etapas li{counter-increment:e;border-top:1px solid var(--tinta);padding-top:10px;font-size:15px;line-height:1.4}
+.etapas li::before{content:counter(e);display:block;font-weight:700;font-size:13px;color:var(--cinza);margin-bottom:4px}
+.etapas b{display:block;font-weight:700}
+.etapas span{color:var(--cinza)}
+.etapas-t{margin-top:40px;font-size:15px;font-weight:700}
+.etapas-t+.etapas{margin-top:12px}
 
+.pontos{list-style:none;margin:28px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:0 28px}
+.pontos li{padding:12px 0;border-bottom:1px solid var(--linha);font-size:15.5px;color:var(--texto)}
+.pontos li b{color:var(--tinta);font-weight:700}
 
-/* painel real */
-.real{display:block;margin:14px 22px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--sunk);text-decoration:none;color:var(--ink)}
-.real-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
-.real-bar .eyebrow{display:flex;align-items:center;gap:8px}
-.real-bar .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block}
-.abrir{font:600 14px/1 var(--f-body);color:var(--accent-ink);background:var(--accent);padding:9px 14px;border-radius:8px}
-.real img{display:block;width:100%;height:auto;max-height:560px;object-fit:cover;object-position:top;border-bottom:1px solid var(--line);transition:transform .3s}
-.real:hover img{transform:scale(1.01)}
-.real-leg{display:block;padding:10px 14px;font-size:14px;color:var(--muted)}
+/* área de demonstração / print */
+.palco{margin-top:36px;background:var(--area);border-radius:4px;padding:clamp(14px,2.6vw,28px)}
+.palco-top{display:flex;justify-content:space-between;align-items:center;gap:10px 16px;flex-wrap:wrap;margin-bottom:16px}
+.palco-top p{font-size:15px;color:var(--cinza)}
+.palco-top p b{color:var(--tinta);font-weight:700}
+.btn{border:1px solid var(--tinta);background:var(--tinta);color:#fff;padding:10px 16px;border-radius:999px;font-weight:600;font-size:15px;line-height:1}
+.btn.sec{background:transparent;color:var(--tinta);border-color:#C9C9C2}
+.btn:disabled{opacity:.45;cursor:default}
+.botoes{display:flex;gap:8px;flex-wrap:wrap}
+.print{display:block;text-decoration:none}
+.print img{display:block;width:100%;height:auto;max-height:620px;object-fit:cover;object-position:top;border-radius:3px;box-shadow:0 0 0 1px rgba(0,0,0,.07)}
+.abrir{display:inline-block;margin-top:16px;font-weight:700}
 
 /* demo CRM */
-.crm{display:grid;grid-template-columns:260px 1fr;gap:14px}
-@media (max-width:820px){.crm{grid-template-columns:1fr}}
-.inbox{display:grid;gap:6px;align-content:start;min-width:0}
-.conv{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;transition:border-color .2s,opacity .3s}
-.conv .nm{display:flex;justify-content:space-between;gap:6px;font-weight:600;font-size:13.5px}
-.conv .nm span{font:500 11px/1.6 var(--f-mono);color:var(--muted);font-weight:400}
-.conv .bal{font-size:12.5px;line-height:1.4;margin-top:4px;padding:5px 8px;border-radius:7px;background:var(--chat-in);border:1px solid var(--line);color:var(--ink)}
-.conv .bal.out{background:var(--chat-out);border-color:transparent}
-.conv.lendo{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.conv.feito{opacity:.45}
+.crm{display:grid;grid-template-columns:270px minmax(0,1fr);gap:14px;align-items:start}
+@media (max-width:860px){.crm{grid-template-columns:minmax(0,1fr)}.crm>div:last-child{order:-1}}
+.inbox{display:grid;gap:6px;align-content:start;min-width:0;max-height:450px;overflow-y:auto;padding-right:4px;overscroll-behavior:contain}
+@media (max-width:860px){.inbox{max-height:300px}}
+.conv{background:#fff;border:1px solid var(--linha);border-radius:8px;padding:8px 10px;transition:border-color .2s,opacity .3s}
+.conv .nm{display:flex;justify-content:space-between;gap:6px;font-weight:700;font-size:14px}
+.conv .nm span{font-weight:400;font-size:12.5px;color:var(--cinza)}
+.conv .bal{font-size:13px;line-height:1.4;margin-top:5px;padding:6px 9px;border-radius:8px;background:#fff;border:1px solid var(--linha)}
+.conv .bal.out{background:var(--chat-cliente);border-color:transparent}
+.conv.lendo{border-color:var(--tinta);box-shadow:0 0 0 2px var(--tinta)}
+.conv.feito{opacity:.4}
 .board-wrap{overflow-x:auto;min-width:0}
-.board{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:8px;min-width:780px}
-.col{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px;min-height:230px}
-.col h4{margin:0 0 8px;font:600 12px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;justify-content:space-between}
-.card{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:7px 8px;margin-bottom:6px;background:var(--sunk);font-size:12.5px;line-height:1.35}
-.card b{display:block;font-size:13px}
-.card .val{font:500 12px var(--f-mono)}
-.card .why{color:var(--muted);display:block;margin-top:3px}
+.board{display:grid;grid-template-columns:repeat(5,minmax(124px,1fr));gap:8px;min-width:660px}
+.col{background:#fff;border:1px solid var(--linha);border-radius:8px;padding:9px;min-height:300px}
+.col h4{margin:0 0 9px;font-size:13px;font-weight:700;line-height:1.25;display:flex;justify-content:space-between;gap:6px}
+.col h4 span{color:var(--cinza);font-weight:500}
+.card{border:1px solid var(--linha);border-left:3px solid var(--tinta);border-radius:6px;padding:7px 8px;margin-bottom:6px;background:var(--area);font-size:13px;line-height:1.35}
+.card b{display:block;font-size:13.5px}
+.card .val{font-weight:600}
+.card .why{color:var(--cinza);display:block;margin-top:3px}
 .card.novo{animation:entra .45s ease-out}
-.col[data-k="venda"] .card{border-left-color:var(--good)}
-.col[data-k="sem"] .card{border-left-color:var(--bad)}
-.col[data-k="nao"] .card{border-left-color:var(--warn)}
+.col[data-k="venda"] .card{border-left-color:var(--ok)}
+.col[data-k="sem"] .card{border-left-color:var(--ruim)}
+.col[data-k="nao"] .card{border-left-color:var(--alerta)}
 @keyframes entra{from{transform:translateY(-6px);opacity:.2}to{transform:none;opacity:1}}
-.log{margin-top:10px;font:12px/1.6 var(--f-mono);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;max-height:120px;overflow:auto}
+.log{margin-top:10px;font-size:13px;line-height:1.6;color:var(--cinza);background:#fff;border:1px solid var(--linha);border-radius:8px;padding:8px 10px;max-height:126px;overflow:auto}
 .log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* demo financeiro */
-.fin-frase{font:650 clamp(19px,2.6vw,24px)/1.3 var(--f-display);font-stretch:104%;margin:4px 0 12px;max-width:40ch}
-.fin-frase .neg{color:var(--bad)} .fin-frase .pos{color:var(--good)}
-.cem{display:flex;height:34px;border-radius:6px;overflow:hidden;position:relative;background:var(--surface);border:1px solid var(--line)}
-.cem div{height:100%;display:flex;align-items:center;justify-content:center;font:500 11.5px var(--f-mono);color:#fff;white-space:nowrap;overflow:hidden;min-width:0}
-.cem-legenda{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;color:var(--muted)}
-.cem-legenda i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
-.fin-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-top:14px}
-@media (max-width:820px){.fin-grid{grid-template-columns:1fr}}
-.painel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
-.painel h4{margin:0 0 8px;font:600 13px/1.2 var(--f-body)}
-.svgbox{overflow-x:auto}
-.abertas .tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
-.ab-l{display:grid;gap:6px}
-.ab-l div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--line)}
-.ab-l div span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
-.idade{font:500 11px var(--f-mono);padding:2px 6px;border-radius:4px;background:var(--warn-soft);color:var(--warn);margin-left:6px}
-.idade.velha{background:var(--bad-soft);color:var(--bad)}
+.board-wrap.mais{-webkit-mask-image:linear-gradient(90deg,#000 82%,transparent);mask-image:linear-gradient(90deg,#000 82%,transparent)}
 
 /* demo diretoria */
 .uni{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
-.uni button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink);display:grid;gap:4px}
-.uni button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
-.uni .n{font-weight:600;font-size:14px}
-.uni .v{font:700 22px/1.1 var(--f-display);font-stretch:106%;font-variant-numeric:tabular-nums}
-.uni .d{font:500 12px var(--f-mono)}
-.up{color:var(--good)} .down{color:var(--bad)}
-.pill{justify-self:start;font:500 11.5px/1 var(--f-mono);padding:4px 7px;border-radius:4px}
-.pill.ok{background:var(--good-soft);color:var(--good)} .pill.at{background:var(--warn-soft);color:var(--warn)} .pill.ma{background:var(--bad-soft);color:var(--bad)}
-.dir-det{margin-top:10px;font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.uni button{text-align:left;background:#fff;border:1px solid var(--linha);border-radius:8px;padding:14px;display:grid;gap:4px}
+.uni button:hover{border-color:#B9B9B2}
+.uni button[aria-pressed="true"]{border-color:var(--tinta);box-shadow:0 0 0 1px var(--tinta)}
+.uni .n{font-weight:700;font-size:15px}
+.uni .mono{font-size:13px!important}
+.uni .v{font-weight:800;font-size:24px;line-height:1.1;letter-spacing:-.01em}
+.uni .d{font-size:13px;font-weight:600}
+.up{color:var(--ok)} .down{color:var(--ruim)}
+.pill{justify-self:start;font-size:12.5px;font-weight:600;line-height:1;padding:5px 8px;border-radius:999px}
+.pill.ok{background:var(--ok-claro);color:var(--ok)} .pill.at{background:var(--alerta-claro);color:var(--alerta)} .pill.ma{background:var(--ruim-claro);color:var(--ruim)}
+.dir-det{margin-top:10px;font-size:15px;background:#fff;border:1px solid var(--linha);border-radius:8px;padding:12px 14px}
 
-/* demo atendimento */
-.camp{display:grid;gap:10px}
-.camp-row{display:grid;grid-template-columns:170px 1fr 120px;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-@media (max-width:640px){.camp-row{grid-template-columns:1fr}}
-.camp-row .nm{font-weight:600;font-size:14px}
-.camp-row .nm small{display:block;font:12px var(--f-mono);color:var(--muted);font-weight:400}
-.funil{display:grid;gap:4px;min-width:0}
-.funil div{display:grid;grid-template-columns:78px 1fr 46px;gap:8px;align-items:center;font-size:12.5px}
-.funil .b{height:10px;border-radius:3px;background:var(--line);overflow:hidden}
-.funil .b i{display:block;height:100%;background:var(--accent)}
-.funil .b i.v{background:var(--good)}
-.funil span:last-child{font-family:var(--f-mono);text-align:right}
-.camp-row .taxa{font:700 18px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
-.camp-row .taxa small{display:block;font:400 12px var(--f-body);color:var(--muted)}
-.destaque{margin-top:10px;font-size:14.5px}
-
-/* demo monitor */
-.mon{display:grid;gap:10px}
-.flx{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
-.flx-h{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
-.flx-h b{font-size:14.5px}
-.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;background:var(--good)}
-.st{font:500 12px/1 var(--f-mono);padding:4px 8px;border-radius:999px;background:var(--good-soft);color:var(--good)}
-.st.ruim{background:var(--bad-soft);color:var(--bad)} .dot.ruim{background:var(--bad)}
-.fita{display:grid;grid-template-columns:repeat(84,1fr);gap:1px;height:18px;margin-top:8px}
-.fita i{background:var(--good);opacity:.7;border-radius:1px}
-.fita i.a{background:var(--warn);opacity:1} .fita i.r{background:var(--bad);opacity:1}
-.flx .msg{font-size:13px;color:var(--bad);margin-top:6px}
-.email{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
-.email .cab{padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);display:grid;gap:2px}
-.email .cab b{color:var(--ink)}
-.email .corpo{padding:10px 12px;font-size:14px;border-left:4px solid var(--bad);margin:10px 12px;background:var(--sunk)}
+/* outros casos */
+.outros{list-style:none;margin:48px 0 0;padding:0;border-top:1px solid var(--linha)}
+.outro{display:grid;grid-template-columns:minmax(0,260px) minmax(0,1fr);gap:20px 40px;padding:36px 0;border-bottom:1px solid var(--linha);align-items:start}
+@media (max-width:720px){.outro{grid-template-columns:minmax(0,1fr)}}
+.outro .mini{display:block;background:var(--area);padding:12px 12px 0;border-radius:4px;overflow:hidden}
+.outro .mini img{display:block;width:100%;aspect-ratio:16/10;object-fit:cover;object-position:top;border-radius:3px 3px 0 0;box-shadow:0 0 0 1px rgba(0,0,0,.06)}
+.outro .mini.tabela{padding:14px;display:grid;gap:6px;align-content:start;aspect-ratio:auto}
+.mini.tabela span{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;background:#fff;border:1px solid var(--linha);border-radius:5px;padding:6px 8px}
+.mini.tabela i{font-style:normal;color:var(--cinza)}
+.outro h3{font-size:clamp(21px,2.2vw,25px);line-height:1.15;font-weight:800;letter-spacing:-.015em}
+.outro .resultado{margin-top:12px;font-size:17.5px}
+.outro .relato{margin-top:14px;font-size:16.5px}
+.outro details{margin-top:16px}
+.outro summary{cursor:pointer;font-weight:700;display:inline-block}
+.outro details[open] summary{margin-bottom:14px}
+.outro details .palco{margin-top:0}
 
 /* demo reengajamento */
-.re-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
-.re-n{font:650 15px var(--f-body)}
-.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
-table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
-th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--sunk)}
-td .q{color:var(--muted);font-style:italic}
-.cl{font:500 11.5px/1 var(--f-mono);padding:4px 7px;border-radius:4px;white-space:nowrap}
-.cl.sr{background:var(--accent-soft);color:var(--accent)} .cl.ca{background:var(--warn-soft);color:var(--warn)} .cl.si{background:var(--bad-soft);color:var(--bad)} .cl.pg{background:var(--good-soft);color:var(--good)}
-tr.fora td{opacity:.45}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid #C9C9C2;background:#fff;padding:7px 12px;border-radius:999px;font-size:14px;font-weight:500;line-height:1}
+.chip[aria-pressed="true"]{background:var(--tinta);color:#fff;border-color:var(--tinta)}
+.re-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin:14px 0 10px}
+.re-n{font-weight:700;font-size:15.5px}
+.tbl{overflow-x:auto;background:#fff;border:1px solid var(--linha);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:600px;font-size:14px}
+th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--linha);vertical-align:top}
+th{font-size:13px;font-weight:600;color:var(--cinza);background:var(--area)}
+td.mono{white-space:nowrap}
+td .q{color:var(--texto);font-style:italic}
+.cl{font-size:12.5px;font-weight:600;line-height:1;padding:5px 8px;border-radius:999px;white-space:nowrap}
+.cl.sr{background:var(--accent-soft);color:var(--tinta)} .cl.ca{background:var(--alerta-claro);color:var(--alerta)} .cl.si{background:var(--ruim-claro);color:var(--ruim)} .cl.pg{background:var(--ok-claro);color:var(--ok)}
+tr.fora td{opacity:.4}
 
-/* como trabalho */
-.passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:p}
-.passos li{counter-increment:p;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
-.passos li::before{content:counter(p);font:700 28px/1 var(--f-display);font-stretch:115%;color:var(--accent);display:block;margin-bottom:8px}
-.passos b{display:block;margin-bottom:4px}
-.passos span{font-size:14.5px;color:var(--muted)}
-section.bloco{padding-block:30px}
-section.bloco h2{font-size:clamp(24px,3.4vw,32px);font-weight:750;font-stretch:108%;margin-bottom:14px}
-footer{padding-block:26px 40px;border-top:1px solid var(--line);margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px}
+/* como eu trabalho */
+.passos{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:28px 28px;counter-reset:p}
+.passos li{counter-increment:p;border-top:1px solid var(--tinta);padding-top:12px}
+.passos li::before{content:counter(p);display:block;font-weight:800;font-size:30px;line-height:1;margin-bottom:12px}
+.passos b{display:block;font-weight:700;margin-bottom:4px}
+.passos span{font-size:15.5px;color:var(--texto)}
+.ia{margin-top:36px;max-width:40em;color:var(--texto)}
 
-/* ajustes de layout */
-.top-link{font:500 14px/1 var(--f-body);color:var(--muted);text-decoration:none}
-.top-link:hover{color:var(--accent)}
-.hero-top{display:grid;gap:22px;align-items:center}
-.hero-txt{display:grid;gap:22px}
-.hero-img{display:none;position:relative;text-decoration:none;border-radius:14px;overflow:hidden;border:1px solid var(--line);background:var(--surface);box-shadow:0 18px 40px -18px rgba(18,26,38,.35);transition:transform .25s}
-.hero-img:hover{transform:translateY(-3px)}
-.hero-img img{display:block;width:100%;height:auto;aspect-ratio:1800/1050;object-fit:cover;object-position:top}
-.hero-img span{display:block;padding:8px 12px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line)}
-@media (min-width:960px){
-  .hero-top{grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:40px}
-  .hero-img{display:block}
-}
-/* CRM: lista de conversas com altura limitada, funil cabe sem cortar */
-.inbox{max-height:440px;overflow-y:auto;padding-right:4px;overscroll-behavior:contain}
-.board{grid-template-columns:repeat(5,minmax(124px,1fr));min-width:660px}
-.col{min-height:300px}
-@media (max-width:820px){
-  .inbox{max-height:300px}
-  .crm>div:last-child{order:-1}
-}
-/* aviso de rolagem lateral */
-.fluxo,.board-wrap{transition:none}
-.fluxo.mais,.board-wrap.mais{-webkit-mask-image:linear-gradient(90deg,#000 80%,transparent);mask-image:linear-gradient(90deg,#000 80%,transparent)}
-.dica-rolar{display:none;font:500 11.5px/1 var(--f-mono);color:var(--muted);padding:0 22px 8px}
-.fluxo.mais + .dica-rolar{display:block}
 /* contato */
-.contato{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.contato .rot{font:600 13px/1 var(--f-mono);text-transform:uppercase;letter-spacing:.07em;color:var(--ink);margin-right:4px}
-.li.mail{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
-.li[hidden]{display:none}
-@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+footer{margin-top:120px;padding-block:56px 48px;border-top:1px solid var(--linha)}
+footer h2{font-size:clamp(26px,3.2vw,36px);font-weight:800;letter-spacing:-.02em}
+.contato{display:flex;gap:12px 28px;flex-wrap:wrap;margin-top:18px;font-size:clamp(18px,2vw,21px);font-weight:600}
+.aviso{margin-top:40px;font-size:14px;color:var(--cinza)}
 </style>
 </head>
 <body>
 
-<div class="wrap">
-  <header class="top">
-    <div class="mark">AUTOMAÇÃO <span>&amp;</span> IA · OPERAÇÕES</div>
-    <a class="top-link" href="#contato">Contato ↓</a>
+<div class="w">
+  <header class="nav">
+    <b>Casos de automação</b>
+    <nav aria-label="Seções"><ul><li><a href="#casos">Casos</a></li><li><a href="#como">Como eu trabalho</a></li><li><a href="#contato">Contato</a></li></ul></nav>
   </header>
 
   <section class="hero">
-    <div class="hero-top">
-      <div class="hero-txt">
-        <div class="eyebrow">Portfólio · casos reais com dados fictícios</div>
-        <h1>Automações que tiram o trabalho <em>repetido</em> das pessoas.</h1>
-        <p class="lede">Construo fluxos que leem conversas de WhatsApp, sistemas de gestão e planilhas, entendem o que aconteceu e deixam CRM, painéis e alertas prontos sozinhos. Os painéis abaixo são os de verdade, abertos com dados fictícios: dá para clicar e navegar.</p>
-        <ul class="stack" aria-label="Ferramentas">
-          <li>n8n</li><li>JavaScript</li><li>APIs REST</li><li>Webhooks</li><li>MCP / JSON-RPC</li><li>Google Sheets</li><li>HTML · CSS · SVG</li><li>IA generativa</li>
-        </ul>
-      </div>
-      <a class="hero-img" href="#atendimento" aria-label="Ver o caso do painel de atendimento">
-        <img src="img/atendimento.jpg" alt="Painel de atendimento de um parque aquático: clientes esperando resposta, agendamentos e conversão dos disparos" width="1800" height="1500">
-        <span class="mono">Painel de atendimento · dados fictícios</span>
-      </a>
-    </div>
-    <div class="facts">
-      <div><b>6</b><span>projetos entregues em 2026</span></div>
-      <div><b>~2.400</b><span>conversas lidas por mês, sem ninguém abrir</span></div>
-      <div><b>~350</b><span>negociações organizadas no CRM na primeira carga</span></div>
-      <div><b>4 empresas</b><span>numa tela só para a diretoria</span></div>
-    </div>
-    <nav class="toc" aria-label="Casos">
-      <a href="#crm">CRM que se preenche</a><a href="#financeiro">Painel financeiro</a><a href="#diretoria">Painel da diretoria</a><a href="#atendimento">Atendimento e campanhas</a><a href="#monitor">Monitor das automações</a><a href="#reengajamento">Lista de reengajamento</a>
-    </nav>
+    <h1>Automações e painéis para marketing, vendas e atendimento.</h1>
+    <p class="lede">Ligo WhatsApp, CRM, ERP e planilhas para que o trabalho repetido aconteça sozinho e a gestão veja os números sem pedir para ninguém. São <strong>6 projetos entregues em 2026</strong>, que leem <strong>cerca de 2.400 conversas por mês</strong>. Os painéis desta página são os de verdade, abertos com dados fictícios, e dá para clicar em tudo.</p>
+    <p class="ferramentas">Trabalho com n8n, JavaScript, APIs REST, webhooks, MCP, Google Sheets e IA generativa.</p>
   </section>
 
-  <!-- CASO CRM -->
-  <article class="caso" id="crm">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Clube social</span><span class="tag neutro">Vendas · WhatsApp · CRM</span></div>
-      <h2>O CRM que se preenche sozinho toda noite</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>Os consultores do Clube Serra Azul passavam o valor do título pelo WhatsApp, mas o funil de vendas ficava vazio: ninguém tinha tempo de criar e mover card. A diretoria não sabia quantas negociações estavam abertas.</p></div>
-      <div><h3>O que eu construí</h3><p>Um fluxo que roda às 23:41, lê as conversas do dia, encontra quem recebeu o valor, entende o estágio da negociação e cria ou move o card no nome do consultor certo, com o valor que foi realmente oferecido.</p></div>
-    </div>
-    <div class="fluxo" aria-label="Como funciona">
-      <ol>
-        <li><div class="no gat"><b>Agenda 23:41</b><small>ou link manual</small></div></li>
-        <li><span class="liga"></span><div class="no"><b>Ler conversas</b><small>API do WhatsApp</small></div></li>
-        <li><span class="liga"></span><div class="no"><b>Achar o valor</b><small>ignora preço riscado e parcelas</small></div></li>
-        <li><span class="liga"></span><div class="no"><b>Classificar</b><small>pagou · caro · vai pensar · sumiu</small></div></li>
-        <li><span class="liga"></span><div class="no"><b>Conferir pagamento</b><small>sistema de matrículas</small></div></li>
-        <li><span class="liga"></span><div class="no"><b>Criar / mover card</b><small>respeita o que foi mexido à mão</small></div></li>
+  <figure class="vitrine" style="margin:0">
+    <img src="img/atendimento.jpg" alt="Painel de atendimento de um parque aquático: clientes esperando resposta, agendamentos e conversão dos disparos" width="1800" height="1500">
+  </figure>
+  <p class="legenda">Painel de atendimento de um parque aquático, que se atualiza sozinho ao longo do dia.</p>
+
+  <section class="secao" id="casos">
+    <h2>Três casos em destaque</h2>
+    <p class="intro">Cada caso começa pelo resultado. Os nomes de empresas e pessoas são inventados; a lógica e os números de escala são dos projetos reais.</p>
+
+    <!-- CRM -->
+    <article class="caso" id="crm">
+      <div class="caso-txt">
+        <div>
+          <p class="onde">Clube social, vendas pelo WhatsApp</p>
+          <h3>O CRM que se preenche sozinho toda noite</h3>
+          <p class="resultado">Cerca de 350 negociações entraram no funil na primeira carga, sem ninguém digitar um card.</p>
+        </div>
+        <div class="relato">
+          <p><b>O problema.</b> Os consultores passavam o valor do título pelo WhatsApp, mas o funil de vendas ficava vazio: ninguém tinha tempo de criar e mover card. A diretoria não sabia quantas negociações estavam abertas.</p>
+          <p><b>O que eu fiz.</b> Um fluxo que roda toda noite, lê as conversas do dia, encontra quem recebeu o valor, entende em que pé está a negociação e cria ou move o card no nome do consultor certo, com o valor que foi realmente oferecido.</p>
+        </div>
+      </div>
+      <p class="etapas-t">Como o fluxo funciona</p>
+      <ol class="etapas">
+        <li><b>Começa às 23:41</b><span>ou por um link, quando alguém pede</span></li>
+        <li><b>Lê as conversas</b><span>pela API do WhatsApp</span></li>
+        <li><b>Acha o valor oferecido</b><span>ignora preço riscado e parcelas</span></li>
+        <li><b>Classifica a conversa</b><span>pagou, achou caro, vai pensar ou sumiu</span></li>
+        <li><b>Confere o pagamento</b><span>no sistema de matrículas</span></li>
+        <li><b>Cria ou move o card</b><span>sem desfazer o que o consultor mexeu</span></li>
       </ol>
-    </div>
-    <div class="demo">
-      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · conversas de hoje</span>
-        <div class="chips"><button class="btn" id="crm-rodar" type="button">Rodar a automação</button><button class="btn sec" id="crm-reset" type="button">Recomeçar</button></div></div>
-      <div class="demo-body">
+      <div class="palco">
+        <div class="palco-top">
+          <p><b>Teste você mesma:</b> seis conversas de exemplo, prontas para a rodada da noite.</p>
+          <div class="botoes"><button class="btn" id="crm-rodar" type="button">Rodar a automação</button><button class="btn sec" id="crm-reset" type="button">Recomeçar</button></div>
+        </div>
         <div class="crm">
           <div class="inbox" id="crm-inbox" aria-label="Conversas de hoje"></div>
           <div style="min-width:0">
             <div class="board-wrap"><div class="board" id="crm-board"></div></div>
-            <div class="log mono" id="crm-log" aria-live="polite"></div>
+            <div class="log" id="crm-log" aria-live="polite"></div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="res">
-      <div><b>~350 negociações</b><span>organizadas na primeira carga, um mês de histórico</span></div>
-      <div><b>Valor real no card</b><span>o desconto dado pelo consultor entra, o preço de tabela não</span></div>
-      <div><b>Nada é sobrescrito</b><span>card movido à mão pelo consultor fica onde ele colocou</span></div>
-    </div>
-  </article>
+      <ul class="pontos">
+        <li><b>Valor real no card.</b> Entra o desconto que o consultor deu, não o preço de tabela.</li>
+        <li><b>Nada é sobrescrito.</b> Card movido à mão fica onde o consultor colocou.</li>
+        <li><b>Um mês de histórico</b> organizado já na primeira carga.</li>
+      </ul>
+    </article>
 
-  <!-- CASO FINANCEIRO -->
-  <article class="caso" id="financeiro">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Holding de empresas</span><span class="tag neutro">Financeiro · ERP · Painel</span></div>
-      <h2>Um painel financeiro que qualquer sócio entende em um minuto</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>O ERP do Grupo Itacaré tinha todos os lançamentos, mas a DRE era uma tabela de códigos contábeis. Os sócios não conseguiam responder a pergunta mais simples: este mês sobrou ou faltou dinheiro, e por quê?</p></div>
-      <div><h3>O que eu construí</h3><p>Uma página que lê a API do ERP, divide lançamentos rateados entre centros de custo e responde em português no topo. Abaixo vêm a cascata do resultado, "de cada R$ 100" e as contas vencidas agrupadas por pessoa. Os totais foram conferidos com a DRE oficial.</p></div>
-    </div>
-    <div class="fluxo"><ol>
-      <li><div class="no gat"><b>Alguém abre o link</b><small>guarda 15 min</small></div></li>
-      <li><span class="liga"></span><div class="no"><b>Ler o ERP</b><small>movimentos · a pagar · a receber</small></div></li>
-      <li><span class="liga"></span><div class="no"><b>Dividir rateios</b><small>por centro de custo</small></div></li>
-      <li><span class="liga"></span><div class="no"><b>Agrupar o plano de contas</b><small>em 5 grupos legíveis</small></div></li>
-      <li><span class="liga"></span><div class="no"><b>Escrever a resposta</b><small>frase + gráficos</small></div></li>
-    </ol></div>
-    <a class="real" href="painel-financeiro.html">
-      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
-      <img src="img/financeiro.jpg" alt="Painel financeiro do Grupo Itacaré: frase-resposta de outubro, barra de cada R$ 100 e os quatro números do mês" width="1800" loading="lazy">
-      <span class="real-leg">O mesmo painel que os sócios usam: filtre empresa, centro de custo e período, abra a DRE linha a linha, as contas em aberto por pessoa e o “Posso confiar nestes números?”.</span>
-    </a>
-    <div class="res">
-      <div><b>Bate com a DRE oficial</b><span>receitas, despesas e resultado conferidos mês a mês</span></div>
-      <div><b>Avisa quando não dá para confiar</b><span>mês com poucos lançamentos esconde as comparações</span></div>
-      <div><b>Sem planilha no meio</b><span>lê direto da API, com limite de consultas respeitado</span></div>
-    </div>
-  </article>
-
-  <!-- CASO DIRETORIA -->
-  <article class="caso" id="diretoria">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Grupo com 4 negócios</span><span class="tag neutro">Painel executivo</span></div>
-      <h2>Quatro empresas, uma tela para a diretoria</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>Loteamento, clube e parque aquático tinham cada um seu sistema e sua planilha. A reunião de segunda começava com uma hora de gente juntando números.</p></div>
-      <div><h3>O que eu construí</h3><p>Um painel que se atualiza a cada 15 minutos e junta vendas, recebimentos e atendimento de cada negócio, com o mesmo formato para todos e um sinal claro de quem está fora da meta.</p></div>
-    </div>
-    <div class="demo">
-      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · toque em um negócio</span><span class="mono" style="font-size:12px;color:var(--muted)">receita do mês · últimos 6 meses</span></div>
-      <div class="demo-body"><div class="uni" id="dir-uni"></div><div class="dir-det" id="dir-det" aria-live="polite"></div></div>
-    </div>
-    <div class="res">
-      <div><b>15 minutos</b><span>de atraso máximo entre o sistema e o painel</span></div>
-      <div><b>Um formato só</b><span>cada negócio responde as mesmas três perguntas</span></div>
-    </div>
-  </article>
-
-  <!-- CASO ATENDIMENTO -->
-  <article class="caso" id="atendimento">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Parque aquático</span><span class="tag neutro">Call center · Campanhas</span></div>
-      <h2>Qual campanha de WhatsApp traz gente de verdade</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>O Parque Correnteza disparava milhares de mensagens por semana para eventos. O sistema mostrava quantas saíram, mas ninguém sabia quantas viraram agendamento, e menos ainda quantas pessoas apareceram.</p></div>
-      <div><h3>O que eu construí</h3><p>Um painel que cruza cada disparo com a planilha de agendamentos do call center (pelo telefone, em até 10 dias) e com a presença marcada no dia do evento. A conta sai por campanha e por atendente.</p></div>
-    </div>
-    <a class="real" href="atendimento.html">
-      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
-      <img src="img/atendimento.jpg" alt="Painel de atendimento do Parque Correnteza: situação de agora, agendamentos, conversão dos disparos e call center" width="1800" loading="lazy">
-      <span class="real-leg">Troque entre últimos 7 dias, este mês e mês passado. Veja a conversão de cada campanha, o call center por consultor e os agendados por evento.</span>
-    </a>
-    <div class="res">
-      <div><b>Disparo → agenda → presença</b><span>as três etapas na mesma linha</span></div>
-      <div><b>Cobrança fica de fora</b><span>só entram campanhas de evento na conta</span></div>
-    </div>
-  </article>
-
-  <!-- CASO MONITOR -->
-  <article class="caso" id="monitor">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Todos os fluxos</span><span class="tag neutro">Confiabilidade · Alertas</span></div>
-      <h2>Um monitor que avisa antes de alguém perceber</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>Automação que falha em silêncio é pior que nenhuma: o CRM para de atualizar numa terça e só alguém nota na sexta.</p></div>
-      <div><h3>O que eu construí</h3><p>Um fluxo que confere de hora em hora se cada painel abre e se a rodada da noite aconteceu. Ele também recebe na hora qualquer erro dos outros fluxos e manda e-mail quando algo para e quando volta. Fica tudo numa página de saúde com o histórico de 7 dias.</p></div>
-    </div>
-    <a class="real" href="saude-dos-fluxos.html">
-      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
-      <img src="img/saude.jpg" alt="Página de saúde dos fluxos: três automações funcionando, faixa de 7 dias e histórico das rodadas do CRM" width="1800" loading="lazy">
-      <span class="real-leg">A página de saúde de verdade, com uma semana de histórico: um aviso de lentidão, uma queda do CRM que voltou sozinha e o erro registrado.</span>
-    </a>
-    <div class="res">
-      <div><b>Alerta em até 1 hora</b><span>e na hora quando o erro acontece dentro do fluxo</span></div>
-      <div><b>Sem spam</b><span>o mesmo erro gera no máximo um e-mail por hora</span></div>
-      <div><b>Silêncio = tudo certo</b><span>só chega e-mail quando muda alguma coisa</span></div>
-    </div>
-  </article>
-
-  <!-- CASO REENGAJAMENTO -->
-  <article class="caso" id="reengajamento">
-    <div class="caso-head">
-      <div class="setor"><span class="tag">Clube social</span><span class="tag neutro">Análise de conversas</span></div>
-      <h2>Quem recebeu a proposta e sumiu, separado de quem disse não</h2>
-    </div>
-    <div class="pv">
-      <div><h3>Problema</h3><p>A gerência queria religar para quem recebeu o valor e não fechou. Mas ligar para quem já disse "é caro, não tenho interesse" queima o contato e o tempo da equipe.</p></div>
-      <div><h3>O que eu construí</h3><p>Uma leitura de 2.000 conversas de quatro meses que acha a mensagem com o valor, lê só as últimas respostas do cliente e separa quatro grupos. A lista sai em planilha com o link de cada conversa. Antes de entregar, revisei os casos que o sistema confundia.</p></div>
-    </div>
-    <div class="demo">
-      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · filtre a lista</span><div class="chips" id="re-chips"></div></div>
-      <div class="demo-body">
-        <div class="re-top"><span class="re-n" id="re-n" aria-live="polite"></span><span class="mono" style="font-size:12px;color:var(--muted)">amostra de 12 de 2.000 conversas</span></div>
-        <div class="tbl"><table><thead><tr><th>Cliente</th><th>Valor passado</th><th>Última resposta do cliente</th><th>Grupo</th></tr></thead><tbody id="re-corpo"></tbody></table></div>
+    <!-- FINANCEIRO -->
+    <article class="caso" id="financeiro">
+      <div class="caso-txt">
+        <div>
+          <p class="onde">Grupo de empresas, área financeira</p>
+          <h3>Um painel financeiro que qualquer sócio entende em um minuto</h3>
+          <p class="resultado">O topo do painel responde numa frase se o mês sobrou ou faltou dinheiro, com os totais batendo com a DRE oficial.</p>
+        </div>
+        <div class="relato">
+          <p><b>O problema.</b> O ERP tinha todos os lançamentos, mas a DRE era uma tabela de códigos contábeis. Os sócios não conseguiam responder a pergunta mais simples: este mês sobrou ou faltou dinheiro, e por quê?</p>
+          <p><b>O que eu fiz.</b> Uma página que lê a API do ERP, divide os lançamentos rateados entre centros de custo e responde em português logo no topo. Abaixo vêm a cascata do resultado, a conta "de cada R$ 100" e as contas vencidas agrupadas por pessoa.</p>
+        </div>
       </div>
-    </div>
-    <div class="res">
-      <div><b>318 contatos</b><span>para religar, entre 2.000 conversas</span></div>
-      <div><b>Leitura do fim da conversa</b><span>"não consigo ir hoje" não vira "sem interesse"</span></div>
-    </div>
-  </article>
+      <div class="palco">
+        <a class="print" href="painel-financeiro.html">
+          <img src="img/financeiro.jpg" alt="Painel financeiro: frase-resposta do mês, barra de cada R$ 100 e os quatro números do mês" width="1800" height="1470" loading="lazy">
+        </a>
+        <a class="abrir" href="painel-financeiro.html">Abrir o painel completo</a>
+      </div>
+      <ul class="pontos">
+        <li><b>Confere com a DRE oficial</b> receitas, despesas e resultado, mês a mês.</li>
+        <li><b>Avisa quando não dá para confiar</b> num mês com poucos lançamentos.</li>
+        <li><b>Sem planilha no meio.</b> Lê direto da API, dentro do limite de consultas.</li>
+      </ul>
+    </article>
 
-  <section class="bloco" id="como">
+    <!-- DIRETORIA -->
+    <article class="caso" id="diretoria">
+      <div class="caso-txt">
+        <div>
+          <p class="onde">Grupo com quatro negócios, diretoria</p>
+          <h3>Quatro empresas, uma tela para a diretoria</h3>
+          <p class="resultado">Vendas, recebimentos e atendimento dos quatro negócios num lugar só, com no máximo 15 minutos de atraso.</p>
+        </div>
+        <div class="relato">
+          <p><b>O problema.</b> Loteamento, clube e parque aquático tinham cada um seu sistema e sua planilha. A reunião de segunda começava com uma hora de gente juntando números.</p>
+          <p><b>O que eu fiz.</b> Um painel que se atualiza a cada 15 minutos, com o mesmo formato para todos os negócios e um sinal claro de quem está fora da meta.</p>
+        </div>
+      </div>
+      <div class="palco">
+        <div class="palco-top"><p><b>Toque em um negócio</b> para ver o resumo do mês. Receita dos últimos 6 meses.</p></div>
+        <div class="uni" id="dir-uni"></div>
+        <div class="dir-det" id="dir-det" aria-live="polite"></div>
+      </div>
+      <ul class="pontos">
+        <li><b>Um formato só.</b> Cada negócio responde as mesmas três perguntas.</li>
+        <li><b>Meta à vista.</b> Batida, perto ou abaixo, sem precisar fazer conta.</li>
+      </ul>
+    </article>
+  </section>
+
+  <section class="secao" id="outros">
+    <h2>Outros casos</h2>
+    <ul class="outros">
+      <li class="outro" id="atendimento">
+        <a class="mini" href="atendimento.html" aria-label="Abrir o painel de atendimento"><img src="img/atendimento.jpg" alt="" loading="lazy"></a>
+        <div>
+          <p class="onde">Parque aquático, call center e campanhas</p>
+          <h3>Qual campanha de WhatsApp traz gente de verdade</h3>
+          <p class="resultado">Cada campanha com a conta completa: quantos receberam, quantos agendaram e quantos apareceram no evento.</p>
+          <p class="relato">Os disparos são cruzados com a planilha do call center pelo telefone, em até 10 dias, e com a presença marcada no dia. A conta sai por campanha e por atendente.</p>
+          <p style="margin-top:14px"><a class="abrir" style="margin:0" href="atendimento.html">Abrir o painel</a></p>
+        </div>
+      </li>
+      <li class="outro" id="monitor">
+        <a class="mini" href="saude-dos-fluxos.html" aria-label="Abrir a página de saúde dos fluxos"><img src="img/saude.jpg" alt="" loading="lazy"></a>
+        <div>
+          <p class="onde">Todas as automações</p>
+          <h3>Um monitor que avisa antes de alguém perceber</h3>
+          <p class="resultado">Se uma automação para, o alerta chega por e-mail em até 1 hora, e na hora quando o erro acontece dentro do fluxo.</p>
+          <p class="relato">Automação que falha em silêncio é pior que nenhuma. O monitor confere de hora em hora se cada painel abre e se a rodada da noite aconteceu, avisa quando algo para e quando volta, e guarda 7 dias de histórico. O mesmo erro gera no máximo um e-mail por hora.</p>
+          <p style="margin-top:14px"><a class="abrir" style="margin:0" href="saude-dos-fluxos.html">Abrir a página de saúde</a></p>
+        </div>
+      </li>
+      <li class="outro" id="reengajamento">
+        <div class="mini tabela" aria-hidden="true">
+          <span>Aline M. <i>sem retorno</i></span><span>Fábio N. <i>achou caro</i></span><span>Gisele P. <i>sem retorno</i></span><span>Hugo T. <i>já pagou</i></span><span>Ivone C. <i>sem interesse</i></span>
+        </div>
+        <div>
+          <p class="onde">Clube social, análise de conversas</p>
+          <h3>Quem recebeu a proposta e sumiu, separado de quem disse não</h3>
+          <p class="resultado">318 contatos para religar, tirados de 2.000 conversas, sem incluir quem já tinha recusado.</p>
+          <p class="relato">A leitura acha a mensagem com o valor, olha só as últimas respostas do cliente e separa quatro grupos. "Hoje não consigo ir" não vira "sem interesse". Antes de entregar a planilha, revisei os casos que o sistema confundia.</p>
+          <details>
+            <summary>Ver a lista de exemplo</summary>
+            <div class="palco">
+              <div class="chips" id="re-chips"></div>
+              <div class="re-top"><span class="re-n" id="re-n" aria-live="polite"></span><span style="font-size:13.5px;color:var(--cinza)">amostra de 12 das 2.000 conversas</span></div>
+              <div class="tbl"><table><thead><tr><th>Cliente</th><th>Valor passado</th><th>Última resposta do cliente</th><th>Grupo</th></tr></thead><tbody id="re-corpo"></tbody></table></div>
+            </div>
+          </details>
+        </div>
+      </li>
+    </ul>
+  </section>
+
+  <section class="secao" id="como">
     <h2>Como eu trabalho</h2>
     <ol class="passos">
-      <li><b>Entendo a pergunta do negócio</b><span>Antes da ferramenta: o que a diretoria precisa decidir com isso?</span></li>
+      <li><b>Entendo a pergunta do negócio</b><span>Antes da ferramenta: o que a gestão precisa decidir com isso?</span></li>
       <li><b>Leio os dados de verdade</b><span>APIs, planilhas e conversas reais, para achar onde a regra óbvia falha.</span></li>
       <li><b>Simulo antes de gravar</b><span>Toda carga em massa passa por uma simulação aprovada antes de mexer no sistema.</span></li>
       <li><b>Confiro com a fonte oficial</b><span>Números batidos com o relatório do sistema, centavo a centavo.</span></li>
       <li><b>Deixo vigiado</b><span>Alertas e página de saúde, para a automação não falhar em silêncio.</span></li>
     </ol>
-    <p style="color:var(--muted);max-width:68ch;margin-top:16px">Uso IA generativa como parceira de trabalho: para escrever e revisar código, analisar milhares de conversas e desenhar painéis que um leigo entende. As decisões de negócio e a conferência final continuam comigo.</p>
+    <p class="ia">Uso IA generativa como parceira de trabalho: para escrever e revisar código, analisar milhares de conversas e desenhar painéis que um leigo entende. As decisões de negócio e a conferência final continuam comigo.</p>
   </section>
 
   <footer id="contato">
+    <h2>Contato</h2>
     <div class="contato">
-      <span class="rot">Contato</span>
-      <a class="li mail" href="mailto:elothay920@gmail.com"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V6a1 1 0 0 1 1-1zm9 7.2L4 7.3V17h16V7.3l-8 4.9zM5.2 7l6.8 4.2L18.8 7H5.2z"/></svg><span>elothay920@gmail.com</span></a>
-      <a class="li" id="linkedin2" href="https://www.linkedin.com/in/eloisa-thayn%C3%A1-1b0aa41b5/" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1v6.45h-4v-5.72c0-1.36-.03-3.12-1.9-3.12-1.9 0-2.2 1.48-2.2 3.02v5.82h-4z"/></svg><span>LinkedIn</span></a>
+      <a href="mailto:elothay920@gmail.com">elothay920@gmail.com</a>
+      <a href="https://www.linkedin.com/in/eloisa-thayn%C3%A1-1b0aa41b5/" target="_blank" rel="noopener">LinkedIn</a>
     </div>
-    <span>Todas as empresas, pessoas e números desta página são fictícios.</span>
+    <p class="aviso">Todas as empresas, pessoas e números desta página são fictícios.</p>
   </footer>
 </div>
 
 <script>
 (function(){
-// aviso de rolagem lateral: esmaece a borda direita enquanto houver conteúdo escondido
 function marcarRolagem(){
-  document.querySelectorAll('.fluxo, .board-wrap').forEach(el => {
-    const sobra = el.scrollWidth - el.clientWidth - el.scrollLeft;
-    el.classList.toggle('mais', sobra > 4);
+  document.querySelectorAll('.board-wrap').forEach(el => {
+    el.classList.toggle('mais', el.scrollWidth - el.clientWidth - el.scrollLeft > 4);
   });
 }
-document.querySelectorAll('.fluxo').forEach(el => {
-  if (!el.nextElementSibling || !el.nextElementSibling.classList.contains('dica-rolar')) {
-    const d = document.createElement('div'); d.className = 'dica-rolar'; d.textContent = 'arraste para o lado →'; el.after(d);
-  }
-});
-document.querySelectorAll('.fluxo, .board-wrap').forEach(el => el.addEventListener('scroll', marcarRolagem, {passive:true}));
+document.querySelectorAll('.board-wrap').forEach(el => el.addEventListener('scroll', marcarRolagem, {passive:true}));
 addEventListener('resize', marcarRolagem); addEventListener('load', marcarRolagem); setTimeout(marcarRolagem, 300);
 const $ = id => document.getElementById(id);
 const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
 const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
-
 /* ---------- CRM ---------- */
 const COLS = [['valor','Valor enviado'],['aguard','Aguardando resposta'],['nao','Não respondeu'],['sem','Sem interesse'],['venda','Venda realizada']];
 const JA = [
@@ -515,29 +397,29 @@ const NOVAS = [
 ];
 let rodando = false;
 function crmInit(){
-  $('crm-inbox').innerHTML = NOVAS.map((n,i)=>`<div class="conv" id="cv${i}"><div class="nm">${esc(n.nome)}<span>${n.hora} · ${esc(n.cons)}</span></div><div class="bal">${esc(n.a).replace(/~([^~]+)~/g,'<s>$1</s>')}</div>${n.c?`<div class="bal out">${esc(n.c)}</div>`:''}</div>`).join('');
+  $('crm-inbox').innerHTML = NOVAS.map((n,i)=>`<div class="conv" id="cv${i}"><div class="nm">${esc(n.nome)}<span>${n.hora}, ${esc(n.cons)}</span></div><div class="bal">${esc(n.a).replace(/~([^~]+)~/g,'<s>$1</s>')}</div>${n.c?`<div class="bal out">${esc(n.c)}</div>`:''}</div>`).join('');
   $('crm-board').innerHTML = COLS.map(([k,t])=>`<div class="col" data-k="${k}"><h4>${t}<span id="n-${k}">0</span></h4><div id="c-${k}"></div></div>`).join('');
   JA.forEach(c=>addCard(c,false));
-  $('crm-log').innerHTML = '<div>Última rodada: ontem 23:41 · 3 cards no funil. Toque em "Rodar a automação".</div>';
+  $('crm-log').innerHTML = '<div>Última rodada: ontem às 23:41, com 3 cards no funil. Toque em Rodar a automação.</div>';
   $('crm-rodar').disabled = false; rodando = false;
 }
 function addCard(c, anim){
   const el = document.createElement('div');
   el.className = 'card' + (anim?' novo':'');
-  el.innerHTML = `<b>${esc(c.nome)}</b><span class="val">${brl(c.valor)}</span> · ${esc(c.cons)}<span class="why">${esc(c.why)}</span>`;
+  el.innerHTML = `<b>${esc(c.nome)}</b><span class="val">${brl(c.valor)}</span>, ${esc(c.cons)}<span class="why">${esc(c.why)}</span>`;
   $('c-'+c.k).appendChild(el);
   const n = $('n-'+c.k); n.textContent = +n.textContent + 1;
 }
 async function crmRodar(){
   if (rodando) return; rodando = true; $('crm-rodar').disabled = true;
-  const log = $('crm-log'); log.innerHTML = '<div>23:41 · lendo 6 conversas do comercial…</div>';
+  const log = $('crm-log'); log.innerHTML = '<div>23:41, lendo 6 conversas do comercial…</div>';
   const espera = ms => new Promise(r=>setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms));
   for (let i=0;i<NOVAS.length;i++){
     const n = NOVAS[i], cv = $('cv'+i);
     cv.classList.add('lendo'); await espera(650);
     addCard(n,true); cv.classList.remove('lendo'); cv.classList.add('feito');
     const nomeCol = COLS.find(c=>c[0]===n.k)[1];
-    log.insertAdjacentHTML('beforeend', `<div>${esc(n.nome)} → ${nomeCol} · ${esc(n.why)} · ${brl(n.valor)}</div>`);
+    log.insertAdjacentHTML('beforeend', `<div>${esc(n.nome)} → ${nomeCol}: ${esc(n.why)}, ${brl(n.valor)}</div>`);
     log.scrollTop = log.scrollHeight;
   }
   log.insertAdjacentHTML('beforeend','<div>Pronto: 6 cards criados, 0 digitados à mão.</div>'); log.scrollTop = log.scrollHeight;
@@ -563,7 +445,7 @@ function dirRender(){
   $('dir-uni').innerHTML = UNI.map((u,i)=>{
     const at = u.s[5], ant = u.s[4], dv = (at-ant)/ant*100, pr = at/u.meta;
     const pill = pr>=1?'<span class="pill ok">Meta batida</span>':pr>=.9?'<span class="pill at">Perto da meta</span>':'<span class="pill ma">Abaixo da meta</span>';
-    return `<button type="button" data-i="${i}" aria-pressed="${i===uniAt}"><span class="n">${esc(u.n)}</span><span class="mono" style="font-size:12px;color:var(--muted)">${u.tipo}</span><span class="v">${brl(at*1000)}</span><span class="d ${dv>=0?'up':'down'}">${dv>=0?'▲':'▼'} ${Math.abs(dv).toFixed(1)}% vs mês anterior</span>${spark(u.s)}${pill}</button>`;
+    return `<button type="button" data-i="${i}" aria-pressed="${i===uniAt}"><span class="n">${esc(u.n)}</span><span class="mono" style="font-size:12px;color:var(--muted)">${u.tipo}</span><span class="v">${brl(at*1000)}</span><span class="d ${dv>=0?'up':'down'}">${dv>=0?'+':'−'}${Math.abs(dv).toFixed(1).replace('.',',')}% sobre o mês anterior</span>${spark(u.s)}${pill}</button>`;
   }).join('');
   const u = UNI[uniAt];
   $('dir-det').innerHTML = `<b>${esc(u.n)}:</b> ${esc(u.det)} Meta do mês ${brl(u.meta*1000)}.`;
@@ -575,18 +457,18 @@ new MutationObserver(dirRender).observe(document.documentElement,{attributes:tru
 /* ---------- REENGAJAMENTO ---------- */
 const GRP = { sr:'Sem retorno', ca:'Disse que é caro', si:'Sem interesse', pg:'Já pagou' };
 const RE = [
-  ['Aline Moraes','R$ 9.800 · 12/08','Vou ver com calma e te aviso','sr'],
-  ['Fábio Nunes','R$ 10.500 · 19/08','Muito salgado pra mim agora','ca'],
-  ['Gisele Prado','R$ 9.800 · 22/08','(não respondeu)','sr'],
-  ['Hugo Teixeira','R$ 9.200 · 03/09','Pix feito, segue comprovante','pg'],
-  ['Ivone Castro','R$ 10.500 · 05/09','Não tenho interesse, obrigada','si'],
-  ['Jonas Batista','R$ 9.800 · 11/09','Hoje não consigo ir, outro dia passo aí','sr'],
-  ['Karina Lopes','R$ 9.500 · 18/09','(não respondeu)','sr'],
-  ['Leonardo Sá','R$ 10.500 · 26/09','Fora do meu orçamento no momento','ca'],
-  ['Mirela Quadros','R$ 9.800 · 02/10','Me manda o regulamento?','sr'],
-  ['Nilton Freire','R$ 9.200 · 09/10','Desisti, vou ficar no outro clube','si'],
-  ['Olga Ramos','R$ 9.800 · 15/10','(não respondeu)','sr'],
-  ['Pedro Antunes','R$ 10.500 · 21/10','Achei caro demais','ca']
+  ['Aline Moraes','R$ 9.800 em 12/08','Vou ver com calma e te aviso','sr'],
+  ['Fábio Nunes','R$ 10.500 em 19/08','Muito salgado pra mim agora','ca'],
+  ['Gisele Prado','R$ 9.800 em 22/08','(não respondeu)','sr'],
+  ['Hugo Teixeira','R$ 9.200 em 03/09','Pix feito, segue comprovante','pg'],
+  ['Ivone Castro','R$ 10.500 em 05/09','Não tenho interesse, obrigada','si'],
+  ['Jonas Batista','R$ 9.800 em 11/09','Hoje não consigo ir, outro dia passo aí','sr'],
+  ['Karina Lopes','R$ 9.500 em 18/09','(não respondeu)','sr'],
+  ['Leonardo Sá','R$ 10.500 em 26/09','Fora do meu orçamento no momento','ca'],
+  ['Mirela Quadros','R$ 9.800 em 02/10','Me manda o regulamento?','sr'],
+  ['Nilton Freire','R$ 9.200 em 09/10','Desisti, vou ficar no outro clube','si'],
+  ['Olga Ramos','R$ 9.800 em 15/10','(não respondeu)','sr'],
+  ['Pedro Antunes','R$ 10.500 em 21/10','Achei caro demais','ca']
 ];
 let reAt = 'sr';
 function reRender(){
@@ -597,8 +479,8 @@ function reRender(){
 $('re-chips').innerHTML = [['sr','Para religar'],['ca','Disse que é caro'],['si','Sem interesse'],['pg','Já pagou'],['todos','Todas']].map(([k,t])=>`<button class="chip" type="button" data-r="${k}" aria-pressed="${k===reAt}">${t}</button>`).join('');
 $('re-chips').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; reAt=b.dataset.r; [...$('re-chips').children].forEach(x=>x.setAttribute('aria-pressed', x===b)); reRender(); });
 reRender();
+
 })();
 </script>
-
 </body>
 </html>
