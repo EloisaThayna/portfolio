@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Ranking de agendamentos (dados fictícios)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Inter:wght@400..800&display=swap">
+<style>
+:root{
+  --mata:#25301E; --mata2:#323F28; --creme:#F5EEDD; --cartao:#FBF7EE; --faixa:#EFE6D2; --linha:#E2D7BF;
+  --ferrugem:#A8401E; --oliva:#5D6B2A; --ocre:#8A6A2A; --tinta:#2A2418; --cinza:#76694F;
+  --serif:"DM Serif Display",Georgia,serif; --sans:"Inter","Helvetica Neue",Arial,sans-serif;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--creme);color:var(--tinta);font:15px/1.45 var(--sans);-webkit-font-smoothing:antialiased}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--ferrugem);outline-offset:2px}
+
+header{background:var(--mata);color:#F5EEDD;display:flex;align-items:center;gap:18px 28px;padding:14px 28px;flex-wrap:wrap;border-bottom:3px solid var(--ferrugem)}
+.marca{display:flex;align-items:center;gap:14px}
+.selo{width:84px;height:50px;border-radius:8px;background:#F5EEDD;color:var(--mata);display:grid;place-items:center;font:700 8.5px/1.15 var(--sans);text-align:center;letter-spacing:.08em}
+.selo b{display:block;font:400 17px/1 var(--serif);letter-spacing:0;color:var(--oliva)}
+.marca h1{margin:0;font:400 28px/1.1 var(--serif)}
+.marca small{display:block;font:600 12px/1.4 var(--sans);letter-spacing:.14em;color:#E9C9A8;margin-top:3px}
+.abas{margin-left:auto;display:flex;gap:4px;background:var(--mata2);padding:5px;border-radius:999px;flex-wrap:wrap}
+.abas button{border:0;background:transparent;color:#F5EEDD;padding:8px 16px;border-radius:999px;font-weight:600;font-size:14px}
+.abas button[aria-pressed="true"]{background:#F5EEDD;color:var(--mata)}
+.vivo{display:flex;align-items:center;gap:14px;font-size:13px}
+.vivo span:first-child{border:1px solid #6E7A5C;border-radius:999px;padding:6px 12px;font-weight:700;letter-spacing:.08em;display:flex;align-items:center;gap:8px}
+.vivo i{width:8px;height:8px;border-radius:50%;background:#E5483A;display:inline-block;animation:pisca 1.6s infinite}
+@keyframes pisca{50%{opacity:.25}}
+
+main{padding:24px 28px 32px;display:grid;gap:20px}
+.topo{display:grid;grid-template-columns:2.1fr 1.4fr 1.1fr;gap:20px}
+.box{background:var(--cartao);border:1px solid var(--linha);border-radius:18px;padding:22px 28px}
+.total{display:flex;flex-direction:column;justify-content:center}
+.total b{font:400 96px/.9 var(--serif);color:var(--ferrugem)}
+.total span{font-weight:600;font-size:16px;margin-top:4px}
+.dias{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:center}
+.dias small{font-weight:700;font-size:12px;letter-spacing:.1em;color:var(--cinza)}
+.dias b{display:block;font:400 54px/1 var(--serif);margin:6px 0 10px}
+.barra{height:6px;border-radius:9px;background:var(--faixa);overflow:hidden}
+.barra i{display:block;height:100%;background:var(--oliva);border-radius:9px}
+.conta{background:var(--mata);color:#F5EEDD;border-color:var(--mata);display:flex;align-items:center;gap:22px}
+.conta b{font:400 76px/1 var(--serif)}
+.conta p{margin:0;font-weight:700;font-size:16px}
+.conta p small{display:block;font-weight:400;font-size:13.5px;color:#DCD3BE;margin-top:2px}
+
+.podios{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.podio{padding:24px 28px 18px}
+.podio-h{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.podio-h h2{margin:0;font:400 32px/1.1 var(--serif)}
+.podio-h span{font-size:14px;color:var(--cinza)}
+.palco{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;align-items:end;min-height:300px;margin-top:6px;padding:0 50px;border-bottom:1px solid var(--linha)}
+.deg{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;align-self:end}
+.av{position:relative;width:64px;height:64px;border-radius:50%;border:3px solid var(--ferrugem);background:var(--faixa);display:grid;place-items:center;font:400 26px/1 var(--serif);color:var(--tinta)}
+.deg.p1 .av{width:82px;height:82px;font-size:33px}
+.av em{position:absolute;right:-8px;bottom:-6px;width:28px;height:28px;border-radius:50%;background:var(--ferrugem);color:#fff;font:700 11px/28px var(--sans);font-style:normal;text-align:center;border:2px solid var(--cartao)}
+.deg.p2 .av{border-color:var(--oliva)} .deg.p2 .av em{background:var(--oliva)}
+.deg.p3 .av{border-color:var(--ocre)} .deg.p3 .av em{background:var(--ocre)}
+.coroa{width:28px;height:18px;margin-bottom:4px}
+.nome{font-weight:700;font-size:16px;margin:8px 0 8px;text-align:center}
+.bloco{width:100%;border-radius:10px 10px 0 0;color:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:height .6s cubic-bezier(.2,.8,.2,1)}
+.bloco b{font:400 46px/1 var(--serif)}
+.bloco small{font-weight:800;font-size:11px;letter-spacing:.14em}
+.p1 .bloco{background:var(--ferrugem)} .p2 .bloco{background:var(--oliva)} .p3 .bloco{background:var(--ocre)}
+.vaga .av{border:2px dashed var(--cinza);background:transparent;color:var(--cinza)}
+.vaga .bloco{background:transparent;border:1.5px dashed #BFB295;border-bottom:0;color:var(--tinta);height:44px!important}
+.vaga .bloco span{font-weight:600;font-size:14px}
+
+.lista{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:8px;max-height:172px;overflow:auto}
+.lista li{display:grid;grid-template-columns:38px 46px 1fr 200px 64px;align-items:center;gap:10px;background:var(--faixa);border-radius:10px;padding:8px 14px}
+.lista .pos{font-weight:700}
+.lista .ini{width:38px;height:38px;border-radius:50%;background:#E4D9C2;display:grid;place-items:center;font-weight:700;font-size:13px}
+.lista .q b{display:block;font-weight:600}
+.lista .q small{color:var(--cinza);font-size:12.5px}
+.lista .pc small{font-size:12px;color:var(--cinza)}
+.lista .pc .barra{height:5px;margin-bottom:3px}
+.lista li:nth-child(1) .pc .barra i{background:var(--ferrugem)}
+.lista li:nth-child(3) .pc .barra i{background:var(--ocre)}
+.lista .n{font:400 26px/1 var(--serif);text-align:right}
+.dica{margin:12px 0 0;font-size:14px;color:var(--tinta)}
+.dica::before{content:"↑ ";color:var(--cinza)}
+footer{padding:0 28px 26px;font-size:13px;color:var(--cinza)}
+
+@media (max-width:1100px){.topo{grid-template-columns:1fr 1fr}.conta{grid-column:1/-1}.podios{grid-template-columns:1fr}}
+@media (max-width:640px){
+  header{padding:12px 16px}.abas{margin-left:0;width:100%}.abas button{flex:1;padding:7px 8px;font-size:12.5px}
+  main{padding:16px}.topo{grid-template-columns:1fr}.total b{font-size:72px}
+  .palco{padding:0;gap:10px;min-height:250px}.bloco b{font-size:34px}.deg.p1 .av{width:66px;height:66px;font-size:27px}.av{width:52px;height:52px;font-size:21px}
+  .nome{font-size:13.5px}.podio{padding:18px 16px}
+  .lista li{grid-template-columns:28px 1fr 56px}.lista .ini,.lista .pc{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header>
+  <div class="marca">
+    <div class="selo" aria-hidden="true"><span><b>Ipê</b>LOTEAMENTOS</span></div>
+    <div><h1>Ranking de agendamentos</h1><small>LANÇAMENTO 07 E 08/11</small></div>
+  </div>
+  <nav class="abas" id="abas" aria-label="Empreendimentos"></nav>
+  <div class="vivo"><span><i></i>AO VIVO</span><span id="hora">Atualizado às 11:44</span></div>
+</header>
+
+<main>
+  <section class="topo">
+    <div class="box total"><b id="tot">0</b><span>agendamentos no lançamento</span></div>
+    <div class="box dias">
+      <div><small>SÁB 07/11</small><b id="sab">0</b><div class="barra"><i id="sab-b"></i></div></div>
+      <div><small>DOM 08/11</small><b id="dom">0</b><div class="barra"><i id="dom-b"></i></div></div>
+    </div>
+    <div class="box conta"><b>0</b><p>É dia de lançamento!<small>Faltam 0 dias. Lançamento 07 e 08/11</small></p></div>
+  </section>
+
+  <section class="podios">
+    <div class="box podio" id="pd-cor"></div>
+    <div class="box podio" id="pd-cc"></div>
+  </section>
+</main>
+<footer>Painel de demonstração. Empreendimentos, pessoas e números são fictícios.</footer>
+
+<script>
+(function(){
+const DADOS = {
+  'Recanto do Ipê': { s:.61,
+    cor:[['Helena Barros',214],['Caio Mendes',133],['Rita Fontes',97],['Davi Lacerda',61],['Joana Prates',44],['Sérgio Lins',29]],
+    cc:[['Bianca Rocha',188],['Tales Moura',164]] },
+  'Parque das Águas': { s:.58,
+    cor:[['Marcos Teles',156],['Lívia Campos',121],['Otto Ramalho',88],['Cecília Dantas',52]],
+    cc:[['Paula Nery',149],['Igor Sena',96],['Ana Clara Reis',35]] },
+  'Chácaras Boa Vista': { s:.6,
+    cor:[['Renato Vidal',102],['Sofia Amaral',77],['Pedro Lobo',58]],
+    cc:[['Débora Assis',111],['Lucas Pena',79]] },
+  'Jardim Mangueiras': { s:.57,
+    cor:[['Tereza Sales',141],['Hugo Matos',118],['Vera Quintão',86],['Fábio Arruda',47]],
+    cc:[['Nádia Brito',102],['Rui Coelho',85]] }
+};
+const nomes = Object.keys(DADOS); let at = nomes[0];
+const $ = id => document.getElementById(id);
+const ini = n => n.split(' ').map(p=>p[0]).slice(0,2).join('').toUpperCase();
+const fmt = n => n.toLocaleString('pt-BR');
+const coroa = '<svg class="coroa" viewBox="0 0 28 18" aria-hidden="true"><path d="M2 16 L4 4 L10 10 L14 2 L18 10 L24 4 L26 16 Z" fill="#E3B23C" stroke="#A8801E" stroke-width="1.2" stroke-linejoin="round"/></svg>';
+
+function podio(el, titulo, lista, total){
+  const soma = lista.reduce((a,b)=>a+b[1],0), max = lista[0][1];
+  const pct = Math.round(soma/total*100);
+  const deg = (i) => {
+    const p = lista[i];
+    if (!p) return `<div class="deg p3 vaga"><div class="av">3º</div><div class="nome">Vaga em aberto</div><div class="bloco"><span>Pode ser você</span></div></div>`;
+    const h = Math.max(70, Math.round(p[1]/max*165));
+    return `<div class="deg p${i+1}">${i===0?coroa:''}<div class="av">${ini(p[0])}<em>${i+1}º</em></div><div class="nome">${p[0]}</div><div class="bloco" style="height:${h}px"><b>${p[1]}</b><small>AGEND.</small></div></div>`;
+  };
+  const linhas = lista.map((p,i)=>`<li><span class="pos">${i+1}º</span><span class="ini">${ini(p[0])}</span><span class="q"><b>${p[0]}</b><small>${i===0?'Líder da equipe':(max-p[1])+' agendamentos atrás do 1º'}</small></span><span class="pc"><div class="barra"><i style="width:${Math.round(p[1]/soma*100)}%"></i></div><small>${Math.round(p[1]/soma*100)}% da equipe</small></span><span class="n">${p[1]}</span></li>`).join('');
+  const dica = lista[2] ? `${lista[2][1]-(lista[3]?lista[3][1]:0)+1} agendamentos tiram o 3º lugar do pódio.` : '3º lugar em aberto: 1 agendamento já garante um lugar no pódio.';
+  el.innerHTML = `<div class="podio-h"><h2>${titulo}</h2><span>${fmt(soma)} agend. (${pct}% do total)</span></div>
+    <div class="palco">${deg(1)}${deg(0)}${deg(2)}</div><ul class="lista">${linhas}</ul><p class="dica">${dica}</p>`;
+}
+function render(){
+  const d = DADOS[at];
+  const totCor = d.cor.reduce((a,b)=>a+b[1],0), totCc = d.cc.reduce((a,b)=>a+b[1],0), tot = totCor + totCc;
+  d.sab = Math.round(tot*d.s); d.dom = tot - d.sab;
+  $('abas').innerHTML = nomes.map(n=>`<button type="button" aria-pressed="${n===at}">${n}</button>`).join('');
+  $('tot').textContent = fmt(tot); $('sab').textContent = fmt(d.sab); $('dom').textContent = fmt(d.dom);
+  $('sab-b').style.width = Math.round(d.sab/Math.max(d.sab,d.dom)*100)+'%'; $('dom-b').style.width = Math.round(d.dom/Math.max(d.sab,d.dom)*100)+'%';
+  podio($('pd-cor'), 'Pódio dos corretores', d.cor, totCor+totCc);
+  podio($('pd-cc'), 'Pódio do call center', d.cc, totCor+totCc);
+}
+$('abas').addEventListener('click', e=>{ const b = e.target.closest('button'); if(!b) return; at = b.textContent; render(); });
+render();
+})();
+</script>
+</body>
+</html>
