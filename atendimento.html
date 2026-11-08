@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Atendimento Correnteza Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+ --page:#F3F6F9;--panel:#FFFFFF;--ink:#0A1C33;--ink2:#334459;--mut:#5B6B7E;--line:#DCE3EA;--soft:#EDF2F6;
+ --navy:#0A1C33;--navy2:#13305A;--onnavy:#FFFFFF;--onnavy2:#B9C8DA;
+ --blue:#1F5FAE;--sun:#F4B63A;--good:#0B7A43;--bad:#C0243A;--warn:#9A6B00;
+ --veio:#1F8A5B;--nveio:#B9D3EC;--s1:#2a78d6;--s2:#eb6834;--s3:#1baf7a;--grid:#E3E8EE;
+ --f:'Manrope',system-ui,-apple-system,'Segoe UI',sans-serif;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--page:#0B1420;--panel:#121E2C;--ink:#ECF1F6;--ink2:#C6D2DE;--mut:#93A3B5;--line:#223246;--soft:#172536;--navy:#071019;--navy2:#0F2238;--blue:#5A9BE6;--good:#4CC98A;--bad:#FF7A8C;--warn:#E9B949;--veio:#3DBE80;--nveio:#2A4766;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--grid:#1E2C3D;color-scheme:dark}}
+:root[data-theme=dark]{--page:#0B1420;--panel:#121E2C;--ink:#ECF1F6;--ink2:#C6D2DE;--mut:#93A3B5;--line:#223246;--soft:#172536;--navy:#071019;--navy2:#0F2238;--blue:#5A9BE6;--good:#4CC98A;--bad:#FF7A8C;--warn:#E9B949;--veio:#3DBE80;--nveio:#2A4766;--s1:#3987e5;--s2:#d95926;--s3:#199e70;--grid:#1E2C3D;color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;background:var(--page);color:var(--ink)}
+body{font:16px/1.55 var(--f);-webkit-font-smoothing:antialiased}
+b{font-weight:700}
+.wrap{max-width:76rem;margin:0 auto;padding:28px 20px 56px;display:flex;flex-direction:column;gap:36px}
+.head{display:flex;flex-wrap:wrap;gap:16px;align-items:center;justify-content:space-between}
+h1{font-size:clamp(1.5rem,2.6vw,2rem);font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+.head p{margin:4px 0 0;color:var(--mut);font-size:15px}
+.ctl{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.chips{display:flex;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px}
+.chip{font-size:14px;font-weight:600;color:var(--ink2);text-decoration:none;padding:7px 14px;border-radius:8px;white-space:nowrap}
+.chip:hover{background:var(--soft)}
+.chip[aria-current]{background:var(--navy);color:#fff}
+.chip:focus-visible,a:focus-visible,summary:focus-visible,.ev:focus-visible,.col:focus-visible{outline:3px solid var(--sun);outline-offset:2px}
+.upd{font-size:13px;color:var(--mut)}.upd a{color:inherit}
+
+/* agora */
+.agora{background:linear-gradient(160deg,var(--navy2),var(--navy) 70%);color:var(--onnavy);border-radius:20px;padding:26px 28px 22px;display:flex;flex-direction:column;gap:22px}
+.agora h2{color:var(--onnavy);font-size:15px;font-weight:700;margin:0;display:flex;align-items:center;gap:10px}
+.agora h2 small{font-weight:500;font-size:13px;color:var(--onnavy2)}
+.agora h2::before{content:"";width:9px;height:9px;border-radius:50%;background:var(--sun);box-shadow:0 0 0 4px rgba(244,182,58,.22)}
+.agn{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0}
+.agn div{padding:0 22px;border-left:1px solid rgba(255,255,255,.14);min-width:0}
+.agn div:first-child{padding-left:0;border-left:0}
+.agn .v{display:block;font-size:clamp(2.2rem,4.4vw,3.2rem);font-weight:800;line-height:1;letter-spacing:-.03em;font-variant-numeric:tabular-nums}
+.agn .alto .v{color:#FFB3BD}
+.agn .l{display:block;font-size:15px;font-weight:600;margin-top:8px;line-height:1.3}
+.agn .s{display:block;font-size:13px;color:var(--onnavy2);margin-top:3px;line-height:1.35}
+.alerts{list-style:none;margin:0;padding:16px 0 0;border-top:1px solid rgba(255,255,255,.14);display:flex;flex-direction:column;gap:10px}
+.alerts li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;font-size:15.5px;line-height:1.45}
+.alerts .mk{width:10px;height:10px;border-radius:3px;transform:translateY(1px)}
+.alerts .bad .mk{background:#FF7A8C}.alerts .neu .mk{background:var(--sun)}.alerts .good .mk{background:#4CC98A}
+.agora details summary{cursor:pointer;color:var(--onnavy2);font-size:14px;font-weight:600;list-style:none;margin-top:4px}
+.agora details summary::-webkit-details-marker{display:none}
+.agora details[open] summary{margin-bottom:10px}
+
+/* números do período */
+.per h2 small{font-weight:600;font-size:15px;color:var(--mut);margin-left:6px}
+.palerts{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:8px}
+.palerts li{display:grid;grid-template-columns:auto 1fr;gap:12px;align-items:baseline;font-size:15.5px;line-height:1.45}
+.palerts .mk{width:10px;height:10px;border-radius:3px}
+.palerts .bad .mk{background:var(--bad)}.palerts .neu .mk{background:var(--sun)}.palerts .good .mk{background:var(--veio)}
+.nums{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.num4{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px}
+.num4 .v{display:block;font-size:2.1rem;font-weight:800;letter-spacing:-.02em;line-height:1.05;font-variant-numeric:tabular-nums}
+.num4 .l{display:block;font-size:15px;font-weight:600;color:var(--ink2);margin-top:6px;line-height:1.3}
+.num4 .s{display:block;font-size:13.5px;color:var(--mut);margin-top:2px}
+
+section{display:flex;flex-direction:column;gap:14px}
+h2{font-size:1.35rem;font-weight:800;letter-spacing:-.015em;margin:0}
+.lead{margin:-6px 0 0;color:var(--mut);font-size:15px;max-width:72ch}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:20px 22px}
+
+/* funil */
+.funil{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px}
+.funil li{display:grid;grid-template-columns:minmax(10rem,16rem) 1fr 5rem 4rem;gap:16px;align-items:center}
+.fl{font-weight:700;font-size:15px;line-height:1.25}.fl small{display:block;font-weight:500;font-size:12.5px;color:var(--mut)}
+.ft{height:22px;background:var(--soft);border-radius:6px;overflow:hidden}
+.ft i{display:block;height:100%;background:var(--blue);border-radius:6px}
+.funil li:nth-child(4) .ft i{background:var(--sun)}
+.funil li:nth-child(5) .ft i{background:var(--veio)}
+.fn{font-weight:800;font-size:1.15rem;text-align:right;font-variant-numeric:tabular-nums}
+.fp{color:var(--mut);font-size:14px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* tabelas */
+.tbl{background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px;font-variant-numeric:tabular-nums}
+th{text-align:left;font-weight:700;font-size:13px;color:var(--mut);padding:12px 14px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+.num,th.num{text-align:right;white-space:nowrap}
+td.nm{min-width:13rem;font-weight:600}td.nm small{display:block;font-weight:500;color:var(--mut);font-size:12.5px}
+td small{color:var(--mut)}
+.strong{font-weight:800}
+.ruim{color:var(--bad);font-weight:700}
+.empty{color:var(--mut);padding:18px 14px}
+
+/* call center */
+.cc{list-style:none;margin:0;padding:0;background:var(--panel);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.cc li{display:grid;grid-template-columns:minmax(10rem,14rem) minmax(14rem,1fr) minmax(16rem,1.1fr);gap:20px;align-items:center;padding:16px 20px;border-bottom:1px solid var(--line)}
+.cc li:last-child{border-bottom:0}
+.cc li.atn{box-shadow:inset 4px 0 0 var(--bad)}
+.who b{display:block;font-size:16px}.who small{display:block;color:var(--mut);font-size:13px}
+.agd{display:grid;grid-template-columns:2.6rem 1fr;gap:4px 14px;align-items:center}
+.agd .big{font-size:1.7rem;font-weight:800;line-height:1;font-variant-numeric:tabular-nums;grid-row:span 2;text-align:right}
+.agd .bar{display:flex;height:12px;background:var(--soft);border-radius:4px;overflow:hidden}
+.agd .bar i{display:block;height:100%}.agd .bar .v{background:var(--veio)}.agd .bar .n{background:var(--nveio)}
+.agd small{color:var(--mut);font-size:13px}
+.crm{display:flex;flex-direction:column;gap:2px;font-size:14px;color:var(--ink2)}
+.crm .mut{color:var(--mut)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:13.5px;color:var(--ink2)}
+.legend span{display:inline-flex;align-items:center;gap:7px}.legend i{width:12px;height:12px;border-radius:3px}
+
+/* eventos */
+.evs{display:flex;gap:10px;align-items:flex-end;height:220px;padding-top:8px;overflow-x:auto}
+.ev{flex:1 0 54px;max-width:92px;height:100%;display:flex;flex-direction:column;align-items:center;gap:6px;outline:none;cursor:default}
+.evb{flex:1;width:100%;max-width:44px;display:flex;flex-direction:column;justify-content:flex-end;gap:2px}
+.evb i{display:block;width:100%}.evb .n{background:var(--nveio);border-radius:5px 5px 0 0}.evb .v{background:var(--veio)}
+.evb .n[style^="height:0"]+.v{border-radius:5px 5px 0 0}
+.evn{font-weight:800;font-size:14px;font-variant-numeric:tabular-nums}
+.evl{font-size:12.5px;color:var(--mut);white-space:nowrap}
+.ev:hover .evb,.ev:focus .evb{opacity:.85}
+
+/* disparos por dia */
+.chart{position:relative;height:200px;margin:10px 0 24px 40px}
+.gl{position:absolute;left:0;right:0;border-top:1px solid var(--grid);font-size:11.5px;color:var(--mut)}
+.gl span{position:absolute;right:calc(100% + 8px);top:-8px;white-space:nowrap}
+.gl.base{border-top-color:var(--mut)}
+.bars{position:absolute;inset:0;display:flex;gap:4px}
+.col{flex:1;position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-width:0;outline:none}
+.col:hover,.col:focus{background:color-mix(in srgb,var(--ink) 5%,transparent)}
+.stk{display:flex;flex-direction:column-reverse;gap:2px;height:100%}
+.stk i{display:block;width:100%;max-width:28px;margin:0 auto}
+.stk i:last-child{border-radius:4px 4px 0 0}
+.xl{position:absolute;top:100%;left:50%;transform:translateX(-50%);font-size:11.5px;color:var(--mut);padding-top:5px;white-space:nowrap}
+.two{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(0,1fr);gap:16px;align-items:start}
+.kv{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.kv li{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px}
+.kv li:last-child{border-bottom:0}.kv b{font-variant-numeric:tabular-nums}
+
+/* detalhes */
+details.more{background:var(--panel);border:1px solid var(--line);border-radius:16px}
+details.more>summary{cursor:pointer;padding:16px 20px;font-weight:700;font-size:16px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.more>summary::-webkit-details-marker{display:none}
+details.more>summary::after{content:"+";font-weight:800;color:var(--mut)}
+details.more[open]>summary::after{content:"–"}
+details.more>summary small{font-weight:500;color:var(--mut);font-size:14px;margin-left:auto}
+details.more .in{padding:0 20px 20px;display:flex;flex-direction:column;gap:14px}
+details.more .tbl{border-radius:12px}
+.minis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,19rem),1fr));gap:14px}
+.mini{border:1px solid var(--line);border-radius:12px;padding:14px 16px}
+.mini h4{margin:0 0 10px;font-size:15px;display:flex;justify-content:space-between}.mini h4 span{font-weight:500;color:var(--mut);font-size:13.5px}
+.hbars{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:7px}
+.hbars li{display:grid;grid-template-columns:minmax(6rem,10rem) 1fr auto;gap:10px;align-items:center;font-size:14px}
+.hbars .lb{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.hbars .tr{height:8px;border-radius:4px;background:var(--soft);overflow:hidden}.hbars .tr i{display:block;height:100%;background:var(--blue)}
+.hbars b{min-width:2.5rem;text-align:right}
+.sub{margin:8px 0 0;color:var(--mut);font-size:13.5px}
+.warn{margin:0;font-size:14px;color:var(--bad);background:color-mix(in srgb,var(--bad) 9%,transparent);border-radius:10px;padding:10px 14px}
+.tip{position:fixed;pointer-events:none;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13.5px;box-shadow:0 8px 24px rgba(10,28,51,.16);display:none;z-index:9;min-width:170px}
+.tip b{display:block;margin-bottom:4px}.tip div{display:flex;justify-content:space-between;gap:14px}.tip em{font-style:normal;display:inline-flex;align-items:center;gap:7px}.tip em i{width:9px;height:9px;border-radius:2px}
+footer{font-size:13.5px;color:var(--mut);line-height:1.6;max-width:80ch}
+@media (max-width:900px){
+ .agn{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:22px}
+ .agn div:nth-child(3){padding-left:0;border-left:0}
+ .nums{grid-template-columns:repeat(2,minmax(0,1fr))}
+ .cc li{grid-template-columns:1fr;gap:10px}
+ .two{grid-template-columns:1fr}
+ .funil li{grid-template-columns:1fr 4.5rem 3.5rem;gap:6px 12px}
+ .funil .fl{grid-column:1/-1}
+}
+@media (max-width:560px){.wrap{padding:20px 14px 40px;gap:28px}.agora{padding:20px 18px}.agn div{padding:0 14px}.ctl{align-items:flex-start}.hs{display:none}.num4 .v{font-size:1.7rem}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style></head><body><a href="index.html" style="position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;z-index:50;font:600 13px/1 system-ui,sans-serif;background:#121A26;color:#fff;padding:9px 13px;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.2)">← Voltar ao portfólio</a>
+<div class="wrap">
+  <header class="head">
+    <div><h1>Atendimento do Parque Correnteza</h1><p>Últimos 7 dias, de 31/10 a 06/11</p></div>
+    <div class="ctl"><nav class="chips" aria-label="Período"><a class="chip" href="atendimento.html" aria-current="true">Últimos 7 dias</a><a class="chip" href="atendimento-mes.html">Este mês</a><a class="chip" href="atendimento-mes-passado.html">Mês passado</a></nav><span class="upd">Atualizado em 07/11 às 17:30. Dados fictícios de demonstração.</span></div>
+  </header>
+  
+
+  <section class="agora" aria-label="Situação de agora">
+    <h2>Agora <small>situação deste momento, igual em qualquer período</small></h2>
+    <div class="agn"><div class=""><span class="v">34</span><span class="l">clientes esperando resposta</span><span class="s">a última mensagem deles ficou sem resposta</span></div><div class=""><span class="v">7</span><span class="l">conversas na fila sem atendente</span><span class="s">4 em Comercial, 3 em Atendimento geral</span></div><div class="alto"><span class="v">16</span><span class="l">tarefas vencidas</span><span class="s">29 pendentes no CRM</span></div><div class=""><span class="v">4</span><span class="l">agendados para sáb 07/11</span><span class="s">próximo evento na planilha</span></div></div>
+    <ul class="alerts"><li class="bad"><span class="mk" aria-hidden="true"></span><span><b>Carla</b> (17) está com muitos clientes esperando resposta.</span></li><li class="bad"><span class="mk" aria-hidden="true"></span><span>O cliente esperando há mais tempo é da <b>Carla</b>: 4 dias sem resposta.</span></li><li class="bad"><span class="mk" aria-hidden="true"></span><span><b>16 tarefas vencidas</b>.</span></li></ul>
+    
+  </section>
+
+  <section class="per" aria-label="Números do período">
+  <h2>Últimos 7 dias <small>de 31/10 a 06/11</small></h2>
+  <div class="nums"><div class="num4"><span class="v">25</span><span class="l">agendados para eventos</span><span class="s">5 eventos no período</span></div><div class="num4"><span class="v">40%</span><span class="l">dos agendados vieram</span><span class="s">10 pessoas</span></div><div class="num4"><span class="v">1,6%</span><span class="l">dos convidados por disparo agendaram</span><span class="s">22 de 1.368 contatos</span></div><div class="num4"><span class="v">363</span><span class="l">clientes escreveram no WhatsApp</span><span class="s">15 ficaram sem resposta</span></div></div>
+  <ul class="palerts"><li class="neu"><span class="mk" aria-hidden="true"></span><span>Dos 1.368 contatos convidados por disparo, <b>22 agendaram</b> (1,6%) e 3 vieram ao evento.</span></li><li class="neu"><span class="mk" aria-hidden="true"></span><span>Dos 25 agendados para eventos no período, <b>10 vieram</b> (40%).</span></li><li class="good"><span class="mk" aria-hidden="true"></span><span><b>Juliana</b> foi quem mais finalizou atendimentos (35).</span></li></ul>
+  </section>
+
+  <section id="conversao">
+    <h2>Os disparos estão virando agendamento?</h2>
+    <p class="lead">Entram as campanhas que convidam para evento (Noite do Pastel, Café com a Família, convites). Cada contato que recebeu o disparo e aparece na planilha do call center com evento até 10 dias depois conta como agendamento. Outras 3 campanhas do período, como cobrança, e os envios manuais ficam de fora.</p>
+    <div class="panel"><ul class="funil"><li><span class="fl">Disparos enviados<small>campanhas de convite para evento</small></span><span class="ft"><i style="width:100.00%"></i></span><span class="fn">1.368</span><span class="fp"></span></li><li><span class="fl">Lidos</span><span class="ft"><i style="width:65.35%"></i></span><span class="fn">894</span><span class="fp">65,4%</span></li><li><span class="fl">Responderam</span><span class="ft"><i style="width:8.70%"></i></span><span class="fn">119</span><span class="fp">8,7%</span></li><li><span class="fl">Agendaram<small>contatos na planilha com evento até 10 dias depois do disparo</small></span><span class="ft"><i style="width:1.61%"></i></span><span class="fn">22</span><span class="fp">1,6%</span></li><li><span class="fl">Vieram ao evento<small>linha em verde na planilha</small></span><span class="ft"><i style="width:0.60%"></i></span><span class="fn">3</span><span class="fp">0,2%</span></li></ul></div>
+    <div class="tbl"><table><thead><tr><th>Campanha</th><th class="num">Contatos</th><th class="num">Responderam</th><th class="num">Agendaram</th><th class="num">Conversão</th><th class="num">Vieram</th><th class="num hs">Custo</th><th class="num hs">Custo por agendamento</th></tr></thead>
+      <tbody><tr><td class="nm">Café com a Família · convite<small>enviada em 06/11</small></td><td class="num">272</td><td class="num">26</td><td class="num strong">9</td><td class="num">3,3%</td><td class="num">0</td><td class="num hs">R$ 17,00</td><td class="num hs">R$ 1,89</td></tr><tr><td class="nm">Noite do Pastel · convite<small>enviada em 04/11</small></td><td class="num">568</td><td class="num">50</td><td class="num strong">8</td><td class="num">1,4%</td><td class="num">3</td><td class="num hs">R$ 35,50</td><td class="num hs">R$ 4,44</td></tr><tr><td class="nm">Feijoada de Sábado · convite<small>enviada em 05/11</small></td><td class="num">333</td><td class="num">26</td><td class="num strong">4</td><td class="num">1,2%</td><td class="num">0</td><td class="num hs">R$ 20,81</td><td class="num hs">R$ 5,20</td></tr><tr><td class="nm">Tarde de Petiscos · convite<small>enviada em 03/11</small></td><td class="num">195</td><td class="num">17</td><td class="num strong">1</td><td class="num">0,5%</td><td class="num">0</td><td class="num hs">R$ 12,19</td><td class="num hs">R$ 12,19</td></tr></tbody></table></div>
+  </section>
+
+  <section id="callcenter">
+    <h2>Call center</h2>
+    <p class="lead">Agendamentos da planilha para eventos no período, por consultor, ao lado do atendimento de cada um no CRM. A faixa vermelha marca quem tem clientes esperando demais.</p>
+    <div class="legend"><span><i style="background:var(--veio)"></i>Vieram ao evento</span><span><i style="background:var(--nveio)"></i>Não vieram</span></div>
+    <ul class="cc"><li class="">
+    <div class="who"><b>Tiago Monteiro</b><small>Whatsapp 5, Ligação 3</small></div>
+    <div class="agd"><span class="big">8</span><span class="bar" title="2 vieram de 8 agendados"><i class="v" style="width:25.0%"></i><i class="n" style="width:75.0%"></i></span><small>2 vieram (25%), 3 qualificados</small></div>
+    <div class="crm"><span><b>35</b> atendimentos finalizados</span><span class=""><b>5</b> esperando resposta agora</span><span class="">mais antigo <b>de hoje</b></span></div>
+  </li><li class="">
+    <div class="who"><b>Eduardo Sena</b><small>Whatsapp 5, Ligação 3</small></div>
+    <div class="agd"><span class="big">8</span><span class="bar" title="5 vieram de 8 agendados"><i class="v" style="width:62.5%"></i><i class="n" style="width:37.5%"></i></span><small>5 vieram (63%), 8 qualificados</small></div>
+    <div class="crm"><span><b>21</b> atendimentos finalizados</span><span class=""><b>0</b> esperando resposta agora</span></div>
+  </li><li class="">
+    <div class="who"><b>Juliana Ferraz</b><small>Whatsapp 3, Ligação 2</small></div>
+    <div class="agd"><span class="big">6</span><span class="bar" title="2 vieram de 6 agendados"><i class="v" style="width:25.0%"></i><i class="n" style="width:50.0%"></i></span><small>2 vieram (33%), 5 qualificados</small></div>
+    <div class="crm"><span><b>35</b> atendimentos finalizados</span><span class=""><b>2</b> esperando resposta agora</span></div>
+  </li><li class="">
+    <div class="who"><b>Patrícia Lobo</b><small>Presencial 2, Whatsapp 1</small></div>
+    <div class="agd"><span class="big">3</span><span class="bar" title="1 vieram de 3 agendados"><i class="v" style="width:12.5%"></i><i class="n" style="width:25.0%"></i></span><small>1 vieram (33%), 2 qualificados</small></div>
+    <div class="crm"><span><b>30</b> atendimentos finalizados</span><span class=""><b>1</b> esperando resposta agora</span></div>
+  </li><li class="">
+    <div class="who"><b>Robson Dias</b><small>sem agendamentos na planilha</small></div>
+    <div class="agd"><span class="big">0</span><span class="bar" title="0 vieram de 0 agendados"><i class="v" style="width:0.0%"></i><i class="n" style="width:0.0%"></i></span><small></small></div>
+    <div class="crm"><span><b>19</b> atendimentos finalizados</span><span class=""><b>3</b> esperando resposta agora</span></div>
+  </li><li class="atn">
+    <div class="who"><b>Carla Nogueira</b><small>sem agendamentos na planilha</small></div>
+    <div class="agd"><span class="big">0</span><span class="bar" title="0 vieram de 0 agendados"><i class="v" style="width:0.0%"></i><i class="n" style="width:0.0%"></i></span><small></small></div>
+    <div class="crm"><span><b>18</b> atendimentos finalizados</span><span class="ruim"><b>17</b> esperando resposta agora</span><span class="ruim">mais antigo há <b>4 dias</b></span></div>
+  </li></ul>
+  </section>
+
+  <section id="eventos">
+    <h2>Agendados por evento</h2>
+    <div class="panel"><div class="legend"><span><i style="background:var(--veio)"></i>Vieram</span><span><i style="background:var(--nveio)"></i>Não vieram</span></div><div class="evs"><div class="ev" tabindex="0" data-tip="Feijoada de Sábado · sáb 31/10|5|2|5"><div class="evb"><i class="n" style="height:30.0%"></i><i class="v" style="height:20.0%"></i></div><span class="evn">5</span><span class="evl">sáb 31/10</span></div><div class="ev" tabindex="0" data-tip="Café com a Família · dom 01/11|8|3|6"><div class="evb"><i class="n" style="height:50.0%"></i><i class="v" style="height:30.0%"></i></div><span class="evn">8</span><span class="evl">dom 01/11</span></div><div class="ev" tabindex="0" data-tip="Tarde de Petiscos · qua 04/11|1|1|0"><div class="evb"><i class="n" style="height:0.0%"></i><i class="v" style="height:10.0%"></i></div><span class="evn">1</span><span class="evl">qua 04/11</span></div><div class="ev" tabindex="0" data-tip="Tarde de Petiscos · qui 05/11|1|0|1"><div class="evb"><i class="n" style="height:10.0%"></i><i class="v" style="height:0.0%"></i></div><span class="evn">1</span><span class="evl">qui 05/11</span></div><div class="ev" tabindex="0" data-tip="Noite do Pastel · sex 06/11|10|4|8"><div class="evb"><i class="n" style="height:60.0%"></i><i class="v" style="height:40.0%"></i></div><span class="evn">10</span><span class="evl">sex 06/11</span></div></div></div>
+  </section>
+
+  <section id="disparos">
+    <h2>Disparos de WhatsApp por dia</h2>
+    <div class="two">
+      <div class="panel"><div class="legend"><span><i style="background:var(--s1)"></i>Campanha</span><span><i style="background:var(--s2)"></i>Manual</span><span><i style="background:var(--s3)"></i>Automático</span></div>
+        <div class="chart"><div class="gl base" style="bottom:0.00%"><span>0</span></div><div class="gl" style="bottom:25.00%"><span>200</span></div><div class="gl" style="bottom:50.00%"><span>400</span></div><div class="gl" style="bottom:75.00%"><span>600</span></div><div class="gl" style="bottom:100.00%"><span>800</span></div><div class="bars"><div class="col" tabindex="0" data-d="31/10" data-t="73" data-c="0" data-m="25" data-a="48"><div class="stk"><i style="height:3.13%;background:var(--s2)"></i><i style="height:6.00%;background:var(--s3)"></i></div><span class="xl">31/10</span></div><div class="col" tabindex="0" data-d="01/11" data-t="131" data-c="77" data-m="0" data-a="54"><div class="stk"><i style="height:9.63%;background:var(--s1)"></i><i style="height:6.75%;background:var(--s3)"></i></div><span class="xl">01/11</span></div><div class="col" tabindex="0" data-d="02/11" data-t="430" data-c="328" data-m="44" data-a="58"><div class="stk"><i style="height:41.00%;background:var(--s1)"></i><i style="height:5.50%;background:var(--s2)"></i><i style="height:7.25%;background:var(--s3)"></i></div><span class="xl">02/11</span></div><div class="col" tabindex="0" data-d="03/11" data-t="289" data-c="205" data-m="22" data-a="62"><div class="stk"><i style="height:25.63%;background:var(--s1)"></i><i style="height:2.75%;background:var(--s2)"></i><i style="height:7.75%;background:var(--s3)"></i></div><span class="xl">03/11</span></div><div class="col" tabindex="0" data-d="04/11" data-t="665" data-c="592" data-m="33" data-a="40"><div class="stk"><i style="height:74.00%;background:var(--s1)"></i><i style="height:4.13%;background:var(--s2)"></i><i style="height:5.00%;background:var(--s3)"></i></div><span class="xl">04/11</span></div><div class="col" tabindex="0" data-d="05/11" data-t="401" data-c="348" data-m="18" data-a="35"><div class="stk"><i style="height:43.50%;background:var(--s1)"></i><i style="height:2.25%;background:var(--s2)"></i><i style="height:4.38%;background:var(--s3)"></i></div><span class="xl">05/11</span></div><div class="col" tabindex="0" data-d="06/11" data-t="380" data-c="284" data-m="31" data-a="65"><div class="stk"><i style="height:35.50%;background:var(--s1)"></i><i style="height:3.88%;background:var(--s2)"></i><i style="height:8.13%;background:var(--s3)"></i></div><span class="xl">06/11</span></div></div></div></div>
+      <div class="panel"><ul class="kv">
+        <li><span>Disparos no período</span><b>2.369</b></li>
+        <li><span>Campanha</span><b>1.834</b></li>
+        <li><span>Manual</span><b>173</b></li>
+        <li><span>Automático (boletos, lembretes)</span><b>362</b></li>
+        <li><span>Falharam</span><b>94</b></li>
+        <li><span>Custo</span><b>R$ 132,62</b></li>
+      </ul></div>
+    </div>
+  </section>
+
+  <details class="more"><summary>Tabela completa das atendentes <small>6 no CRM</small></summary><div class="in">
+    <p class="sub" style="margin:0">Finalizados, assumidos e mensagens são do período. As três últimas colunas mostram a situação de agora.</p>
+    <div class="tbl"><table><thead><tr><th>Atendente</th><th class="num">Finalizados</th><th class="num">Assumidos</th><th class="num">Mensagens</th><th class="num">Disparos manuais</th><th class="num">Espera média</th><th class="num">NPS</th><th class="num">Abertas agora</th><th class="num">Esperando agora</th><th class="num">Desde</th></tr></thead><tbody><tr><td class="nm">Juliana Ferraz</td><td class="num">35</td><td class="num">38</td><td class="num">475</td><td class="num">40</td><td class="num">4 min</td><td class="num">4,4 <small>(14)</small></td><td class="num">6</td><td class="num ">2</td><td class="num ">—</td></tr><tr><td class="nm">Tiago Monteiro</td><td class="num">35</td><td class="num">34</td><td class="num">435</td><td class="num">21</td><td class="num">7 min</td><td class="num">4,4 <small>(6)</small></td><td class="num">9</td><td class="num ">5</td><td class="num ">07/11</td></tr><tr><td class="nm">Patrícia Lobo</td><td class="num">30</td><td class="num">31</td><td class="num">395</td><td class="num">47</td><td class="num">11 min</td><td class="num">4,3 <small>(30)</small></td><td class="num">4</td><td class="num ">1</td><td class="num ">—</td></tr><tr><td class="nm">Eduardo Sena</td><td class="num">21</td><td class="num">27</td><td class="num">355</td><td class="num">65</td><td class="num">6 min</td><td class="num">4,7 <small>(27)</small></td><td class="num">3</td><td class="num ">0</td><td class="num ">—</td></tr><tr><td class="nm">Robson Dias</td><td class="num">19</td><td class="num">20</td><td class="num">275</td><td class="num">0</td><td class="num">15 min</td><td class="num">4,4 <small>(6)</small></td><td class="num">5</td><td class="num ">3</td><td class="num ">—</td></tr><tr><td class="nm">Carla Nogueira</td><td class="num">18</td><td class="num">24</td><td class="num">315</td><td class="num">0</td><td class="num">38 min</td><td class="num">4,6 <small>(11)</small></td><td class="num">21</td><td class="num ruim">17</td><td class="num ruim">03/11</td></tr></tbody></table></div>
+  </div></details>
+  <details class="more"><summary>Funis de agendamento no CRM <small>situação de hoje</small></summary><div class="in"><div class="minis"><div class="mini"><h4>Agendamento de visitas <span>214 leads</span></h4><ul class="hbars"><li><span class="lb">Novo contato</span><span class="tr"><i style="width:100.0%"></i></span><b>88</b></li><li><span class="lb">Agendado</span><span class="tr"><i style="width:53.4%"></i></span><b>47</b></li><li><span class="lb">Visitou</span><span class="tr"><i style="width:58.0%"></i></span><b>51</b></li><li><span class="lb">Sem interesse</span><span class="tr"><i style="width:18.2%"></i></span><b>16</b></li></ul><p class="sub">Em “Agendado”: Juliana 15, Tiago 12, Patrícia 11, Eduardo 9</p></div><div class="mini"><h4>Noite do Pastel <span>96 leads</span></h4><ul class="hbars"><li><span class="lb">Convidado</span><span class="tr"><i style="width:100.0%"></i></span><b>58</b></li><li><span class="lb">Agendado</span><span class="tr"><i style="width:39.7%"></i></span><b>23</b></li><li><span class="lb">Compareceu</span><span class="tr"><i style="width:19.0%"></i></span><b>11</b></li></ul><p class="sub">Em “Agendado”: Juliana 9, Tiago 8, Eduardo 6</p></div></div></div></details>
+  <details class="more"><summary>Tarefas vencidas <small>16</small></summary><div class="in"><div class="tbl"><table><thead><tr><th>Tarefa</th><th>Lead</th><th>Tipo</th><th class="num">Venceu em</th><th>Responsável</th></tr></thead><tbody><tr><td class="nm">Enviar proposta de título</td><td>Tânia Queiroz</td><td>WhatsApp</td><td class="num">19/10</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Enviar proposta de título</td><td>Nelson Barros</td><td>Ligação</td><td class="num">21/10</td><td>Eduardo Sena</td></tr><tr><td class="nm">Ligar para remarcar visita</td><td>Márcia Gomes</td><td>Ligação</td><td class="num">22/10</td><td>Eduardo Sena</td></tr><tr><td class="nm">Confirmar presença no evento</td><td>Ingrid Vasconcelos</td><td>Follow-up</td><td class="num">22/10</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Ligar para remarcar visita</td><td>Ingrid Nunes</td><td>Ligação</td><td class="num">25/10</td><td>Carla Nogueira</td></tr><tr><td class="nm">Retornar sobre o convite</td><td>Karla Teles</td><td>WhatsApp</td><td class="num">25/10</td><td>Tiago Monteiro</td></tr><tr><td class="nm">Retornar sobre o convite</td><td>Olívia Gomes</td><td>Ligação</td><td class="num">26/10</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Confirmar presença no evento</td><td>Gisele Holanda</td><td>WhatsApp</td><td class="num">27/10</td><td>Tiago Monteiro</td></tr><tr><td class="nm">Confirmar presença no evento</td><td>Nelson Rocha</td><td>Follow-up</td><td class="num">27/10</td><td>Carla Nogueira</td></tr><tr><td class="nm">Retornar sobre o convite</td><td>Paulo Cardoso</td><td>Ligação</td><td class="num">28/10</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Retornar sobre o convite</td><td>Elaine Macedo</td><td>WhatsApp</td><td class="num">29/10</td><td>Juliana Ferraz</td></tr><tr><td class="nm">Enviar proposta de título</td><td>João Barros</td><td>WhatsApp</td><td class="num">30/10</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Ligar para remarcar visita</td><td>Yuri Esteves</td><td>Follow-up</td><td class="num">31/10</td><td>Juliana Ferraz</td></tr><tr><td class="nm">Ligar para remarcar visita</td><td>Leandro Holanda</td><td>WhatsApp</td><td class="num">01/11</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Confirmar presença no evento</td><td>Yuri Queiroz</td><td>WhatsApp</td><td class="num">06/11</td><td>Patrícia Lobo</td></tr><tr><td class="nm">Retornar sobre o convite</td><td>Nelson Vasconcelos</td><td>Ligação</td><td class="num">06/11</td><td>Tiago Monteiro</td></tr></tbody></table></div></div></details>
+  <details class="more"><summary>Modelos de mensagem mais caros <small>no período</small></summary><div class="in"><div class="tbl"><table><thead><tr><th>Modelo</th><th class="num">Enviados</th><th class="num">Lidos</th><th class="num">Responderam</th><th class="num">Custo</th></tr></thead><tbody><tr><td class="nm">noite_do_pastel</td><td class="num">568</td><td class="num">62%</td><td class="num">9%</td><td class="num">R$ 35,50</td></tr><tr><td class="nm">feijoada_de_sábado</td><td class="num">333</td><td class="num">73%</td><td class="num">8%</td><td class="num">R$ 20,81</td></tr><tr><td class="nm">cobrança</td><td class="num">314</td><td class="num">69%</td><td class="num">8%</td><td class="num">R$ 19,63</td></tr><tr><td class="nm">café_com_a_família</td><td class="num">272</td><td class="num">65%</td><td class="num">10%</td><td class="num">R$ 17,00</td></tr><tr><td class="nm">tarde_de_petiscos</td><td class="num">195</td><td class="num">62%</td><td class="num">9%</td><td class="num">R$ 12,19</td></tr><tr><td class="nm">boleto_vencendo</td><td class="num">348</td><td class="num">71%</td><td class="num">9%</td><td class="num">R$ 12,18</td></tr><tr><td class="nm">retomar_contato</td><td class="num">170</td><td class="num">69%</td><td class="num">8%</td><td class="num">R$ 10,63</td></tr><tr><td class="nm">lembrete_de_visita</td><td class="num">75</td><td class="num">67%</td><td class="num">7%</td><td class="num">R$ 4,69</td></tr></tbody></table></div></div></details>
+
+  <footer>Fontes: CRM e relatório de templates do sistema do Parque Correnteza, e a planilha de agendamento do call center (linha em verde = veio ao evento). O cruzamento usa os últimos 8 dígitos do telefone. Os disparos contam só os envios reais pelo WhatsApp: a tela do sistema repete cada envio numa linha de “atividade”, o que dobra o número de envios manuais. O histórico de disparos guardado começa em 01/10, então eventos antes de 11/10 podem aparecer com menos contatos vindos de disparo. Atualiza a cada 30 minutos.</footer>
+</div>
+<div class="tip" id="tip" role="tooltip"></div>
+<script>
+(function(){
+  var tip=document.getElementById('tip');
+  function pos(x,y){var w=tip.offsetWidth,h=tip.offsetHeight;tip.style.left=Math.min(window.innerWidth-w-8,Math.max(8,x+12))+'px';tip.style.top=Math.max(8,y-h-12)+'px';}
+  function fmt(n){return Number(n).toLocaleString('pt-BR');}
+  function liga(sel,html){document.querySelectorAll(sel).forEach(function(el){
+    function on(x,y){tip.innerHTML=html(el);tip.style.display='block';pos(x,y);}
+    el.addEventListener('mousemove',function(e){on(e.clientX,e.clientY);});
+    el.addEventListener('mouseleave',function(){tip.style.display='none';});
+    el.addEventListener('focus',function(){var r=el.getBoundingClientRect();on(r.left+r.width/2,r.top+30);});
+    el.addEventListener('blur',function(){tip.style.display='none';});
+  });}
+  var S=[['c','Campanha','var(--s1)'],['m','Manual','var(--s2)'],['a','Automático','var(--s3)']];
+  liga('.col',function(el){var h='<b>'+el.dataset.d+': '+fmt(el.dataset.t)+' disparos</b>';S.forEach(function(s){h+='<div><em><i style="background:'+s[2]+'"></i>'+s[1]+'</em><span>'+fmt(el.dataset[s[0]])+'</span></div>';});return h;});
+  liga('.ev',function(el){var p=el.dataset.tip.split('|');return '<b>'+p[0]+'</b><div><em><i style="background:var(--veio)"></i>Vieram</em><span>'+fmt(p[2])+'</span></div><div><em><i style="background:var(--nveio)"></i>Não vieram</em><span>'+fmt(p[1]-p[2])+'</span></div><div><em>Receberam disparo antes</em><span>'+fmt(p[3])+'</span></div>';});
+})();
+</script>
+</body></html>

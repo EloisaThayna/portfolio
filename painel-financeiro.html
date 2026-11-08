@@ -1,0 +1,797 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Painel Financeiro Demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#F5F2EA;--card:#fff;--tx:#1B1D1B;--tx2:#3A3D39;--mut:#5F635D;--lin:#E3DDD0;--lin2:#EEE9DE;--soft:#F1EDE3;--ax:#8E8B84;
+--bom:#1E6B43;--bomf:#E2EFE5;--ruim:#A3311D;--ruimf:#F6E1DB;--av:#7A4F00;--avf:#F6EBCF;--inf:#3E4A57;--inff:#E8EBEE;
+--up:#2E7D54;--dn:#B8432C;--neu:#33536B;--open:#CFC8B8;--ac:#1E4E8C;
+--serif:'Fraunces',Georgia,serif;--sans:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;--mono:'JetBrains Mono',ui-monospace,monospace;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]){--bg:#121514;--card:#1B201E;--tx:#E9ECE8;--tx2:#C9CEC9;--mut:#9EA7A1;--lin:#2C3431;--lin2:#252C29;--soft:#222826;--ax:#7C857F;
+--bom:#6FCF97;--bomf:#173226;--ruim:#F08A78;--ruimf:#3A201B;--av:#E8C46A;--avf:#3A311A;--inf:#A9B8C8;--inff:#202A33;--up:#4FB07E;--dn:#E06B54;--neu:#7FA3C0;--open:#4A504D;--ac:#8DB6E8;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.5 var(--sans);-webkit-font-smoothing:antialiased;font-variant-numeric:tabular-nums}
+a,.lk{color:var(--ac);cursor:pointer}
+.lk{all:unset;color:var(--ac);cursor:pointer;font-size:13px;font-weight:500}.lk:hover{text-decoration:underline}.lk:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:3px}
+.w{max-width:1160px;margin:0 auto;padding:24px 20px 56px;display:flex;flex-direction:column;gap:26px}
+.ser{font-family:var(--serif);font-weight:500}
+h1{font:500 30px/1.15 var(--serif);margin:0}
+h2{font:500 22px/1.2 var(--serif);margin:0}
+h3{font:500 18px/1.25 var(--serif);margin:0}
+.sub{font-size:13px;color:var(--mut)}
+.over{font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+.card{background:var(--card);border:1px solid var(--lin);border-radius:14px;padding:20px 22px}
+.hd{display:flex;flex-direction:column;gap:2px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.sp{justify-content:space-between}
+.selo{display:inline-block;font-size:12px;font-weight:600;padding:2px 8px;border-radius:6px;white-space:nowrap}
+.s-bom{color:var(--bom);background:var(--bomf)}.s-ruim{color:var(--ruim);background:var(--ruimf)}.s-av{color:var(--av);background:var(--avf)}.s-inf{color:var(--inf);background:var(--inff)}
+.c-ruim{color:var(--ruim)}.c-bom{color:var(--bom)}
+/* topo */
+.badge{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:8px 14px;font:500 13px var(--sans);min-height:40px;cursor:pointer;border:1px solid transparent}
+.badge svg{flex:none}
+.flt{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px}
+.flt label{display:flex;flex-direction:column;gap:2px;font-size:12px;color:var(--mut)}
+select{font:14px var(--sans);padding:8px 10px;border:1px solid var(--lin);border-radius:10px;background:var(--card);color:var(--tx);min-height:40px;max-width:100%}
+.seg{display:flex;flex-wrap:wrap;background:var(--soft);border-radius:10px;padding:3px}
+.seg button{border:0;background:transparent;color:var(--tx2);font:500 13px var(--sans);padding:8px 12px;border-radius:8px;min-height:34px;cursor:pointer}
+.seg button[aria-pressed=true]{background:var(--card);color:var(--tx);font-weight:600;box-shadow:0 1px 2px rgba(0,0,0,.08)}
+.seg button:focus-visible,.badge:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.trilha{font-size:13px;color:var(--mut)}
+/* resposta */
+.hero{display:flex;flex-direction:column;gap:16px;padding:26px 28px}
+.hero h2{font-size:32px;line-height:1.22;max-width:920px}
+.hero p{margin:0;font-size:16px;color:var(--tx2);max-width:880px}
+.hero.parcial{background:#FBF4E2;border-color:#E8D29B}
+@media (prefers-color-scheme:dark){:root:not([data-theme=light]) .hero.parcial{background:#2A2516;border-color:#4A3F1E}}
+.b100{position:relative;height:28px;border-radius:7px;background:var(--lin2);overflow:hidden;max-width:880px}
+.b100 i{position:absolute;top:0;bottom:0;display:flex;align-items:center;padding:0 10px;font-style:normal;font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden}
+.bl{display:flex;justify-content:space-between;gap:10px;max-width:880px;font-size:13px;font-weight:600;margin-top:-2px}
+.pq{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.pq>div{background:var(--card);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+/* kpis */
+.kp{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px}
+.kp .card{display:flex;flex-direction:column;gap:5px;padding:18px 20px}
+.kp .t{font-size:13px;font-weight:600}.kp .o{font-size:12px;color:var(--mut);margin-top:-4px}
+.kp .v{font:500 32px/1.1 var(--serif);margin-top:4px}
+.kp .x{display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-size:13px;color:var(--mut)}
+.kp .fx{font-size:12.5px;color:var(--tx2);line-height:1.6}
+.kp .card.tr{border-style:dashed}
+/* olhar */
+.ol{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:14px}
+.ol .card{display:flex;flex-direction:column;gap:9px;padding:18px 20px}
+.ol .n{font:500 22px var(--serif);color:var(--ax)}
+.ol .t{font-size:16px;font-weight:600;line-height:1.35}
+.ol .b{font-size:14px;color:var(--tx2)}
+.ol .lk{margin-top:auto}
+details.mais{margin-top:12px}details.mais summary{cursor:pointer;color:var(--ac);font-size:13px;font-weight:500}
+.frs{display:flex;flex-direction:column;margin-top:8px}.frs div{display:flex;gap:12px;align-items:baseline;padding:9px 0;border-top:1px solid var(--lin2);font-size:14px}
+.frs .selo{flex:0 0 78px;text-align:center}
+/* gráfico */
+.graf{width:100%;height:auto;display:block}.grade{stroke:var(--lin2)}.eixo{fill:var(--mut);font-size:11px}.mes{fill:var(--mut);font-size:11.5px;text-anchor:middle}.mes.on{fill:var(--tx);font-weight:600}.res{font-size:11.5px;text-anchor:middle;font-weight:600;fill:var(--tx)}
+.leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--tx2)}.leg span{display:inline-flex;align-items:center;gap:6px}.leg i{width:10px;height:10px;border-radius:2px;display:inline-block}
+/* grupos */
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:14px;align-items:start}
+.grp{padding:6px 0}
+.grp>button{all:unset;display:flex;gap:8px;align-items:baseline;width:100%;cursor:pointer;font-size:14px}
+.grp>button:focus-visible{outline:2px solid var(--ac);outline-offset:2px;border-radius:4px}
+.grp .seta{width:12px;color:var(--mut);font-size:11px}.grp .n{flex:1;min-width:0}.grp .v{white-space:nowrap}.grp .v small{color:var(--mut);font-weight:400}
+.trilho{position:relative;height:10px;background:var(--lin2);border-radius:5px;margin:5px 0 4px 20px}.trilho i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}
+.trilho .l100{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--ax)}
+.folhas{margin:4px 0 8px 20px}.folha{display:flex;gap:8px;align-items:baseline;font-size:13px;padding:4px 6px;border-radius:8px;cursor:pointer}
+.folha:hover,.folha.on{background:var(--soft)}.folha span{flex:1;min-width:0}.folha b{font-weight:600;white-space:nowrap}.folha i{font-style:normal;font-size:12px;width:62px;text-align:right}
+.tot{display:flex;justify-content:space-between;border-top:1px solid var(--lin2);padding-top:10px;margin-top:8px;font-weight:600}
+.fora{background:var(--soft);border-radius:10px;padding:12px 14px;margin-top:14px;display:flex;flex-direction:column;gap:6px}
+.fora .ln{display:flex;justify-content:space-between;gap:10px;font-size:13px}
+.vazio{color:var(--mut);font-size:13px}
+.pos{color:var(--bom)}.neg{color:var(--ruim)}.cmp{font-size:12px;color:var(--mut)}
+/* centros */
+.emps{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.emps button{font:inherit;text-align:left;border:1px solid var(--lin);background:var(--soft);border-radius:10px;padding:8px 12px;cursor:pointer;color:var(--tx);display:flex;flex-direction:column}
+.emps b{font-size:13px}.emps span{font-size:12.5px}
+.cc{display:flex;flex-direction:column;gap:4px}
+.cc button{all:unset;display:grid;grid-template-columns:minmax(130px,230px) minmax(0,1fr) minmax(0,1fr) 112px;align-items:center;gap:0 10px;font-size:14px;cursor:pointer;padding:3px 4px;border-radius:6px}
+.cc button:hover{background:var(--soft)}.cc button:focus-visible{outline:2px solid var(--ac)}
+.cc .nm{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc .ng{display:flex;justify-content:flex-end}.cc .ps{display:flex;border-left:1px solid var(--ax)}
+.cc .ng i,.cc .ps i{height:14px;display:block}.cc .ng i{background:var(--dn);border-radius:4px 0 0 4px}.cc .ps i{background:var(--up);border-radius:0 4px 4px 0}
+.cc .vl{text-align:right;font-weight:500}
+.cc .gap{font-size:12px;color:var(--mut);padding:4px}
+@media(max-width:640px){.cc button{grid-template-columns:minmax(0,1fr) 60px 60px 92px}}
+/* aberto */
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:6px}
+.mini div{border-radius:10px;padding:10px 12px;background:var(--soft);display:flex;flex-direction:column;gap:2px}
+.mini .ve{background:var(--ruimf)}.mini .ve span:first-child{color:var(--ruim)}
+.mini span:first-child{font-size:12px;font-weight:600;color:var(--tx2)}.mini b{font:500 21px var(--serif)}.mini small{font-size:12px;color:var(--mut)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:right;color:var(--mut);font-weight:500;font-size:12px;border-bottom:1px solid var(--lin);padding:6px}td{text-align:right;padding:7px 6px;border-bottom:1px solid var(--lin2)}
+th:first-child,td:first-child{text-align:left}
+details{margin-top:8px}summary{cursor:pointer;color:var(--ac);font-size:13px;font-weight:500}
+/* saúde */
+.sd{list-style:none;margin:0;padding:0}
+.sd li{display:grid;grid-template-columns:92px minmax(0,1fr) auto;gap:4px 14px;align-items:baseline;padding:12px 0;border-top:1px solid var(--lin2)}
+.sd .selo{text-align:center}.sd b{font-weight:500;font-size:14px;display:block}.sd span.e{font-size:13px;color:var(--mut)}
+@media(max-width:560px){.sd li{grid-template-columns:80px minmax(0,1fr)}.sd li>.lk{grid-column:2}}
+.mono{font-family:var(--mono);font-size:12px;color:var(--mut)}
+.ler{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px}
+.ler div{background:var(--card);border:1px solid var(--lin);border-radius:12px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.ler b{font-weight:600}.ler span{font-size:13px;color:var(--tx2)}
+/* ano */
+.anoTop{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;margin-bottom:4px}
+#secAno h3{margin:26px 0 2px}#secAno .anoTop+h3{margin-top:14px}
+.ex{font-size:13px;color:var(--mut);margin:0 0 10px}
+.chips{display:flex;flex-wrap:wrap;gap:4px}.chips button{font:inherit;font-size:13px;padding:6px 12px;border-radius:999px;border:1px solid var(--lin);background:var(--card);color:var(--tx);cursor:pointer}
+.chips button.on{background:var(--tx);color:var(--bg);border-color:var(--tx)}
+.hmw{overflow-x:auto}.hm2{display:grid;gap:3px;font-size:12px;min-width:640px}.hm2 .c{height:30px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:11.5px;border:0;padding:0}.hm2 .h{color:var(--mut);text-align:center;font-size:11px}.hm2 .n{font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;align-self:center}
+.skw{overflow-x:auto}.sk{width:100%;min-width:680px;height:auto;display:block}.sk text{font-size:12px;fill:var(--tx)}.sk .sv{fill:var(--mut);font-size:11px}
+.cem{display:grid;grid-template-columns:40px 1fr 200px;gap:6px 10px;align-items:center;font-size:13px}
+.cem .tr{position:relative;height:22px;background:var(--soft);border-radius:5px;overflow:hidden}.cem .tr i{position:absolute;top:0;bottom:0}.cem .cem100{position:absolute;top:0;bottom:0;border-left:2px dashed var(--tx);opacity:.5}
+.cem .rt{font-size:12.5px}.lg{font-size:12px;color:var(--mut);margin-top:10px;display:flex;flex-wrap:wrap;gap:4px 14px}.lg i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+@media(max-width:600px){.cem{grid-template-columns:32px 1fr 92px}.cem .rt .cmp{display:none}}
+.dre{overflow-x:auto}.dre table{font-size:12.5px;min-width:980px}.dre td,.dre th{padding:5px 6px;white-space:nowrap}.dre td:first-child{position:sticky;left:0;background:var(--card);min-width:240px;white-space:normal}
+.dre tr.k1 td{font-weight:700;background:var(--soft)}.dre tr.k1 td:first-child{background:var(--soft)}.dre tr.k2 td:first-child{padding-left:20px}.dre tr.k3 td:first-child{padding-left:38px;color:var(--mut)}
+.dre .tg{cursor:pointer}.dre .zero{color:var(--lin)}
+.rod{color:var(--mut);font-size:12px;border-top:1px solid var(--lin);padding-top:14px}
+@media(max-width:560px){.w{padding:16px 14px 40px;gap:20px}h1{font-size:24px}.hero{padding:20px}.hero h2{font-size:24px}.kp .v{font-size:26px}.mini{grid-template-columns:1fr}.card{padding:16px}}
+/* contas em aberto v3 */
+.abts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-bottom:12px}
+.abt{text-align:left;border:2px solid transparent;background:var(--soft);border-radius:10px;padding:9px 11px;display:flex;flex-direction:column;gap:1px;font:inherit;color:var(--tx);cursor:pointer}
+.abt.ve{background:var(--ruimf)}.abt.ve span{color:var(--ruim)}
+.abt.on{border-color:var(--tx)}.abt:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+.abt span{font-size:12px;font-weight:600;color:var(--tx2)}.abt b{font:500 20px var(--serif)}.abt small{font-size:12px;color:var(--mut)}
+.abl{display:flex;flex-direction:column}
+.abi{border-top:1px solid var(--lin2)}
+.abh{all:unset;box-sizing:border-box;width:100%;cursor:pointer;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:3px 14px;padding:10px 2px}
+.abh:focus-visible{outline:2px solid var(--ac)}
+.abh .nm{font-size:14px;font-weight:500;display:flex;gap:6px;align-items:baseline}.abh .sx{color:var(--ax);font-size:11px;width:11px;flex:none}
+.abh .vl{font-weight:600;white-space:nowrap;text-align:right}
+.abh .mt{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--mut);padding-left:17px}
+.abh .qt{font-size:12px;color:var(--mut);text-align:right;white-space:nowrap}
+.abs{margin:0 0 10px 17px;background:var(--soft);border-radius:8px;padding:4px 12px}
+.abs div{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:10px;font-size:13px;padding:6px 0;border-bottom:1px solid var(--lin2)}.abs div:last-child{border-bottom:0}.abs span:first-child{color:var(--mut)}.abs b{font-weight:500;white-space:nowrap}
+@media(max-width:560px){.abts{grid-template-columns:1fr}}
+/* ano v3 */
+.anoG{display:grid;grid-template-columns:repeat(auto-fit,minmax(340px,1fr));gap:32px;margin:14px 0 6px}
+.ag{display:flex;flex-direction:column;gap:12px}
+.cb{display:flex;flex-direction:column;gap:4px}.cb .ln{display:flex;justify-content:space-between;gap:10px;font-size:14px}.cb .ln small{color:var(--mut)}
+.cb .tk{position:relative;height:10px;border-radius:5px;background:var(--lin2)}.cb .tk i{position:absolute;left:0;top:0;bottom:0;border-radius:5px}.cb .tk .l100{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--ax)}
+.sgr{font-size:12px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--mut);margin-top:6px}
+.mb{display:flex;flex-direction:column;gap:4px}
+.mb>button{all:unset;box-sizing:border-box;cursor:pointer;display:grid;grid-template-columns:40px minmax(0,1fr) 168px;align-items:center;gap:10px;padding:3px 4px;border-radius:6px}
+.mb>button.on,.mb>button:hover{background:var(--soft)}.mb>button:focus-visible{outline:2px solid var(--ac)}
+.mb .br{position:relative;height:18px;background:var(--soft);border-radius:4px}.mb>button.on .br,.mb>button:hover .br{background:var(--card)}.mb .br i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}.mb .br .l100{position:absolute;top:-3px;bottom:-3px;left:50%;border-left:2px dashed var(--mut)}
+.mb .rt{font-size:13px;font-weight:600}.mb .rt small{font-weight:400;color:var(--mut)}
+.mbc{margin:2px 0 8px 50px;background:var(--soft);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:6px}
+.mbc>div{display:grid;grid-template-columns:minmax(110px,170px) minmax(0,1fr) 64px;gap:10px;align-items:center;font-size:13px}.mbc .t{height:8px;background:var(--lin);border-radius:4px;position:relative}.mbc .t i{position:absolute;left:0;top:0;bottom:0;border-radius:4px}.mbc>div b{text-align:right}
+.mbx{display:flex;justify-content:space-between;font-size:11px;color:var(--mut);padding:2px 182px 0 54px}
+@media(max-width:600px){.mb>button{grid-template-columns:32px minmax(0,1fr) 112px}.mb .rt small{display:none}.mbx{padding:2px 126px 0 46px}.mbc{margin-left:0}}
+/* DRE v3 */
+.cz{margin-bottom:18px;overflow-x:auto}.czin{min-width:620px}.czp{position:relative;display:flex;gap:10px}
+.czz{position:absolute;left:0;right:0;border-top:1px solid var(--ax)}
+.czc{flex:1 1 0;position:relative}.czc i{position:absolute;left:8%;right:8%;border-radius:4px}.czc span{position:absolute;left:-8px;right:-8px;text-align:center;font-size:12px;font-weight:600;white-space:nowrap}
+.czn{display:flex;gap:10px;border-top:1px solid var(--lin2);padding-top:6px}.czn span{flex:1 1 0;text-align:center;font-size:12px;line-height:1.25;color:var(--tx2)}
+.xr{display:grid;grid-template-columns:minmax(0,1fr) 128px 92px 150px 170px 132px;gap:0 12px;align-items:center;padding:8px 6px;border-top:1px solid var(--lin2);text-align:right}
+.xr>span:first-child{text-align:left}
+.xh{font-size:12px;color:var(--mut);border-top:0;border-bottom:1px solid var(--lin)}
+.xr.n1{font-weight:600;border-top:1px solid var(--lin)}
+.xr.n0{font-weight:600;font-size:15px;background:var(--soft);border-radius:8px;border-top:0;margin:4px 0}
+.xr.n2{font-size:13.5px;color:var(--tx2)}
+.xr[data-k]{cursor:pointer}.xr[data-k]:hover{background:var(--soft)}.xr[data-k]:focus-visible{outline:2px solid var(--ac)}
+.xn{display:flex;gap:6px;align-items:baseline}.xr.n2 .xn{padding-left:22px}.sg2{width:14px;flex:0 0 14px;font-family:var(--mono);color:var(--ax)}.sx{color:var(--ax);font-size:11px}
+.xv{white-space:nowrap}.c3{color:var(--tx2)}
+.sp{display:inline-flex;align-items:flex-end;gap:2px;height:22px}.sp i{width:7px;border-radius:2px 2px 0 0;display:block}
+.xf{margin:0 0 6px 40px;background:var(--soft);border-radius:8px;padding:4px}
+.xf button.folha{all:unset;box-sizing:border-box;display:flex;gap:8px;align-items:baseline;width:100%;font-size:13px;padding:5px 8px;border-radius:8px;cursor:pointer}
+.xf button.folha:hover{background:var(--card)}.xf button.folha:focus-visible{outline:2px solid var(--ac)}
+@media(max-width:820px){.xr{grid-template-columns:minmax(0,1fr) auto auto}.xr .c4,.xr .c5,.xr .c6{display:none}.xf{margin-left:10px}}
+</style>
+</head>
+<body><a href="index.html" style="position:fixed;left:max(12px,env(safe-area-inset-left,0px));bottom:12px;z-index:50;font:600 13px/1 system-ui,sans-serif;background:#121A26;color:#fff;padding:9px 13px;border-radius:999px;text-decoration:none;box-shadow:0 4px 14px rgba(0,0,0,.2)">← Voltar ao portfólio</a><main class="w">
+<header style="display:flex;flex-direction:column;gap:14px">
+  <div class="row sp">
+    <div><h1 id="titulo"></h1><div class="sub">Dinheiro que entrou e saiu de verdade, lido do ERP</div></div>
+    <button type="button" class="badge" id="badge"></button>
+  </div>
+  <div class="flt">
+    <label>Empresa<select id="fUn"></select></label>
+    <label>Centro de custo<select id="fCc"></select></label>
+    <label>Período<div class="seg" id="fPer" role="group" aria-label="Período"></div></label>
+  </div>
+  <div class="trilha" id="trilha"></div>
+</header>
+
+<section class="card hero" id="hero"></section>
+<section class="kp" id="kpis" aria-label="Números do período"></section>
+
+<section id="secOl">
+  <div class="hd"><h2>O que olhar primeiro</h2><span class="sub">No máximo três pontos, do que pesa mais no caixa para o que pesa menos.</span></div>
+  <div class="ol" id="olhar"></div>
+  <details class="mais" id="maisDet"><summary id="maisSum">Mais leituras do ano</summary><div class="frs" id="resumo"></div></details>
+</section>
+
+<section class="card" id="secEvo">
+  <div class="row sp" style="align-items:flex-start;margin-bottom:12px">
+    <div class="hd" style="margin:0"><h2 id="evoTit">Sobrou ou faltou, mês a mês</h2><span class="sub" id="evoEx"></span></div>
+    <div class="seg" id="evoModo" role="group" aria-label="Tipo de gráfico"></div>
+  </div>
+  <div id="evo"></div>
+  <div class="leg" id="evoLeg" style="margin-top:8px"></div>
+</section>
+
+<section class="card" id="secDre">
+  <div class="hd"><h2>Resultado linha a linha</h2><span class="sub">Como um extrato: o que entrou, menos as despesas, dá o resultado da operação. Depois, o que saiu fora da operação dá a variação do caixa. Clique em uma linha com ▸ para abrir as categorias.</span></div>
+  <div id="cascata"></div>
+  <div class="xwrap"><div id="extrato"></div></div>
+  <details id="dreDet"><summary id="dreSum">Ver mês a mês, igual ao DRE do ERP</summary>
+    <div class="row" style="margin:8px 0"><div class="chips"><button id="dreAbre">Expandir todos</button><button id="dreFecha">Recolher todos</button></div></div>
+    <div class="dre" id="dre"></div></details>
+</section>
+
+<section class="card" id="secCc">
+  <div class="hd"><h2 id="ccTit">Quem trouxe e quem consumiu dinheiro</h2><span class="sub">Resultado de cada centro de custo no período. Clique em um para ver só ele no painel inteiro.</span></div>
+  <div class="emps" id="emp"></div>
+  <div class="cc" id="tbCc"></div>
+</section>
+
+<section id="secAb">
+  <div class="hd"><h2>Contas em aberto hoje</h2><span class="sub">O que ainda vai entrar e sair, lançado no ERP. Não depende do período escolhido.</span></div>
+  <div class="g2">
+    <div class="card"><b style="font-size:15px;display:block;margin-bottom:12px">Clientes devem para a empresa</b><div id="rec"></div></div>
+    <div class="card"><b style="font-size:15px;display:block;margin-bottom:12px">A empresa deve para fornecedores</b><div id="pag"></div></div>
+  </div>
+</section>
+
+<section class="card" id="secAno">
+  <div class="anoTop"><h2 id="anoTit">O ano em detalhe</h2><div class="chips" id="dreAno"></div></div>
+  <div class="anoG">
+    <div><h3 style="margin:0 0 10px">Para onde foi cada R$ 100 que entrou no ano</h3><div id="vA"></div></div>
+    <div><h3 style="margin:0 0 4px">Mês a mês: quanto saiu para cada R$ 100</h3><p class="ex">Contando retiradas de sócio. Verde: sobrou. Vermelho: passou dos R$ 100 e saiu do caixa. Clique em um mês para ver a composição.</p><div id="vB"></div></div>
+  </div>
+  <h3>O que fugiu do normal</h3><p class="ex">As maiores despesas, mês a mês. Vermelho = gastou bem acima do normal daquela despesa; cinza claro = abaixo. Passe o mouse para ver o valor e o normal.</p><div class="hmw"><div id="vC"></div></div>
+</section>
+
+<section class="card" id="secSaude">
+  <div class="row sp" style="align-items:baseline;margin-bottom:6px">
+    <div class="hd" style="margin:0"><h2>Posso confiar nestes números?</h2><span class="sub">O que o painel conferiu no ERP antes de mostrar os valores.</span></div>
+    <span class="mono" id="lido"></span>
+  </div>
+  <ul class="sd" id="saude"></ul>
+</section>
+
+<section>
+  <div class="hd"><h2>Como ler</h2></div>
+  <div class="ler">
+    <div><b>Entrou e saiu</b><span>Dinheiro que de fato caiu ou saiu da conta no período. Venda feita e ainda não paga fica em "Contas em aberto".</span></div>
+    <div><b>Resultado da operação</b><span>Entrou menos as despesas da empresa. Diz se o negócio, sozinho, se paga.</span></div>
+    <div><b>Fora da operação</b><span>Retiradas e aportes de sócio, empréstimos e multas. Mexem no caixa, mas não dizem se o negócio dá lucro.</span></div>
+    <div><b>Cores</b><span>Verde é bom para a empresa e vermelho é ruim, sempre com a palavra junto. Despesa que cai aparece em verde.</span></div>
+  </div>
+</section>
+<div class="rod" id="rod"></div>
+</main>
+<style>.row.sp{display:flex;height:auto;gap:10px;align-items:center}.czin{padding:0 12px}.mb>button{grid-template-columns:40px minmax(0,1fr) 200px}.mb .rt{white-space:nowrap}.mbx{padding:2px 214px 0 54px}@media(max-width:600px){.mb>button{grid-template-columns:32px minmax(0,1fr) 112px}.mbx{padding:2px 126px 0 46px}}</style>
+<script>
+const DD = {"hoje": "2026-11-07", "atualizado": "2026-11-07T17:30", "erro": null, "nome": "Grupo Itacaré", "k": "demo", "cache": 15, "un": ["Itacaré Participações", "Itacaré Eventos"], "cc": ["Clube Serra Azul", "Parque Correnteza", "Residencial Mirante do Lago", "Vila Jatobá", "Administrativo", "Campanha de vendas"], "cls": [{"k": "10101001", "cod": "1.01.01.001", "nome": "Venda de títulos", "pais": [{"cod": "1", "nome": "Receitas"}, {"cod": "1.01", "nome": "Receitas operacionais"}, {"cod": "1.01.01", "nome": "Receitas operacionais"}]}, {"k": "10101002", "cod": "1.01.01.002", "nome": "Mensalidades", "pais": [{"cod": "1", "nome": "Receitas"}, {"cod": "1.01", "nome": "Receitas operacionais"}, {"cod": "1.01.01", "nome": "Receitas operacionais"}]}, {"k": "10101003", "cod": "1.01.01.003", "nome": "Ingressos e eventos", "pais": [{"cod": "1", "nome": "Receitas"}, {"cod": "1.01", "nome": "Receitas operacionais"}, {"cod": "1.01.01", "nome": "Receitas operacionais"}]}, {"k": "10101004", "cod": "1.01.01.004", "nome": "Parcelas de lotes", "pais": [{"cod": "1", "nome": "Receitas"}, {"cod": "1.01", "nome": "Receitas operacionais"}, {"cod": "1.01.01", "nome": "Receitas operacionais"}]}, {"k": "10201001", "cod": "1.02.01.001", "nome": "Aluguel de espaços", "pais": [{"cod": "1", "nome": "Receitas"}, {"cod": "1.02", "nome": "Outras receitas"}, {"cod": "1.02.01", "nome": "Outras receitas"}]}, {"k": "20101001", "cod": "2.01.01.001", "nome": "Salários", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.01", "nome": "Pessoal"}, {"cod": "2.01.01", "nome": "Pessoal"}]}, {"k": "20101002", "cod": "2.01.01.002", "nome": "Encargos e benefícios", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.01", "nome": "Pessoal"}, {"cod": "2.01.01", "nome": "Pessoal"}]}, {"k": "20101003", "cod": "2.01.01.003", "nome": "Comissões de vendas", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.01", "nome": "Pessoal"}, {"cod": "2.01.01", "nome": "Pessoal"}]}, {"k": "20201001", "cod": "2.02.01.001", "nome": "Manutenção e reparos", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.02", "nome": "Fornecedores"}, {"cod": "2.02.01", "nome": "Fornecedores"}]}, {"k": "20201002", "cod": "2.02.01.002", "nome": "Alimentos e bebidas", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.02", "nome": "Fornecedores"}, {"cod": "2.02.01", "nome": "Fornecedores"}]}, {"k": "20201003", "cod": "2.02.01.003", "nome": "Energia e água", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.02", "nome": "Fornecedores"}, {"cod": "2.02.01", "nome": "Fornecedores"}]}, {"k": "20301001", "cod": "2.03.01.001", "nome": "Anúncios online", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.03", "nome": "Marketing"}, {"cod": "2.03.01", "nome": "Marketing"}]}, {"k": "20301002", "cod": "2.03.01.002", "nome": "Disparos de WhatsApp", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.03", "nome": "Marketing"}, {"cod": "2.03.01", "nome": "Marketing"}]}, {"k": "20401001", "cod": "2.04.01.001", "nome": "Impostos sobre vendas", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.04", "nome": "Impostos"}, {"cod": "2.04.01", "nome": "Impostos"}]}, {"k": "20501001", "cod": "2.05.01.001", "nome": "Sistemas e software", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.05", "nome": "Administrativas"}, {"cod": "2.05.01", "nome": "Administrativas"}]}, {"k": "20501002", "cod": "2.05.01.002", "nome": "Contabilidade", "pais": [{"cod": "2", "nome": "Despesas"}, {"cod": "2.05", "nome": "Administrativas"}, {"cod": "2.05.01", "nome": "Administrativas"}]}, {"k": "30101001", "cod": "3.01.01.001", "nome": "Juros e multas", "pais": [{"cod": "3", "nome": "Outras despesas e não operacionais"}, {"cod": "3.01", "nome": "Financeiras"}, {"cod": "3.01.01", "nome": "Financeiras"}]}, {"k": "30201001", "cod": "3.02.01.001", "nome": "Parcela de empréstimo", "pais": [{"cod": "3", "nome": "Outras despesas e não operacionais"}, {"cod": "3.02", "nome": "Empréstimos"}, {"cod": "3.02.01", "nome": "Empréstimos"}]}, {"k": "40101001", "cod": "4.01.01.001", "nome": "Retiradas de sócios", "pais": [{"cod": "4", "nome": "Retiradas de sócios"}, {"cod": "4.01", "nome": "Pró-labore e retiradas"}, {"cod": "4.01.01", "nome": "Pró-labore e retiradas"}]}, {"k": "50101001", "cod": "5.01.01.001", "nome": "Aporte de capital", "pais": [{"cod": "5", "nome": "Aportes de sócios"}, {"cod": "5.01", "nome": "Aportes"}, {"cod": "5.01.01", "nome": "Aportes"}]}], "l": [["2025-01-02", 0, 0, 1, 11417.63, 0, 0], ["2025-01-02", 0, 4, 5, 0, 10392.32, 0], ["2025-01-02", 1, 1, 2, 55615.07, 0, 0], ["2025-01-02", 1, 1, 5, 0, 10883.07, 0], ["2025-01-03", 0, 2, 3, 26729.44, 0, 0], ["2025-01-03", 0, 4, 16, 0, 559.8, 0], ["2025-01-03", 1, 1, 2, 55615.07, 0, 0], ["2025-01-04", 0, 0, 1, 11417.63, 0, 0], ["2025-01-05", 0, 4, 6, 0, 6078.69, 0], ["2025-01-05", 0, 4, 18, 0, 3609.25, 0], ["2025-01-07", 1, 1, 8, 0, 2568.04, 0], ["2025-01-07", 1, 1, 9, 0, 8812.43, 0], ["2025-01-08", 0, 2, 3, 26729.44, 0, 0], ["2025-01-08", 0, 5, 11, 0, 5686.68, 5686.68], ["2025-01-08", 1, 0, 4, 5647.9, 0, 0], ["2025-01-10", 0, 4, 13, 0, 11272.4, 0], ["2025-01-10", 0, 5, 11, 0, 5686.68, 0], ["2025-01-11", 0, 0, 10, 0, 3140.37, 0], ["2025-01-12", 0, 0, 1, 11417.63, 0, 0], ["2025-01-12", 0, 5, 11, 0, 5686.68, 0], ["2025-01-12", 1, 1, 8, 0, 2568.04, 0], ["2025-01-13", 0, 0, 0, 27340.23, 0, 0], ["2025-01-14", 0, 0, 10, 0, 3140.37, 0], ["2025-01-14", 0, 4, 6, 0, 6078.69, 0], ["2025-01-14", 0, 4, 17, 0, 8299.5, 0], ["2025-01-15", 0, 0, 10, 0, 3140.37, 0], ["2025-01-15", 0, 4, 15, 0, 3898.84, 0], ["2025-01-16", 0, 4, 18, 0, 3609.25, 0], ["2025-01-18", 0, 4, 6, 0, 6078.69, 0], ["2025-01-18", 0, 5, 7, 0, 2560.8, 0], ["2025-01-18", 1, 1, 5, 0, 10883.07, 0], ["2025-01-19", 0, 0, 1, 11417.63, 0, 0], ["2025-01-19", 0, 3, 3, 10757.12, 0, 0], ["2025-01-19", 0, 4, 5, 0, 20784.64, 0], ["2025-01-19", 0, 4, 13, 0, 11272.4, 0], ["2025-01-19", 1, 1, 8, 0, 2568.04, 0], ["2025-01-20", 1, 1, 9, 0, 8812.43, 0], ["2025-01-21", 0, 0, 0, 27340.23, 0, 0], ["2025-01-21", 1, 1, 8, 0, 2568.04, 0], ["2025-01-22", 0, 5, 7, 0, 2560.8, 0], ["2025-01-23", 0, 0, 8, 0, 4808.12, 0], ["2025-01-23", 0, 5, 12, 0, 7693.97, 0], ["2025-01-25", 0, 0, 10, 0, 3140.37, 0], ["2025-01-27", 0, 3, 3, 10757.12, 0, 0], ["2025-01-27", 0, 5, 7, 0, 2560.8, 0], ["2025-01-29", 0, 4, 14, 0, 4840.97, 0], ["2025-01-30", 0, 4, 18, 0, 3609.25, 0], ["2025-01-31", 0, 4, 5, 0, 10392.32, 0], ["2025-02-01", 0, 4, 5, 0, 10339.17, 0], ["2025-02-01", 0, 4, 13, 0, 5293.83, 0], ["2025-02-01", 0, 5, 12, 0, 7203.63, 0], ["2025-02-02", 0, 4, 18, 0, 7014.38, 0], ["2025-02-03", 0, 0, 0, 14826.23, 0, 0], ["2025-02-03", 1, 1, 2, 20878.11, 0, 0], ["2025-02-03", 1, 1, 8, 0, 7169.09, 0], ["2025-02-04", 1, 1, 5, 0, 7944.57, 0], ["2025-02-05", 0, 4, 16, 0, 613.42, 0], ["2025-02-05", 0, 5, 11, 0, 6117.7, 0], ["2025-02-06", 0, 4, 13, 0, 5293.83, 0], ["2025-02-06", 1, 1, 5, 0, 7944.57, 0], ["2025-02-06", 1, 1, 8, 0, 7169.09, 0], ["2025-02-08", 0, 0, 10, 0, 4477.76, 0], ["2025-02-08", 0, 5, 11, 0, 6117.7, 0], ["2025-02-09", 0, 0, 8, 0, 7299.71, 0], ["2025-02-09", 0, 4, 13, 0, 5293.83, 0], ["2025-02-09", 1, 1, 9, 0, 8672.04, 0], ["2025-02-10", 0, 3, 3, 4480.98, 0, 0], ["2025-02-10", 0, 4, 6, 0, 8849.42, 0], ["2025-02-10", 0, 4, 13, 0, 5293.83, 0], ["2025-02-11", 0, 0, 1, 16753.72, 0, 0], ["2025-02-12", 0, 0, 1, 16753.72, 0, 0], ["2025-02-12", 0, 4, 5, 0, 10339.17, 0], ["2025-02-13", 0, 0, 10, 0, 4477.76, 0], ["2025-02-13", 0, 4, 5, 0, 10339.17, 0], ["2025-02-13", 0, 5, 7, 0, 7831.06, 0], ["2025-02-15", 0, 4, 18, 0, 7014.38, 0], ["2025-02-15", 1, 1, 2, 20878.11, 0, 0], ["2025-02-15", 1, 1, 8, 0, 7169.09, 0], ["2025-02-16", 0, 2, 3, 16439.27, 0, 0], ["2025-02-17", 0, 4, 17, 0, 8349.0, 0], ["2025-02-18", 0, 0, 0, 14826.23, 0, 0], ["2025-02-18", 0, 4, 14, 0, 4685.48, 0], ["2025-02-18", 1, 1, 9, 0, 8672.04, 0], ["2025-02-19", 0, 0, 0, 14826.23, 0, 0], ["2025-02-19", 0, 3, 3, 4480.98, 0, 0], ["2025-02-19", 0, 4, 15, 0, 3926.16, 0], ["2025-02-20", 1, 1, 5, 0, 7944.57, 0], ["2025-02-21", 0, 3, 3, 4480.98, 0, 0], ["2025-02-22", 0, 0, 10, 0, 4477.76, 0], ["2025-02-22", 0, 2, 3, 16439.27, 0, 0], ["2025-02-22", 0, 4, 5, 0, 10339.17, 0], ["2025-02-22", 0, 4, 18, 0, 7014.38, 0], ["2025-02-23", 0, 0, 1, 16753.72, 0, 0], ["2025-02-23", 0, 2, 3, 16439.27, 0, 0], ["2025-02-23", 0, 3, 3, 4480.98, 0, 0], ["2025-02-24", 0, 4, 18, 0, 7014.38, 0], ["2025-02-25", 0, 0, 0, 14826.23, 0, 0], ["2025-02-25", 0, 4, 6, 0, 8849.42, 0], ["2025-02-26", 1, 1, 2, 20878.11, 0, 0], ["2025-02-27", 1, 0, 4, 13599.12, 0, 0], ["2025-02-27", 1, 1, 2, 20878.11, 0, 0], ["2025-02-28", 1, 1, 9, 0, 8672.04, 0], ["2025-03-01", 1, 1, 9, 0, 11000.26, 0], ["2025-03-03", 0, 4, 5, 0, 20698.22, 0], ["2025-03-03", 0, 5, 11, 0, 5252.48, 0], ["2025-03-03", 1, 1, 2, 32281.24, 0, 0], ["2025-03-04", 0, 4, 6, 0, 9313.2, 0], ["2025-03-05", 0, 0, 10, 0, 2899.91, 0], ["2025-03-05", 0, 3, 3, 8967.29, 0, 0], ["2025-03-05", 1, 1, 5, 0, 7116.5, 0], ["2025-03-07", 1, 1, 2, 32281.24, 0, 0], ["2025-03-09", 0, 5, 12, 0, 7395.94, 0], ["2025-03-09", 1, 1, 5, 0, 7116.5, 0], ["2025-03-10", 0, 5, 7, 0, 4774.64, 0], ["2025-03-10", 0, 5, 11, 0, 5252.48, 0], ["2025-03-11", 0, 2, 3, 27094.34, 0, 0], ["2025-03-11", 0, 4, 15, 0, 4014.52, 0], ["2025-03-11", 1, 1, 8, 0, 4473.23, 0], ["2025-03-12", 0, 0, 10, 0, 2899.91, 0], ["2025-03-12", 0, 4, 6, 0, 4656.6, 0], ["2025-03-12", 0, 4, 13, 0, 10736.19, 0], ["2025-03-13", 0, 0, 0, 40383.92, 0, 0], ["2025-03-13", 0, 4, 18, 0, 13038.94, 0], ["2025-03-16", 0, 0, 1, 24135.82, 0, 0], ["2025-03-16", 0, 0, 8, 0, 10101.42, 0], ["2025-03-16", 0, 4, 6, 0, 4656.6, 0], ["2025-03-16", 0, 5, 7, 0, 9549.28, 0], ["2025-03-17", 1, 1, 9, 0, 11000.26, 0], ["2025-03-18", 0, 0, 0, 20191.96, 0, 0], ["2025-03-18", 0, 0, 10, 0, 2899.91, 0], ["2025-03-18", 0, 4, 14, 0, 4750.95, 0], ["2025-03-19", 0, 3, 3, 8967.29, 0, 0], ["2025-03-20", 0, 2, 3, 27094.34, 0, 0], ["2025-03-20", 0, 4, 16, 0, 1141.21, 0], ["2025-03-21", 0, 0, 1, 24135.82, 0, 0], ["2025-03-21", 0, 5, 11, 0, 5252.48, 0], ["2025-03-21", 1, 1, 5, 0, 7116.5, 0], ["2025-03-23", 0, 0, 10, 0, 2899.91, 0], ["2025-03-24", 1, 1, 8, 0, 4473.23, 0], ["2025-03-25", 0, 4, 13, 0, 10736.19, 0], ["2025-03-25", 0, 4, 17, 0, 8398.5, 0], ["2025-03-26", 0, 0, 0, 20191.96, 0, 0], ["2025-03-27", 0, 4, 18, 0, 13038.94, 0], ["2025-03-28", 0, 4, 5, 0, 20698.22, 0], ["2025-03-28", 0, 5, 11, 0, 5252.48, 0], ["2025-03-31", 1, 0, 4, 9497.5, 0, 0], ["2025-04-01", 0, 0, 1, 24554.72, 0, 0], ["2025-04-01", 0, 0, 10, 0, 3628.93, 0], ["2025-04-01", 0, 4, 14, 0, 4938.93, 0], ["2025-04-03", 0, 0, 8, 0, 9304.82, 0], ["2025-04-03", 0, 3, 3, 8427.37, 0, 0], ["2025-04-04", 0, 3, 3, 8427.37, 0, 0], ["2025-04-05", 0, 0, 10, 0, 3628.93, 0], ["2025-04-05", 0, 4, 13, 0, 5995.71, 0], ["2025-04-05", 0, 4, 17, 0, 8448.0, 0], ["2025-04-05", 0, 5, 11, 0, 4127.71, 0], ["2025-04-06", 0, 0, 10, 0, 7257.86, 0], ["2025-04-07", 0, 0, 0, 37074.17, 0, 0], ["2025-04-07", 1, 0, 4, 6698.61, 0, 0], ["2025-04-08", 0, 3, 3, 8427.37, 0, 0], ["2025-04-09", 0, 0, 1, 12277.36, 0, 0], ["2025-04-12", 0, 4, 13, 0, 5995.71, 0], ["2025-04-12", 1, 1, 5, 0, 7918.36, 0], ["2025-04-13", 1, 1, 9, 0, 10335.46, 0], ["2025-04-14", 1, 1, 8, 0, 5370.77, 0], ["2025-04-15", 1, 1, 9, 0, 5167.73, 0], ["2025-04-17", 0, 0, 0, 37074.17, 0, 0], ["2025-04-17", 0, 4, 16, 0, 1169.89, 0], ["2025-04-18", 0, 4, 13, 0, 5995.71, 0], ["2025-04-20", 0, 4, 5, 0, 27716.84, 0], ["2025-04-20", 0, 5, 12, 0, 7101.58, 0], ["2025-04-20", 1, 1, 2, 32171.87, 0, 0], ["2025-04-21", 0, 5, 11, 0, 4127.71, 0], ["2025-04-21", 1, 1, 5, 0, 7918.36, 0], ["2025-04-22", 0, 4, 6, 0, 9228.48, 0], ["2025-04-23", 0, 5, 7, 0, 2612.96, 0], ["2025-04-23", 1, 1, 2, 32171.87, 0, 0], ["2025-04-24", 0, 2, 3, 20451.48, 0, 0], ["2025-04-24", 0, 4, 15, 0, 3916.0, 0], ["2025-04-24", 1, 1, 9, 0, 5167.73, 0], ["2025-04-25", 0, 5, 7, 0, 2612.96, 0], ["2025-04-26", 0, 0, 1, 12277.36, 0, 0], ["2025-04-26", 0, 2, 3, 20451.48, 0, 0], ["2025-04-26", 0, 5, 7, 0, 2612.96, 0], ["2025-04-26", 0, 5, 11, 0, 4127.71, 0], ["2025-04-26", 1, 1, 8, 0, 5370.77, 0], ["2025-04-27", 0, 4, 6, 0, 9228.48, 0], ["2025-04-27", 0, 4, 18, 0, 8483.99, 0], ["2025-04-28", 0, 4, 18, 0, 8483.99, 0], ["2025-04-29", 0, 4, 5, 0, 13858.42, 0], ["2025-04-30", 0, 2, 3, 20451.48, 0, 0], ["2025-04-30", 0, 4, 13, 0, 5995.71, 0], ["2025-04-30", 1, 1, 5, 0, 7918.36, 0], ["2025-05-01", 0, 0, 10, 0, 3226.2, 0], ["2025-05-01", 0, 4, 5, 0, 10336.96, 0], ["2025-05-02", 0, 0, 8, 0, 11397.8, 0], ["2025-05-02", 0, 5, 7, 0, 3342.79, 0], ["2025-05-02", 1, 1, 9, 0, 4708.1, 0], ["2025-05-04", 0, 4, 18, 0, 9467.27, 0], ["2025-05-04", 1, 1, 8, 0, 5308.24, 0], ["2025-05-04", 1, 1, 9, 0, 4708.1, 0], ["2025-05-05", 0, 4, 18, 0, 9467.27, 0], ["2025-05-07", 0, 0, 0, 16981.0, 0, 0], ["2025-05-09", 0, 0, 1, 11975.17, 0, 0], ["2025-05-09", 0, 4, 16, 0, 1664.82, 0], ["2025-05-10", 0, 0, 0, 16981.0, 0, 0], ["2025-05-11", 0, 0, 1, 11975.17, 0, 0], ["2025-05-11", 0, 5, 7, 0, 3342.79, 0], ["2025-05-14", 0, 0, 1, 11975.17, 0, 0], ["2025-05-14", 0, 4, 18, 0, 9467.27, 0], ["2025-05-15", 0, 4, 5, 0, 10336.96, 0], ["2025-05-16", 0, 4, 6, 0, 8696.88, 0], ["2025-05-16", 0, 4, 13, 0, 5118.33, 0], ["2025-05-17", 0, 0, 0, 16981.0, 0, 0], ["2025-05-17", 0, 4, 13, 0, 5118.33, 0], ["2025-05-17", 0, 5, 7, 0, 3342.79, 0], ["2025-05-17", 0, 5, 11, 0, 3814.34, 0], ["2025-05-18", 0, 0, 1, 11975.17, 0, 0], ["2025-05-18", 0, 4, 13, 0, 5118.33, 0], ["2025-05-18", 1, 0, 4, 9285.29, 0, 0], ["2025-05-19", 0, 2, 3, 17889.4, 0, 0], ["2025-05-20", 0, 4, 6, 0, 8696.88, 0], ["2025-05-20", 0, 5, 11, 0, 7628.68, 0], ["2025-05-22", 0, 2, 3, 17889.4, 0, 0], ["2025-05-22", 0, 5, 7, 0, 3342.79, 0], ["2025-05-23", 0, 4, 14, 0, 5162.28, 0], ["2025-05-23", 0, 5, 12, 0, 6743.85, 0], ["2025-05-24", 1, 1, 2, 37312.37, 0, 0], ["2025-05-25", 0, 0, 10, 0, 3226.2, 0], ["2025-05-25", 0, 4, 5, 0, 10336.96, 0], ["2025-05-25", 1, 1, 5, 0, 10755.54, 0], ["2025-05-25", 1, 1, 8, 0, 5308.24, 0], ["2025-05-25", 1, 1, 9, 0, 4708.1, 0], ["2025-05-26", 0, 4, 13, 0, 5118.33, 0], ["2025-05-26", 1, 1, 5, 0, 10755.54, 0], ["2025-05-26", 1, 1, 8, 0, 5308.24, 0], ["2025-05-27", 0, 2, 3, 17889.4, 0, 0], ["2025-05-27", 0, 3, 3, 8259.39, 0, 0], ["2025-05-28", 0, 4, 5, 0, 10336.96, 0], ["2025-05-29", 0, 0, 10, 0, 3226.2, 0], ["2025-05-29", 0, 3, 3, 8259.39, 0, 0], ["2025-05-29", 0, 4, 15, 0, 4020.73, 0], ["2025-05-29", 0, 4, 17, 0, 8497.5, 0], ["2025-05-30", 0, 0, 10, 0, 3226.2, 0], ["2025-05-30", 0, 3, 3, 8259.39, 0, 0], ["2025-05-30", 1, 1, 2, 37312.37, 0, 0], ["2025-06-01", 0, 5, 7, 0, 1753.81, 0], ["2025-06-03", 0, 0, 0, 19797.48, 0, 0], ["2025-06-03", 0, 4, 14, 0, 5072.46, 0], ["2025-06-03", 0, 4, 18, 0, 14228.6, 0], ["2025-06-03", 1, 1, 8, 0, 3435.68, 0], ["2025-06-03", 1, 1, 9, 0, 10967.6, 0], ["2025-06-04", 0, 3, 3, 6304.97, 0, 0], ["2025-06-06", 0, 4, 5, 0, 10404.15, 0], ["2025-06-07", 1, 1, 5, 0, 5635.57, 0], ["2025-06-08", 0, 0, 0, 19797.48, 0, 0], ["2025-06-08", 0, 3, 3, 6304.97, 0, 0], ["2025-06-08", 0, 4, 5, 0, 10404.15, 0], ["2025-06-09", 0, 0, 10, 0, 6031.96, 0], ["2025-06-09", 0, 2, 3, 29047.85, 0, 0], ["2025-06-09", 0, 4, 17, 0, 8547.0, 0], ["2025-06-09", 0, 4, 18, 0, 7114.3, 0], ["2025-06-09", 0, 5, 12, 0, 8022.8, 0], ["2025-06-09", 1, 1, 9, 0, 10967.6, 0], ["2025-06-10", 0, 0, 1, 24650.19, 0, 0], ["2025-06-10", 1, 1, 8, 0, 3435.68, 0], ["2025-06-11", 1, 1, 5, 0, 5635.57, 0], ["2025-06-12", 0, 4, 6, 0, 8935.02, 0], ["2025-06-12", 0, 4, 19, 40000, 0, 0], ["2025-06-13", 1, 1, 5, 0, 5635.57, 0], ["2025-06-14", 0, 4, 16, 0, 1248.27, 0], ["2025-06-14", 1, 1, 5, 0, 5635.57, 0], ["2025-06-15", 0, 5, 7, 0, 3507.62, 0], ["2025-06-16", 0, 4, 13, 0, 5316.23, 0], ["2025-06-16", 1, 0, 4, 8375.35, 0, 0], ["2025-06-17", 0, 4, 13, 0, 5316.23, 0], ["2025-06-17", 1, 1, 8, 0, 3435.68, 0], ["2025-06-19", 0, 4, 13, 0, 5316.23, 0], ["2025-06-20", 1, 1, 8, 0, 3435.68, 0], ["2025-06-21", 1, 1, 2, 40891.38, 0, 0], ["2025-06-22", 0, 0, 0, 19797.48, 0, 0], ["2025-06-22", 0, 0, 1, 24650.19, 0, 0], ["2025-06-22", 0, 5, 11, 0, 4092.55, 0], ["2025-06-23", 0, 4, 5, 0, 10404.15, 0], ["2025-06-23", 0, 5, 7, 0, 1753.81, 0], ["2025-06-23", 1, 1, 2, 40891.38, 0, 0], ["2025-06-24", 0, 3, 3, 6304.97, 0, 0], ["2025-06-24", 0, 4, 6, 0, 8935.02, 0], ["2025-06-25", 0, 0, 10, 0, 6031.96, 0], ["2025-06-26", 0, 4, 15, 0, 4004.69, 0], ["2025-06-26", 0, 4, 18, 0, 7114.3, 0], ["2025-06-27", 0, 4, 5, 0, 10404.15, 0], ["2025-06-28", 0, 5, 11, 0, 4092.55, 0], ["2025-06-29", 0, 2, 3, 29047.85, 0, 0], ["2025-06-30", 0, 0, 8, 0, 5079.3, 0], ["2025-06-30", 0, 4, 13, 0, 5316.23, 0], ["2025-06-30", 0, 5, 11, 0, 4092.55, 0], ["2025-07-01", 0, 0, 1, 17397.78, 0, 0], ["2025-07-01", 0, 4, 6, 0, 12525.84, 0], ["2025-07-02", 0, 3, 3, 8526.08, 0, 0], ["2025-07-02", 0, 4, 6, 0, 6262.92, 0], ["2025-07-02", 0, 4, 15, 0, 4052.54, 0], ["2025-07-02", 0, 5, 12, 0, 8761.98, 0], ["2025-07-02", 1, 1, 2, 26960.39, 0, 0], ["2025-07-03", 0, 0, 0, 34748.04, 0, 0], ["2025-07-03", 0, 4, 13, 0, 11825.88, 0], ["2025-07-04", 0, 2, 3, 28315.73, 0, 0], ["2025-07-05", 0, 5, 11, 0, 5137.48, 0], ["2025-07-05", 1, 1, 2, 26960.39, 0, 0], ["2025-07-06", 0, 3, 3, 8526.08, 0, 0], ["2025-07-07", 0, 0, 10, 0, 5956.04, 0], ["2025-07-07", 0, 3, 3, 8526.08, 0, 0], ["2025-07-07", 0, 5, 7, 0, 3399.81, 0], ["2025-07-08", 0, 4, 18, 0, 7531.48, 0], ["2025-07-08", 0, 5, 7, 0, 3399.81, 0], ["2025-07-09", 0, 0, 0, 34748.04, 0, 0], ["2025-07-09", 0, 4, 14, 0, 5122.08, 0], ["2025-07-09", 1, 1, 5, 0, 11462.16, 0], ["2025-07-10", 0, 4, 5, 0, 21111.08, 0], ["2025-07-10", 1, 1, 9, 0, 7566.47, 0], ["2025-07-11", 0, 0, 1, 17397.78, 0, 0], ["2025-07-11", 0, 0, 10, 0, 5956.04, 0], ["2025-07-12", 1, 1, 5, 0, 11462.16, 0], ["2025-07-13", 0, 5, 11, 0, 5137.48, 0], ["2025-07-15", 0, 4, 5, 0, 21111.08, 0], ["2025-07-16", 0, 5, 7, 0, 3399.81, 0], ["2025-07-17", 0, 4, 17, 0, 8596.5, 0], ["2025-07-17", 0, 5, 7, 0, 3399.81, 0], ["2025-07-17", 1, 1, 9, 0, 7566.47, 0], ["2025-07-18", 0, 0, 1, 17397.78, 0, 0], ["2025-07-20", 0, 4, 18, 0, 7531.48, 0], ["2025-07-20", 1, 1, 2, 26960.39, 0, 0], ["2025-07-21", 0, 4, 13, 0, 11825.88, 0], ["2025-07-21", 0, 5, 11, 0, 5137.48, 0], ["2025-07-21", 1, 0, 4, 13431.61, 0, 0], ["2025-07-22", 0, 0, 8, 0, 9587.28, 0], ["2025-07-22", 1, 1, 8, 0, 11211.73, 0], ["2025-07-23", 0, 4, 18, 0, 7531.48, 0], ["2025-07-23", 1, 1, 9, 0, 7566.47, 0], ["2025-07-24", 0, 5, 11, 0, 5137.48, 5137.48], ["2025-07-27", 0, 4, 16, 0, 236.39, 0], ["2025-07-27", 1, 1, 8, 0, 11211.73, 0], ["2025-07-31", 0, 2, 3, 28315.73, 0, 0], ["2025-08-02", 0, 0, 10, 0, 3062.95, 0], ["2025-08-02", 1, 1, 2, 22683.19, 0, 0], ["2025-08-03", 0, 3, 3, 6018.34, 0, 0], ["2025-08-03", 0, 4, 5, 0, 21159.39, 0], ["2025-08-05", 0, 0, 10, 0, 3062.95, 0], ["2025-08-05", 0, 4, 18, 0, 4735.9, 0], ["2025-08-05", 0, 5, 12, 0, 8088.1, 0], ["2025-08-05", 1, 1, 9, 0, 6670.78, 0], ["2025-08-06", 0, 0, 0, 37042.42, 0, 0], ["2025-08-06", 0, 2, 3, 30892.82, 0, 0], ["2025-08-07", 1, 0, 4, 9458.07, 0, 0], ["2025-08-08", 0, 4, 17, 0, 8646.0, 0], ["2025-08-08", 1, 1, 2, 22683.19, 0, 0], ["2025-08-09", 0, 0, 0, 18521.21, 0, 0], ["2025-08-09", 0, 3, 3, 6018.34, 0, 0], ["2025-08-09", 0, 4, 5, 0, 21159.39, 0], ["2025-08-10", 0, 4, 6, 0, 17499.42, 0], ["2025-08-11", 0, 0, 1, 16658.99, 0, 0], ["2025-08-11", 1, 1, 2, 22683.19, 0, 0], ["2025-08-12", 0, 0, 1, 16658.99, 0, 0], ["2025-08-12", 0, 2, 3, 30892.82, 0, 0], ["2025-08-13", 1, 1, 5, 0, 12112.78, 0], ["2025-08-14", 0, 5, 11, 0, 5175.87, 0], ["2025-08-16", 0, 3, 3, 6018.34, 0, 0], ["2025-08-16", 1, 1, 9, 0, 6670.78, 0], ["2025-08-19", 0, 4, 13, 0, 6043.25, 0], ["2025-08-19", 0, 5, 7, 0, 6361.93, 0], ["2025-08-19", 1, 1, 5, 0, 12112.78, 0], ["2025-08-21", 0, 0, 10, 0, 3062.95, 0], ["2025-08-21", 0, 4, 18, 0, 4735.9, 0], ["2025-08-21", 0, 5, 11, 0, 5175.87, 0], ["2025-08-22", 0, 4, 14, 0, 4786.97, 0], ["2025-08-22", 1, 1, 8, 0, 8089.43, 0], ["2025-08-23", 0, 5, 11, 0, 5175.87, 0], ["2025-08-24", 0, 5, 11, 0, 5175.87, 0], ["2025-08-24", 1, 1, 9, 0, 6670.78, 0], ["2025-08-26", 0, 4, 13, 0, 6043.25, 0], ["2025-08-27", 0, 0, 10, 0, 3062.95, 0], ["2025-08-27", 0, 4, 13, 0, 12086.5, 0], ["2025-08-29", 0, 0, 8, 0, 10194.89, 0], ["2025-08-29", 0, 4, 15, 0, 4100.94, 0], ["2025-08-29", 1, 1, 8, 0, 8089.43, 0], ["2025-08-31", 0, 0, 1, 16658.99, 0, 0], ["2025-08-31", 0, 4, 16, 0, 1301.74, 0], ["2025-08-31", 0, 5, 7, 0, 6361.93, 0], ["2025-08-31", 1, 1, 2, 22683.19, 0, 0], ["2025-09-01", 0, 0, 1, 25148.43, 0, 0], ["2025-09-01", 1, 1, 2, 20125.4, 0, 0], ["2025-09-02", 0, 5, 7, 0, 1917.04, 0], ["2025-09-03", 0, 3, 3, 11078.84, 0, 0], ["2025-09-03", 1, 1, 8, 0, 8954.73, 0], ["2025-09-05", 1, 1, 9, 0, 5461.69, 0], ["2025-09-07", 0, 4, 18, 0, 4509.48, 0], ["2025-09-07", 0, 5, 11, 0, 11220.94, 0], ["2025-09-08", 1, 1, 2, 20125.4, 0, 0], ["2025-09-08", 1, 1, 5, 0, 11102.02, 0], ["2025-09-09", 0, 0, 8, 0, 5459.09, 0], ["2025-09-09", 0, 0, 10, 0, 5624.02, 0], ["2025-09-09", 0, 4, 5, 0, 21285.74, 0], ["2025-09-09", 0, 4, 18, 0, 4509.48, 0], ["2025-09-09", 1, 1, 2, 20125.4, 0, 0], ["2025-09-10", 0, 4, 15, 0, 4118.67, 0], ["2025-09-10", 0, 4, 17, 0, 8695.5, 0], ["2025-09-10", 0, 5, 7, 0, 1917.04, 0], ["2025-09-10", 0, 5, 12, 0, 7573.26, 0], ["2025-09-10", 1, 1, 9, 0, 5461.69, 0], ["2025-09-13", 0, 0, 0, 29488.13, 0, 0], ["2025-09-13", 0, 4, 6, 0, 6240.52, 0], ["2025-09-13", 0, 4, 18, 0, 4509.48, 0], ["2025-09-15", 0, 4, 13, 0, 23243.55, 0], ["2025-09-15", 0, 4, 18, 0, 4509.48, 0], ["2025-09-16", 0, 0, 10, 0, 5624.02, 0], ["2025-09-16", 0, 4, 6, 0, 6240.52, 0], ["2025-09-16", 1, 0, 4, 11816.97, 0, 0], ["2025-09-16", 1, 1, 2, 20125.4, 0, 0], ["2025-09-17", 0, 3, 3, 5539.42, 0, 0], ["2025-09-19", 1, 1, 9, 0, 5461.69, 0], ["2025-09-20", 0, 5, 7, 0, 1917.04, 0], ["2025-09-20", 1, 1, 8, 0, 8954.73, 0], ["2025-09-20", 1, 1, 9, 0, 5461.69, 0], ["2025-09-21", 0, 0, 1, 25148.43, 0, 0], ["2025-09-22", 0, 3, 3, 5539.42, 0, 0], ["2025-09-23", 0, 5, 11, 0, 11220.94, 0], ["2025-09-24", 0, 2, 3, 28163.96, 0, 0], ["2025-09-24", 1, 1, 5, 0, 11102.02, 0], ["2025-09-25", 0, 5, 7, 0, 1917.04, 0], ["2025-09-27", 0, 0, 0, 29488.13, 0, 0], ["2025-09-28", 0, 4, 5, 0, 21285.74, 0], ["2025-09-28", 0, 4, 6, 0, 6240.52, 0], ["2025-09-29", 0, 4, 14, 0, 5194.37, 0], ["2025-09-30", 0, 2, 3, 28163.96, 0, 0], ["2025-09-30", 0, 4, 16, 0, 1764.99, 0], ["2025-10-01", 0, 3, 3, 16849.52, 0, 0], ["2025-10-01", 0, 5, 7, 0, 7881.61, 0], ["2025-10-03", 0, 0, 0, 42441.59, 0, 0], ["2025-10-03", 0, 4, 18, 0, 10159.94, 0], ["2025-10-03", 1, 1, 8, 0, 7428.3, 0], ["2025-10-04", 0, 0, 10, 0, 6178.12, 0], ["2025-10-04", 0, 4, 6, 0, 5875.24, 0], ["2025-10-04", 1, 1, 2, 13494.08, 0, 0], ["2025-10-04", 1, 1, 5, 0, 7579.26, 0], ["2025-10-05", 0, 4, 5, 0, 14443.87, 0], ["2025-10-05", 0, 5, 11, 0, 2909.2, 0], ["2025-10-06", 0, 3, 3, 8424.76, 0, 0], ["2025-10-07", 0, 4, 13, 0, 7306.46, 0], ["2025-10-09", 0, 0, 1, 12094.64, 0, 0], ["2025-10-09", 0, 0, 10, 0, 6178.12, 0], ["2025-10-09", 0, 5, 12, 0, 5853.71, 0], ["2025-10-09", 1, 1, 2, 13494.08, 0, 0], ["2025-10-09", 1, 1, 8, 0, 7428.3, 0], ["2025-10-10", 0, 5, 11, 0, 2909.2, 0], ["2025-10-11", 1, 1, 5, 0, 7579.26, 0], ["2025-10-12", 0, 0, 1, 12094.64, 0, 0], ["2025-10-12", 0, 4, 13, 0, 7306.46, 0], ["2025-10-12", 1, 1, 8, 0, 7428.3, 0], ["2025-10-13", 0, 4, 6, 0, 5875.24, 0], ["2025-10-13", 0, 4, 16, 0, 1403.31, 0], ["2025-10-14", 0, 4, 5, 0, 14443.87, 0], ["2025-10-14", 0, 4, 14, 0, 5233.08, 0], ["2025-10-14", 1, 1, 9, 0, 6506.73, 0], ["2025-10-16", 0, 2, 3, 30016.68, 0, 0], ["2025-10-17", 0, 0, 1, 12094.64, 0, 0], ["2025-10-17", 1, 1, 2, 13494.08, 0, 0], ["2025-10-19", 0, 0, 0, 42441.59, 0, 0], ["2025-10-21", 0, 5, 11, 0, 2909.2, 0], ["2025-10-22", 1, 0, 4, 13832.61, 0, 0], ["2025-10-23", 0, 5, 7, 0, 7881.61, 0], ["2025-10-24", 0, 4, 5, 0, 14443.87, 0], ["2025-10-24", 0, 4, 18, 0, 10159.94, 0], ["2025-10-25", 0, 4, 13, 0, 7306.46, 0], ["2025-10-25", 1, 1, 9, 0, 6506.73, 0], ["2025-10-26", 0, 4, 15, 0, 4197.54, 0], ["2025-10-27", 0, 4, 6, 0, 5875.24, 0], ["2025-10-27", 1, 1, 5, 0, 7579.26, 0], ["2025-10-28", 0, 0, 8, 0, 7571.79, 0], ["2025-10-29", 0, 2, 3, 30016.68, 0, 0], ["2025-10-29", 1, 1, 2, 13494.08, 0, 0], ["2025-10-30", 0, 5, 11, 0, 2909.2, 0], ["2025-10-30", 1, 1, 9, 0, 6506.73, 0], ["2025-10-31", 0, 0, 1, 12094.64, 0, 0], ["2025-10-31", 0, 4, 17, 0, 8745.0, 0], ["2025-11-02", 0, 0, 1, 16316.26, 0, 0], ["2025-11-02", 0, 5, 12, 0, 6256.35, 0], ["2025-11-05", 0, 4, 13, 0, 5594.01, 0], ["2025-11-05", 0, 5, 7, 0, 5461.11, 0], ["2025-11-06", 0, 4, 5, 0, 22074.43, 0], ["2025-11-06", 1, 1, 2, 47533.31, 0, 0], ["2025-11-06", 1, 1, 8, 0, 5535.79, 0], ["2025-11-07", 0, 4, 15, 0, 4217.74, 0], ["2025-11-07", 1, 1, 9, 0, 5694.59, 0], ["2025-11-08", 0, 3, 3, 6077.51, 0, 0], ["2025-11-08", 0, 4, 6, 0, 4809.18, 0], ["2025-11-09", 0, 2, 3, 18795.95, 0, 0], ["2025-11-09", 0, 3, 3, 6077.51, 0, 0], ["2025-11-09", 0, 5, 11, 0, 9995.57, 0], ["2025-11-10", 0, 2, 3, 18795.95, 0, 0], ["2025-11-10", 0, 4, 18, 0, 7514.98, 0], ["2025-11-11", 0, 0, 8, 0, 9004.49, 0], ["2025-11-11", 0, 4, 6, 0, 4809.18, 0], ["2025-11-11", 1, 1, 8, 0, 5535.79, 0], ["2025-11-12", 0, 4, 13, 0, 5594.01, 0], ["2025-11-13", 0, 0, 10, 0, 3718.26, 0], ["2025-11-13", 0, 3, 3, 6077.51, 0, 0], ["2025-11-13", 0, 4, 17, 0, 8794.5, 0], ["2025-11-13", 0, 5, 11, 0, 9995.57, 0], ["2025-11-14", 0, 0, 0, 11312.19, 0, 0], ["2025-11-14", 0, 0, 10, 0, 7436.52, 0], ["2025-11-14", 0, 5, 7, 0, 5461.11, 0], ["2025-11-15", 0, 0, 0, 11312.19, 0, 0], ["2025-11-15", 0, 4, 6, 0, 4809.18, 0], ["2025-11-16", 0, 0, 1, 16316.26, 0, 0], ["2025-11-16", 1, 1, 2, 47533.31, 0, 0], ["2025-11-17", 0, 4, 13, 0, 5594.01, 0], ["2025-11-17", 1, 1, 5, 0, 11091.21, 0], ["2025-11-18", 0, 5, 7, 0, 5461.11, 0], ["2025-11-18", 1, 0, 4, 7683.22, 0, 0], ["2025-11-19", 1, 1, 9, 0, 5694.59, 0], ["2025-11-20", 0, 0, 0, 11312.19, 0, 0], ["2025-11-21", 0, 3, 3, 6077.51, 0, 0], ["2025-11-21", 0, 4, 5, 0, 22074.43, 0], ["2025-11-22", 0, 4, 13, 0, 5594.01, 0], ["2025-11-24", 0, 2, 3, 18795.95, 0, 0], ["2025-11-25", 0, 0, 0, 11312.19, 0, 0], ["2025-11-26", 0, 4, 14, 0, 5131.75, 0], ["2025-11-26", 1, 1, 9, 0, 5694.59, 0], ["2025-11-27", 0, 4, 18, 0, 7514.98, 0], ["2025-11-28", 0, 0, 10, 0, 3718.26, 0], ["2025-11-28", 0, 4, 18, 0, 7514.98, 0], ["2025-11-29", 0, 4, 16, 0, 255.85, 0], ["2025-11-29", 1, 1, 5, 0, 11091.21, 0], ["2025-11-30", 0, 0, 1, 16316.26, 0, 0], ["2025-11-30", 0, 4, 6, 0, 4809.18, 0], ["2025-12-01", 0, 0, 10, 0, 7283.88, 0], ["2025-12-01", 0, 4, 13, 0, 5280.0, 0], ["2025-12-02", 0, 0, 0, 41906.34, 0, 0], ["2025-12-02", 0, 4, 15, 0, 4205.83, 0], ["2025-12-03", 0, 0, 8, 0, 5249.65, 0], ["2025-12-04", 1, 0, 4, 14200.77, 0, 0], ["2025-12-05", 0, 0, 0, 41906.34, 0, 0], ["2025-12-05", 0, 3, 3, 9671.79, 0, 0], ["2025-12-05", 0, 5, 7, 0, 3938.34, 0], ["2025-12-07", 1, 1, 9, 0, 5378.43, 0], ["2025-12-08", 0, 2, 3, 20803.82, 0, 0], ["2025-12-08", 0, 4, 6, 0, 8948.09, 0], ["2025-12-08", 0, 4, 13, 0, 10560.0, 0], ["2025-12-08", 0, 4, 18, 0, 5814.65, 0], ["2025-12-08", 1, 1, 9, 0, 5378.43, 0], ["2025-12-09", 0, 5, 11, 0, 4923.0, 0], ["2025-12-09", 1, 1, 9, 0, 5378.43, 0], ["2025-12-10", 0, 5, 7, 0, 3938.34, 0], ["2025-12-11", 0, 5, 11, 0, 4923.0, 0], ["2025-12-13", 1, 1, 9, 0, 5378.43, 0], ["2025-12-14", 0, 4, 18, 0, 5814.65, 0], ["2025-12-14", 1, 1, 8, 0, 4528.42, 0], ["2025-12-15", 0, 2, 3, 20803.82, 0, 0], ["2025-12-16", 0, 0, 1, 16998.04, 0, 0], ["2025-12-16", 0, 4, 16, 0, 134.32, 0], ["2025-12-17", 0, 3, 3, 9671.79, 0, 0], ["2025-12-18", 0, 0, 10, 0, 7283.88, 0], ["2025-12-18", 0, 4, 13, 0, 5280.0, 0], ["2025-12-18", 1, 1, 5, 0, 12537.04, 0], ["2025-12-19", 0, 0, 1, 16998.04, 0, 0], ["2025-12-19", 0, 4, 6, 0, 8948.09, 0], ["2025-12-21", 0, 4, 5, 0, 11279.07, 0], ["2025-12-21", 0, 4, 17, 0, 8844.0, 0], ["2025-12-21", 1, 1, 8, 0, 4528.42, 0], ["2025-12-22", 0, 4, 18, 0, 5814.65, 0], ["2025-12-23", 0, 4, 5, 0, 11279.07, 0], ["2025-12-23", 0, 4, 14, 0, 5382.61, 0], ["2025-12-23", 0, 5, 7, 0, 3938.34, 0], ["2025-12-23", 1, 1, 8, 0, 4528.42, 0], ["2025-12-25", 0, 4, 5, 0, 11279.07, 0], ["2025-12-25", 1, 1, 5, 0, 12537.04, 0], ["2025-12-25", 1, 1, 8, 0, 4528.42, 0], ["2025-12-26", 0, 2, 3, 20803.82, 0, 0], ["2025-12-28", 0, 4, 5, 0, 11279.07, 0], ["2025-12-29", 0, 5, 12, 0, 7572.44, 0], ["2025-12-30", 1, 1, 2, 63943.86, 0, 0], ["2025-12-31", 0, 0, 1, 16998.04, 0, 0], ["2025-12-31", 0, 5, 7, 0, 3938.34, 0], ["2025-12-31", 0, 5, 11, 0, 4923.0, 0], ["2026-01-02", 0, 0, 0, 43363.62, 0, 0], ["2026-01-02", 0, 5, 11, 0, 5627.66, 0], ["2026-01-02", 1, 1, 5, 0, 7555.38, 0], ["2026-01-02", 1, 1, 8, 0, 3700.44, 0], ["2026-01-03", 1, 1, 9, 0, 11374.17, 0], ["2026-01-04", 0, 4, 13, 0, 7317.6, 0], ["2026-01-04", 0, 4, 16, 0, 1765.69, 0], ["2026-01-05", 0, 5, 7, 0, 3815.23, 0], ["2026-01-06", 0, 0, 10, 0, 6061.66, 0], ["2026-01-06", 0, 4, 5, 0, 10913.55, 0], ["2026-01-06", 0, 4, 13, 0, 7317.6, 0], ["2026-01-06", 1, 1, 8, 0, 3700.44, 0], ["2026-01-07", 0, 2, 3, 17389.55, 0, 0], ["2026-01-08", 0, 3, 3, 12622.97, 0, 0], ["2026-01-09", 0, 4, 14, 0, 4917.17, 0], ["2026-01-10", 0, 2, 3, 17389.55, 0, 0], ["2026-01-10", 0, 4, 18, 0, 4196.97, 0], ["2026-01-10", 0, 5, 11, 0, 5627.66, 0], ["2026-01-12", 0, 0, 1, 13239.98, 0, 0], ["2026-01-13", 0, 0, 1, 13239.98, 0, 0], ["2026-01-13", 0, 4, 6, 0, 9855.79, 0], ["2026-01-13", 1, 1, 8, 0, 3700.44, 0], ["2026-01-14", 0, 0, 1, 13239.98, 0, 0], ["2026-01-14", 0, 4, 15, 0, 4133.7, 0], ["2026-01-15", 0, 3, 3, 12622.97, 0, 0], ["2026-01-15", 0, 4, 13, 0, 7317.6, 0], ["2026-01-15", 0, 5, 11, 0, 5627.66, 5627.66], ["2026-01-15", 1, 1, 8, 0, 3700.44, 0], ["2026-01-16", 0, 0, 0, 43363.62, 0, 0], ["2026-01-16", 0, 4, 5, 0, 10913.55, 0], ["2026-01-17", 1, 1, 2, 26113.74, 0, 0], ["2026-01-20", 0, 4, 5, 0, 10913.55, 0], ["2026-01-20", 0, 5, 7, 0, 3815.23, 0], ["2026-01-21", 0, 0, 10, 0, 6061.66, 0], ["2026-01-22", 0, 0, 1, 13239.98, 0, 0], ["2026-01-22", 0, 5, 11, 0, 5627.66, 0], ["2026-01-22", 1, 1, 5, 0, 7555.38, 0], ["2026-01-24", 1, 1, 2, 26113.74, 0, 0], ["2026-01-25", 0, 2, 3, 17389.55, 0, 0], ["2026-01-25", 0, 4, 17, 0, 8893.5, 0], ["2026-01-25", 0, 4, 18, 0, 4196.97, 0], ["2026-01-27", 0, 4, 18, 0, 4196.97, 0], ["2026-01-27", 0, 5, 12, 0, 7954.53, 0], ["2026-01-28", 1, 1, 2, 26113.74, 0, 0], ["2026-01-29", 0, 0, 8, 0, 12057.8, 0], ["2026-01-29", 0, 4, 5, 0, 10913.55, 0], ["2026-01-29", 1, 0, 4, 7422.24, 0, 0], ["2026-01-30", 0, 4, 6, 0, 9855.79, 0], ["2026-01-30", 1, 1, 5, 0, 7555.38, 0], ["2026-01-30", 1, 1, 9, 0, 11374.17, 0], ["2026-02-01", 0, 4, 6, 0, 6443.21, 0], ["2026-02-01", 0, 5, 7, 0, 3590.68, 0], ["2026-02-01", 1, 1, 2, 18921.29, 0, 0], ["2026-02-02", 0, 0, 0, 27452.35, 0, 0], ["2026-02-02", 0, 2, 3, 13748.98, 0, 0], ["2026-02-02", 0, 3, 3, 9476.06, 0, 0], ["2026-02-02", 1, 1, 5, 0, 6398.6, 0], ["2026-02-03", 0, 0, 0, 27452.35, 0, 0], ["2026-02-03", 0, 4, 13, 0, 6078.67, 0], ["2026-02-03", 0, 4, 18, 0, 15378.45, 0], ["2026-02-03", 0, 5, 7, 0, 3590.68, 0], ["2026-02-06", 0, 4, 17, 0, 8943.0, 0], ["2026-02-06", 1, 1, 9, 0, 13467.4, 0], ["2026-02-07", 0, 0, 1, 17288.77, 0, 0], ["2026-02-07", 0, 4, 13, 0, 6078.67, 0], ["2026-02-08", 0, 4, 14, 0, 5334.78, 0], ["2026-02-08", 0, 5, 7, 0, 3590.68, 0], ["2026-02-09", 0, 4, 5, 0, 10819.57, 0], ["2026-02-09", 0, 4, 18, 0, 15378.45, 0], ["2026-02-09", 1, 1, 5, 0, 6398.6, 0], ["2026-02-10", 0, 0, 10, 0, 2888.22, 0], ["2026-02-10", 0, 4, 6, 0, 6443.21, 0], ["2026-02-11", 0, 4, 5, 0, 21639.14, 0], ["2026-02-11", 0, 5, 11, 0, 6555.34, 0], ["2026-02-12", 0, 4, 5, 0, 10819.57, 0], ["2026-02-12", 0, 5, 12, 0, 6283.12, 0], ["2026-02-13", 0, 2, 3, 27497.96, 0, 0], ["2026-02-13", 0, 4, 13, 0, 6078.67, 0], ["2026-02-13", 1, 1, 8, 0, 2468.52, 0], ["2026-02-14", 0, 0, 8, 0, 6513.08, 0], ["2026-02-14", 1, 1, 2, 18921.29, 0, 0], ["2026-02-15", 0, 0, 1, 17288.77, 0, 0], ["2026-02-15", 1, 1, 8, 0, 2468.52, 0], ["2026-02-16", 1, 1, 2, 18921.29, 0, 0], ["2026-02-16", 1, 1, 9, 0, 13467.4, 0], ["2026-02-17", 0, 4, 13, 0, 6078.67, 0], ["2026-02-18", 0, 0, 1, 17288.77, 0, 0], ["2026-02-18", 0, 4, 16, 0, 157.03, 0], ["2026-02-21", 0, 4, 15, 0, 4212.0, 0], ["2026-02-21", 1, 1, 2, 18921.29, 0, 0], ["2026-02-23", 0, 0, 0, 27452.35, 0, 0], ["2026-02-23", 0, 0, 10, 0, 2888.22, 0], ["2026-02-23", 1, 1, 5, 0, 6398.6, 0], ["2026-02-24", 0, 4, 6, 0, 6443.21, 0], ["2026-02-24", 1, 0, 4, 7385.45, 0, 0], ["2026-02-24", 1, 1, 5, 0, 6398.6, 0], ["2026-02-25", 0, 0, 10, 0, 2888.22, 0], ["2026-02-25", 0, 2, 3, 13748.98, 0, 0], ["2026-02-25", 1, 1, 8, 0, 2468.52, 0], ["2026-02-26", 0, 3, 3, 9476.06, 0, 0], ["2026-02-26", 1, 1, 8, 0, 2468.52, 0], ["2026-02-27", 0, 0, 10, 0, 2888.22, 0], ["2026-02-27", 0, 5, 7, 0, 3590.68, 0], ["2026-02-28", 0, 5, 11, 0, 6555.34, 0], ["2026-03-01", 1, 1, 8, 0, 3272.96, 0], ["2026-03-02", 0, 0, 10, 0, 7582.75, 0], ["2026-03-02", 0, 4, 18, 0, 5588.2, 0], ["2026-03-02", 1, 1, 8, 0, 3272.96, 0], ["2026-03-02", 1, 1, 9, 0, 5500.13, 0], ["2026-03-03", 0, 5, 11, 0, 3412.58, 0], ["2026-03-04", 0, 0, 0, 36737.2, 0, 0], ["2026-03-04", 0, 0, 10, 0, 7582.75, 0], ["2026-03-04", 0, 2, 3, 14851.19, 0, 0], ["2026-03-04", 0, 4, 14, 0, 5465.19, 0], ["2026-03-04", 1, 1, 8, 0, 3272.96, 0], ["2026-03-05", 0, 0, 1, 13077.61, 0, 0], ["2026-03-06", 0, 0, 1, 13077.61, 0, 0], ["2026-03-06", 0, 4, 5, 0, 21941.7, 0], ["2026-03-06", 0, 5, 12, 0, 7138.86, 0], ["2026-03-07", 0, 4, 16, 0, 1192.8, 0], ["2026-03-07", 0, 5, 11, 0, 3412.58, 0], ["2026-03-08", 0, 0, 1, 13077.61, 0, 0], ["2026-03-08", 0, 4, 5, 0, 21941.7, 0], ["2026-03-08", 0, 5, 7, 0, 4178.39, 0], ["2026-03-08", 1, 1, 2, 17463.04, 0, 0], ["2026-03-09", 0, 3, 3, 7063.95, 0, 0], ["2026-03-09", 0, 4, 6, 0, 9240.17, 0], ["2026-03-09", 0, 4, 18, 0, 5588.2, 0], ["2026-03-09", 1, 0, 4, 7397.29, 0, 0], ["2026-03-11", 0, 4, 17, 0, 8992.5, 0], ["2026-03-12", 0, 3, 3, 7063.95, 0, 0], ["2026-03-12", 0, 5, 11, 0, 3412.58, 3412.58], ["2026-03-12", 1, 1, 9, 0, 5500.13, 0], ["2026-03-13", 0, 4, 6, 0, 9240.17, 0], ["2026-03-14", 0, 0, 0, 36737.2, 0, 0], ["2026-03-15", 0, 0, 1, 13077.61, 0, 0], ["2026-03-17", 0, 5, 7, 0, 4178.39, 0], ["2026-03-19", 0, 3, 3, 7063.95, 0, 0], ["2026-03-19", 1, 1, 5, 0, 7655.06, 0], ["2026-03-21", 0, 5, 7, 0, 4178.39, 0], ["2026-03-22", 0, 4, 13, 0, 7536.82, 0], ["2026-03-22", 1, 1, 2, 17463.04, 0, 0], ["2026-03-23", 0, 4, 15, 0, 4274.37, 0], ["2026-03-24", 1, 1, 2, 17463.04, 0, 0], ["2026-03-25", 0, 2, 3, 29702.38, 0, 0], ["2026-03-25", 0, 4, 13, 0, 15073.64, 0], ["2026-03-26", 0, 5, 7, 0, 4178.39, 0], ["2026-03-27", 0, 0, 8, 0, 8499.93, 0], ["2026-03-27", 0, 2, 3, 14851.19, 0, 0], ["2026-03-29", 1, 1, 2, 17463.04, 0, 0], ["2026-03-29", 1, 1, 5, 0, 7655.06, 0], ["2026-03-30", 0, 5, 11, 0, 3412.58, 0], ["2026-03-30", 1, 1, 5, 0, 7655.06, 0], ["2026-03-30", 1, 1, 9, 0, 5500.13, 0], ["2026-04-01", 0, 0, 0, 18170.3, 0, 0], ["2026-04-01", 0, 4, 6, 0, 6435.86, 0], ["2026-04-01", 1, 1, 8, 0, 10094.42, 0], ["2026-04-02", 1, 1, 2, 37559.74, 0, 0], ["2026-04-03", 0, 2, 3, 15844.56, 0, 0], ["2026-04-04", 0, 2, 3, 15844.56, 0, 0], ["2026-04-04", 0, 4, 16, 0, 1741.88, 0], ["2026-04-05", 0, 0, 10, 0, 5091.15, 0], ["2026-04-05", 0, 3, 3, 6366.82, 0, 0], ["2026-04-05", 0, 4, 18, 0, 13472.02, 0], ["2026-04-05", 0, 5, 11, 0, 2895.12, 0], ["2026-04-06", 0, 0, 1, 18206.93, 0, 0], ["2026-04-06", 0, 0, 10, 0, 5091.15, 0], ["2026-04-06", 0, 4, 13, 0, 7896.99, 0], ["2026-04-06", 0, 4, 15, 0, 4216.58, 0], ["2026-04-06", 1, 0, 4, 5831.13, 0, 0], ["2026-04-07", 0, 0, 0, 18170.3, 0, 0], ["2026-04-07", 0, 5, 7, 0, 5189.69, 0], ["2026-04-07", 1, 1, 2, 37559.74, 0, 0], ["2026-04-10", 0, 4, 5, 0, 14886.79, 0], ["2026-04-10", 0, 4, 14, 0, 5074.51, 0], ["2026-04-10", 0, 4, 18, 0, 13472.02, 0], ["2026-04-10", 1, 1, 5, 0, 11684.86, 0], ["2026-04-12", 0, 0, 1, 18206.93, 0, 0], ["2026-04-13", 0, 5, 7, 0, 5189.69, 0], ["2026-04-13", 1, 1, 9, 0, 7197.93, 0], ["2026-04-14", 0, 0, 8, 0, 12289.5, 0], ["2026-04-14", 0, 2, 3, 15844.56, 0, 0], ["2026-04-14", 0, 4, 5, 0, 14886.79, 0], ["2026-04-14", 0, 4, 6, 0, 12871.72, 0], ["2026-04-14", 1, 1, 8, 0, 10094.42, 0], ["2026-04-16", 0, 2, 3, 15844.56, 0, 0], ["2026-04-17", 0, 4, 13, 0, 7896.99, 0], ["2026-04-18", 0, 3, 3, 12733.64, 0, 0], ["2026-04-19", 0, 5, 12, 0, 6682.54, 0], ["2026-04-19", 1, 1, 9, 0, 7197.93, 0], ["2026-04-21", 0, 3, 3, 6366.82, 0, 0], ["2026-04-21", 0, 5, 7, 0, 5189.69, 0], ["2026-04-21", 0, 5, 11, 0, 2895.12, 0], ["2026-04-22", 0, 0, 1, 18206.93, 0, 0], ["2026-04-22", 0, 4, 5, 0, 14886.79, 0], ["2026-04-24", 0, 4, 13, 0, 7896.99, 0], ["2026-04-24", 1, 1, 5, 0, 11684.86, 0], ["2026-04-25", 0, 0, 10, 0, 5091.15, 0], ["2026-04-25", 0, 4, 17, 0, 9042.0, 0], ["2026-04-26", 0, 5, 11, 0, 2895.12, 0], ["2026-04-27", 0, 0, 0, 18170.3, 0, 0], ["2026-04-30", 0, 0, 0, 18170.3, 0, 0], ["2026-04-30", 0, 5, 11, 0, 2895.12, 0], ["2026-05-01", 1, 1, 9, 0, 8190.94, 0], ["2026-05-02", 0, 4, 6, 0, 5006.32, 0], ["2026-05-02", 0, 4, 15, 0, 4299.55, 0], ["2026-05-02", 0, 4, 18, 0, 3850.52, 0], ["2026-05-02", 1, 1, 5, 0, 5721.07, 0], ["2026-05-03", 0, 0, 1, 12929.67, 0, 0], ["2026-05-03", 0, 4, 13, 0, 6912.58, 0], ["2026-05-03", 0, 4, 18, 0, 3850.52, 0], ["2026-05-04", 0, 4, 5, 0, 10984.9, 0], ["2026-05-04", 0, 5, 12, 0, 7047.9, 0], ["2026-05-05", 0, 4, 16, 0, 171.75, 0], ["2026-05-06", 0, 4, 5, 0, 10984.9, 0], ["2026-05-06", 0, 5, 11, 0, 6961.68, 0], ["2026-05-06", 1, 1, 2, 20658.87, 0, 0], ["2026-05-06", 1, 1, 9, 0, 4095.47, 0], ["2026-05-07", 1, 0, 4, 6773.65, 0, 0], ["2026-05-07", 1, 1, 5, 0, 5721.07, 0], ["2026-05-08", 0, 0, 10, 0, 4755.44, 0], ["2026-05-08", 1, 1, 8, 0, 5281.69, 0], ["2026-05-10", 1, 1, 8, 0, 5281.69, 0], ["2026-05-11", 0, 4, 6, 0, 5006.32, 0], ["2026-05-12", 0, 4, 5, 0, 10984.9, 0], ["2026-05-12", 0, 4, 13, 0, 6912.58, 0], ["2026-05-13", 0, 0, 1, 12929.67, 0, 0], ["2026-05-13", 0, 2, 3, 30756.05, 0, 0], ["2026-05-13", 0, 4, 5, 0, 10984.9, 0], ["2026-05-14", 0, 4, 13, 0, 6912.58, 0], ["2026-05-14", 1, 1, 8, 0, 5281.69, 0], ["2026-05-15", 0, 0, 10, 0, 9510.88, 0], ["2026-05-15", 0, 5, 7, 0, 2103.73, 0], ["2026-05-15", 1, 1, 9, 0, 4095.47, 0], ["2026-05-16", 0, 0, 0, 42227.81, 0, 0], ["2026-05-16", 0, 3, 3, 12048.91, 0, 0], ["2026-05-17", 0, 4, 14, 0, 5449.5, 0], ["2026-05-17", 0, 4, 18, 0, 3850.52, 0], ["2026-05-18", 0, 5, 7, 0, 2103.73, 0], ["2026-05-19", 1, 1, 8, 0, 5281.69, 0], ["2026-05-20", 0, 2, 3, 30756.05, 0, 0], ["2026-05-21", 0, 0, 1, 12929.67, 0, 0], ["2026-05-21", 0, 5, 7, 0, 2103.73, 0], ["2026-05-22", 0, 0, 8, 0, 8161.32, 0], ["2026-05-22", 0, 4, 6, 0, 5006.32, 0], ["2026-05-23", 1, 1, 2, 20658.87, 0, 0], ["2026-05-24", 0, 4, 17, 0, 9091.5, 0], ["2026-05-25", 0, 4, 18, 0, 3850.52, 0], ["2026-05-26", 0, 5, 11, 0, 6961.68, 0], ["2026-05-27", 0, 3, 3, 12048.91, 0, 0], ["2026-05-27", 0, 4, 6, 0, 5006.32, 0], ["2026-05-27", 0, 5, 11, 0, 6961.68, 0], ["2026-05-27", 1, 1, 2, 20658.87, 0, 0], ["2026-05-27", 1, 1, 5, 0, 5721.07, 0], ["2026-05-28", 0, 5, 7, 0, 2103.73, 0], ["2026-05-29", 1, 1, 2, 20658.87, 0, 0], ["2026-05-29", 1, 1, 5, 0, 5721.07, 0], ["2026-05-30", 0, 0, 0, 42227.81, 0, 0], ["2026-05-30", 0, 0, 1, 12929.67, 0, 0], ["2026-06-02", 0, 0, 10, 0, 3217.71, 0], ["2026-06-03", 0, 4, 17, 0, 9141.0, 0], ["2026-06-05", 0, 0, 0, 22961.57, 0, 0], ["2026-06-05", 1, 1, 2, 41684.33, 0, 0], ["2026-06-05", 1, 1, 5, 0, 8272.93, 0], ["2026-06-06", 0, 4, 5, 0, 15243.01, 0], ["2026-06-06", 1, 1, 8, 0, 4461.08, 0], ["2026-06-06", 1, 1, 9, 0, 7385.16, 0], ["2026-06-07", 0, 4, 6, 0, 6763.44, 0], ["2026-06-07", 1, 1, 2, 41684.33, 0, 0], ["2026-06-08", 0, 3, 3, 6434.71, 0, 0], ["2026-06-09", 0, 0, 8, 0, 10074.57, 0], ["2026-06-09", 0, 4, 6, 0, 6763.44, 0], ["2026-06-09", 0, 4, 14, 0, 5476.71, 0], ["2026-06-09", 1, 1, 5, 0, 8272.93, 0], ["2026-06-10", 0, 2, 3, 22249.82, 0, 0], ["2026-06-11", 0, 4, 5, 0, 15243.01, 0], ["2026-06-11", 0, 5, 7, 0, 6658.87, 0], ["2026-06-12", 0, 0, 10, 0, 3217.71, 0], ["2026-06-12", 0, 4, 15, 0, 4299.72, 0], ["2026-06-12", 0, 4, 16, 0, 1136.06, 0], ["2026-06-12", 0, 5, 7, 0, 6658.87, 0], ["2026-06-12", 1, 0, 4, 5639.33, 0, 0], ["2026-06-13", 0, 4, 13, 0, 5265.0, 0], ["2026-06-13", 1, 1, 8, 0, 4461.08, 0], ["2026-06-17", 0, 5, 11, 0, 7837.6, 0], ["2026-06-17", 1, 1, 5, 0, 8272.93, 0], ["2026-06-18", 0, 5, 11, 0, 7837.6, 0], ["2026-06-19", 0, 4, 6, 0, 6763.44, 0], ["2026-06-19", 0, 5, 11, 0, 7837.6, 0], ["2026-06-20", 0, 0, 1, 25078.99, 0, 0], ["2026-06-20", 0, 4, 18, 0, 9281.32, 0], ["2026-06-21", 0, 0, 0, 22961.57, 0, 0], ["2026-06-21", 0, 0, 10, 0, 3217.71, 0], ["2026-06-21", 0, 4, 13, 0, 5265.0, 0], ["2026-06-24", 0, 0, 1, 25078.99, 0, 0], ["2026-06-24", 0, 3, 3, 6434.71, 0, 0], ["2026-06-24", 0, 4, 13, 0, 5265.0, 0], ["2026-06-24", 0, 4, 18, 0, 9281.32, 0], ["2026-06-26", 0, 0, 0, 22961.57, 0, 0], ["2026-06-26", 0, 2, 3, 22249.82, 0, 0], ["2026-06-26", 0, 3, 3, 6434.71, 0, 0], ["2026-06-26", 1, 1, 9, 0, 14770.32, 0], ["2026-06-28", 0, 0, 10, 0, 3217.71, 0], ["2026-06-28", 0, 4, 13, 0, 5265.0, 0], ["2026-06-29", 0, 4, 5, 0, 15243.01, 0], ["2026-06-29", 0, 5, 12, 0, 8017.53, 0], ["2026-06-30", 0, 2, 3, 22249.82, 0, 0], ["2026-06-30", 0, 3, 3, 6434.71, 0, 0], ["2026-07-01", 0, 5, 7, 0, 7737.04, 0], ["2026-07-02", 0, 0, 10, 0, 6470.06, 0], ["2026-07-02", 0, 4, 14, 0, 5080.05, 0], ["2026-07-02", 1, 0, 4, 11154.12, 0, 0], ["2026-07-02", 1, 1, 2, 25919.04, 0, 0], ["2026-07-03", 0, 0, 8, 0, 8474.0, 0], ["2026-07-05", 0, 4, 6, 0, 4914.49, 0], ["2026-07-05", 0, 5, 7, 0, 7737.04, 0], ["2026-07-05", 1, 1, 2, 25919.04, 0, 0], ["2026-07-05", 1, 1, 8, 0, 12002.72, 0], ["2026-07-06", 0, 4, 13, 0, 7830.91, 0], ["2026-07-06", 0, 4, 16, 0, 435.31, 0], ["2026-07-07", 0, 4, 6, 0, 4914.49, 0], ["2026-07-07", 0, 4, 18, 0, 2636.34, 0], ["2026-07-08", 0, 3, 3, 13362.6, 0, 0], ["2026-07-08", 0, 4, 13, 0, 7830.91, 0], ["2026-07-08", 1, 1, 2, 25919.04, 0, 0], ["2026-07-08", 1, 1, 5, 0, 5934.6, 0], ["2026-07-09", 0, 0, 0, 30403.41, 0, 0], ["2026-07-09", 1, 1, 9, 0, 6589.85, 0], ["2026-07-10", 1, 1, 2, 25919.04, 0, 0], ["2026-07-11", 0, 0, 1, 13063.33, 0, 0], ["2026-07-12", 0, 2, 3, 20610.5, 0, 0], ["2026-07-12", 0, 4, 5, 0, 22182.43, 0], ["2026-07-12", 0, 4, 6, 0, 4914.49, 0], ["2026-07-12", 1, 1, 5, 0, 5934.6, 0], ["2026-07-13", 0, 4, 15, 0, 4350.08, 0], ["2026-07-13", 1, 1, 9, 0, 6589.85, 0], ["2026-07-14", 0, 2, 3, 20610.5, 0, 0], ["2026-07-14", 1, 1, 5, 0, 5934.6, 0], ["2026-07-16", 0, 3, 3, 13362.6, 0, 0], ["2026-07-17", 0, 0, 0, 30403.41, 0, 0], ["2026-07-17", 0, 2, 3, 20610.5, 0, 0], ["2026-07-18", 0, 4, 18, 0, 2636.34, 0], ["2026-07-18", 1, 1, 5, 0, 5934.6, 0], ["2026-07-19", 0, 4, 5, 0, 22182.43, 0], ["2026-07-19", 0, 5, 11, 0, 7275.85, 0], ["2026-07-20", 0, 4, 6, 0, 4914.49, 0], ["2026-07-20", 0, 5, 11, 0, 7275.85, 0], ["2026-07-21", 0, 0, 10, 0, 6470.06, 0], ["2026-07-21", 0, 5, 11, 0, 7275.85, 7275.85], ["2026-07-22", 0, 0, 1, 13063.33, 0, 0], ["2026-07-22", 0, 4, 18, 0, 2636.34, 0], ["2026-07-23", 1, 1, 8, 0, 12002.72, 0], ["2026-07-25", 0, 4, 17, 0, 9190.5, 0], ["2026-07-26", 1, 1, 9, 0, 13179.7, 0], ["2026-07-27", 0, 0, 0, 30403.41, 0, 0], ["2026-07-29", 0, 0, 1, 13063.33, 0, 0], ["2026-07-29", 0, 4, 13, 0, 7830.91, 0], ["2026-07-30", 0, 0, 1, 13063.33, 0, 0], ["2026-07-30", 0, 5, 12, 0, 6996.63, 0], ["2026-07-31", 0, 4, 18, 0, 2636.34, 0], ["2026-08-01", 1, 1, 9, 0, 3796.83, 0], ["2026-08-03", 1, 1, 2, 20265.53, 0, 0], ["2026-08-04", 0, 4, 5, 0, 22894.55, 0], ["2026-08-04", 1, 1, 5, 0, 11792.3, 0], ["2026-08-06", 0, 0, 10, 0, 3222.91, 0], ["2026-08-06", 1, 1, 9, 0, 3796.83, 0], ["2026-08-07", 0, 0, 8, 0, 13127.66, 0], ["2026-08-07", 0, 0, 10, 0, 3222.91, 0], ["2026-08-07", 0, 4, 18, 0, 6398.52, 0], ["2026-08-08", 0, 5, 12, 0, 6531.12, 0], ["2026-08-09", 0, 4, 5, 0, 22894.55, 0], ["2026-08-09", 0, 4, 6, 0, 5091.72, 0], ["2026-08-09", 1, 1, 8, 0, 5411.49, 0], ["2026-08-09", 1, 1, 9, 0, 3796.83, 0], ["2026-08-10", 0, 4, 18, 0, 6398.52, 0], ["2026-08-10", 1, 1, 2, 20265.53, 0, 0], ["2026-08-10", 1, 1, 8, 0, 5411.49, 0], ["2026-08-11", 1, 1, 5, 0, 11792.3, 0], ["2026-08-13", 0, 5, 11, 0, 30062.81, 0], ["2026-08-14", 0, 0, 1, 13670.14, 0, 0], ["2026-08-14", 0, 5, 7, 0, 5141.35, 0], ["2026-08-15", 0, 3, 3, 6446.72, 0, 0], ["2026-08-16", 0, 2, 3, 13481.56, 0, 0], ["2026-08-16", 0, 4, 14, 0, 5633.52, 0], ["2026-08-17", 0, 0, 0, 26025.65, 0, 0], ["2026-08-17", 0, 4, 15, 0, 4363.13, 0], ["2026-08-18", 0, 2, 3, 13481.56, 0, 0], ["2026-08-18", 0, 5, 7, 0, 5141.35, 0], ["2026-08-20", 0, 0, 0, 26025.65, 0, 0], ["2026-08-20", 0, 0, 1, 13670.14, 0, 0], ["2026-08-21", 0, 0, 1, 13670.14, 0, 0], ["2026-08-21", 1, 0, 4, 5851.22, 0, 0], ["2026-08-21", 1, 1, 2, 20265.53, 0, 0], ["2026-08-21", 1, 1, 8, 0, 5411.49, 0], ["2026-08-22", 0, 4, 13, 0, 5709.88, 0], ["2026-08-22", 0, 5, 7, 0, 10282.7, 0], ["2026-08-23", 0, 2, 3, 13481.56, 0, 0], ["2026-08-23", 0, 4, 6, 0, 5091.72, 0], ["2026-08-23", 0, 4, 13, 0, 5709.88, 0], ["2026-08-24", 0, 0, 10, 0, 3222.91, 0], ["2026-08-24", 0, 3, 3, 6446.72, 0, 0], ["2026-08-26", 0, 2, 3, 13481.56, 0, 0], ["2026-08-26", 0, 4, 18, 0, 6398.52, 0], ["2026-08-27", 0, 0, 1, 13670.14, 0, 0], ["2026-08-27", 0, 4, 13, 0, 5709.88, 0], ["2026-08-28", 0, 4, 6, 0, 5091.72, 0], ["2026-08-28", 0, 4, 16, 0, 1366.56, 0], ["2026-08-29", 0, 4, 18, 0, 6398.52, 0], ["2026-08-29", 0, 5, 11, 0, 30062.81, 0], ["2026-08-29", 1, 1, 9, 0, 3796.83, 0], ["2026-08-30", 0, 3, 3, 6446.72, 0, 0], ["2026-08-30", 0, 4, 13, 0, 5709.88, 0], ["2026-08-30", 1, 1, 8, 0, 5411.49, 0], ["2026-08-31", 0, 0, 10, 0, 3222.91, 0], ["2026-08-31", 0, 4, 6, 0, 5091.72, 0], ["2026-08-31", 0, 4, 17, 0, 9240.0, 0], ["2026-09-01", 0, 4, 15, 0, 4412.18, 0], ["2026-09-01", 0, 4, 16, 0, 1540.67, 0], ["2026-09-02", 0, 2, 3, 31866.69, 0, 0], ["2026-09-02", 0, 3, 3, 6321.43, 0, 0], ["2026-09-02", 0, 4, 18, 0, 3499.33, 0], ["2026-09-02", 0, 5, 7, 0, 12278.08, 0], ["2026-09-03", 0, 0, 0, 16128.22, 0, 0], ["2026-09-03", 0, 3, 3, 6321.43, 0, 0], ["2026-09-03", 1, 1, 5, 0, 6226.59, 0], ["2026-09-03", 1, 1, 8, 0, 5958.42, 0], ["2026-09-04", 0, 0, 1, 51742.92, 0, 0], ["2026-09-04", 0, 4, 6, 0, 6840.53, 0], ["2026-09-05", 0, 2, 3, 31866.69, 0, 0], ["2026-09-05", 1, 1, 2, 42898.28, 0, 0], ["2026-09-06", 0, 0, 0, 16128.22, 0, 0], ["2026-09-07", 0, 4, 5, 0, 15472.2, 0], ["2026-09-07", 0, 4, 6, 0, 6840.53, 0], ["2026-09-08", 0, 4, 6, 0, 6840.53, 0], ["2026-09-09", 0, 5, 11, 0, 13003.41, 13003.41], ["2026-09-10", 0, 4, 14, 0, 5391.87, 0], ["2026-09-10", 0, 5, 11, 0, 13003.41, 0], ["2026-09-11", 0, 0, 10, 0, 9795.22, 0], ["2026-09-12", 0, 4, 19, 40000, 0, 0], ["2026-09-12", 1, 1, 2, 42898.28, 0, 0], ["2026-09-14", 0, 0, 10, 0, 4897.61, 0], ["2026-09-16", 0, 0, 8, 0, 10199.39, 0], ["2026-09-17", 0, 4, 13, 0, 7632.34, 0], ["2026-09-18", 0, 4, 18, 0, 3499.33, 0], ["2026-09-19", 0, 0, 0, 16128.22, 0, 0], ["2026-09-20", 0, 4, 13, 0, 7632.34, 0], ["2026-09-21", 1, 1, 8, 0, 5958.42, 0], ["2026-09-23", 0, 3, 3, 6321.43, 0, 0], ["2026-09-23", 0, 4, 18, 0, 3499.33, 0], ["2026-09-24", 0, 3, 3, 6321.43, 0, 0], ["2026-09-25", 0, 4, 13, 0, 7632.34, 0], ["2026-09-25", 0, 4, 17, 0, 9289.5, 0], ["2026-09-25", 0, 5, 12, 0, 5335.88, 0], ["2026-09-25", 1, 1, 5, 0, 6226.59, 0], ["2026-09-25", 1, 1, 8, 0, 5958.42, 0], ["2026-09-25", 1, 1, 9, 0, 8128.93, 0], ["2026-09-26", 1, 1, 9, 0, 8128.93, 0], ["2026-09-27", 0, 4, 5, 0, 30944.4, 0], ["2026-09-27", 1, 1, 8, 0, 5958.42, 0], ["2026-09-28", 0, 5, 7, 0, 12278.08, 0], ["2026-09-28", 1, 0, 4, 5540.15, 0, 0], ["2026-09-28", 1, 1, 5, 0, 6226.59, 0], ["2026-09-29", 1, 1, 5, 0, 6226.59, 0], ["2026-09-30", 0, 0, 0, 16128.22, 0, 0], ["2026-09-30", 0, 5, 11, 0, 13003.41, 0], ["2026-10-01", 0, 0, 1, 28210.64, 0, 0], ["2026-10-02", 0, 4, 14, 0, 5490.84, 0], ["2026-10-02", 1, 1, 2, 24995.77, 0, 0], ["2026-10-03", 0, 0, 0, 12850.48, 0, 0], ["2026-10-03", 1, 1, 9, 0, 6218.69, 0], ["2026-10-04", 0, 2, 3, 17952.21, 0, 0], ["2026-10-04", 0, 4, 6, 0, 9639.08, 0], ["2026-10-04", 1, 1, 8, 0, 6329.78, 0], ["2026-10-06", 0, 4, 5, 0, 15778.69, 0], ["2026-10-06", 0, 4, 18, 0, 7229.97, 0], ["2026-10-06", 0, 5, 11, 0, 11179.95, 11179.95], ["2026-10-09", 0, 0, 10, 0, 6067.18, 0], ["2026-10-10", 0, 0, 10, 0, 6067.18, 0], ["2026-10-11", 0, 4, 15, 0, 4388.04, 0], ["2026-10-11", 1, 1, 8, 0, 6329.78, 0], ["2026-10-13", 0, 0, 8, 0, 7748.47, 0], ["2026-10-13", 0, 5, 11, 0, 11179.95, 0], ["2026-10-14", 0, 0, 1, 28210.64, 0, 0], ["2026-10-14", 1, 1, 9, 0, 6218.69, 0], ["2026-10-15", 0, 4, 18, 0, 14459.94, 0], ["2026-10-16", 0, 2, 3, 17952.21, 0, 0], ["2026-10-16", 0, 3, 3, 13155.88, 0, 0], ["2026-10-16", 0, 5, 7, 0, 17955.7, 0], ["2026-10-17", 0, 5, 11, 0, 11179.95, 0], ["2026-10-19", 0, 0, 0, 12850.48, 0, 0], ["2026-10-19", 0, 4, 5, 0, 15778.69, 0], ["2026-10-20", 0, 4, 13, 0, 5887.24, 0], ["2026-10-21", 1, 1, 8, 0, 6329.78, 0], ["2026-10-21", 1, 1, 9, 0, 6218.69, 0], ["2026-10-22", 0, 4, 17, 0, 9339.0, 0], ["2026-10-23", 0, 2, 3, 17952.21, 0, 0], ["2026-10-23", 0, 4, 13, 0, 5887.24, 0], ["2026-10-23", 1, 1, 5, 0, 12021.12, 0], ["2026-10-25", 0, 4, 13, 0, 11774.48, 0], ["2026-10-25", 1, 1, 2, 49991.54, 0, 0], ["2026-10-26", 0, 5, 7, 0, 17955.7, 0], ["2026-10-26", 1, 1, 8, 0, 6329.78, 0], ["2026-10-27", 0, 0, 0, 12850.48, 0, 0], ["2026-10-28", 0, 0, 0, 12850.48, 0, 0], ["2026-10-28", 0, 4, 16, 0, 1058.65, 0], ["2026-10-29", 0, 5, 11, 0, 11179.95, 0], ["2026-10-29", 1, 1, 9, 0, 6218.69, 0], ["2026-10-31", 0, 3, 3, 13155.88, 0, 0], ["2026-10-31", 0, 4, 5, 0, 15778.69, 0], ["2026-10-31", 0, 4, 6, 0, 9639.08, 0], ["2026-10-31", 0, 5, 12, 0, 7935.21, 0], ["2026-10-31", 1, 0, 4, 11130.95, 0, 0], ["2026-10-31", 1, 1, 5, 0, 12021.12, 0], ["2026-11-02", 0, 5, 7, 0, 1550.92, 0], ["2026-11-02", 0, 5, 11, 0, 2196.33, 0], ["2026-11-02", 1, 1, 2, 4828.7, 0, 0], ["2026-11-03", 0, 5, 11, 0, 2196.33, 0], ["2026-11-03", 1, 1, 5, 0, 2637.73, 0], ["2026-11-04", 0, 0, 1, 3876.47, 0, 0], ["2026-11-04", 0, 4, 14, 0, 1244.31, 0], ["2026-11-04", 0, 5, 7, 0, 1550.92, 0], ["2026-11-05", 1, 1, 2, 4828.7, 0, 0], ["2026-11-06", 0, 0, 1, 7752.94, 0, 0], ["2026-11-06", 1, 1, 2, 4828.7, 0, 0], ["2026-11-06", 1, 1, 5, 0, 2637.73, 0]], "rec": [["2026-04-09", 3180, 1, 1, "Eventos Marajoara Ltda", "Locação do parque para evento corporativo"], ["2026-08-05", 18400, 0, 2, "Construtora Lima & Filhos", "Parcela 7/24 · lote 14 quadra C"], ["2026-09-07", 6200, 0, 2, "Construtora Lima & Filhos", "Parcela 6/24 · lote 14 quadra C"], ["2026-09-30", 9750, 0, 0, "Associação dos Moradores do Bosque", "Convênio de uso da piscina"], ["2026-10-26", 4200, 0, 0, "Cristina Paes", "Joia do título familiar · parcela 3/10"], ["2026-11-02", 1050, 0, 0, "Rogério Teles", "Joia do título · parcela 2/10"], ["2026-11-10", 12600, 1, 1, "Colégio Novo Horizonte", "Excursão escolar · 280 alunos"], ["2026-11-13", 2900, 0, 3, "Rogério Teles", "Parcela 11/60 · lote 3 quadra A"], ["2026-11-21", 31000, 1, 1, "Prefeitura Municipal (convênio)", "Programa Férias na Água"], ["2026-11-28", 6400, 0, 0, "Clínica Vida Plena", "Aluguel do salão nobre"], ["2026-12-05", 1850, 0, 3, "Paulo Andrade", "Parcela 4/48 · lote 9 quadra D"]], "pag": [["2026-05-01", 2750, 0, 4, "Gráfica Ponto Certo", "Folhetos da campanha de inverno"], ["2026-09-23", 14300, 1, 1, "Hidro Bombas Norte", "Troca da bomba da piscina de ondas"], ["2026-10-18", 5600, 0, 5, "Agência Maré Digital", "Gestão de anúncios · setembro"], ["2026-10-29", 3900, 0, 4, "Escritório Contábil Ribeiro", "Honorários de outubro"], ["2026-11-05", 12480, 0, 0, "Concessionária de Energia", "Energia · outubro"], ["2026-11-09", 8250, 0, 4, "Banco do Norte", "Parcela 19/36 do empréstimo"], ["2026-11-12", 4800, 0, 4, "Nuvem Sistemas", "Assinatura do ERP e CRM"], ["2026-11-16", 22000, 1, 1, "Folha de pagamento", "Salários da equipe do parque"], ["2026-11-25", 7300, 1, 1, "Distribuidora Sabor do Pará", "Alimentos e bebidas (aguardando aprovação)"], ["2026-12-02", 16000, 0, 5, "Agência Maré Digital", "Campanha de verão · adiantamento"]], "ratPend": 0, "ratN": 7};
+(() => {
+const $ = id => document.getElementById(id);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+const R$ = v => (v < -0.5 ? '−' : '') + 'R$ ' + Math.abs(Math.round(v || 0)).toLocaleString('pt-BR');
+const k$ = v => { const a = Math.abs(v); return (v < 0 ? '−' : '') + (a >= 1e6 ? (a / 1e6).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) + ' mi' : a >= 1e3 ? Math.round(a / 1e3).toLocaleString('pt-BR') + ' mil' : Math.round(a).toLocaleString('pt-BR')); };
+const pc = (a, b) => b ? Math.round((a - b) / Math.abs(b) * 100) : null;
+const MES = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+const MESL = ['janeiro', 'fevereiro', 'março', 'abril', 'maio', 'junho', 'julho', 'agosto', 'setembro', 'outubro', 'novembro', 'dezembro'];
+const cap = s => s.charAt(0).toUpperCase() + s.slice(1);
+const H = DD.hoje, hy = +H.slice(0, 4), hm = +H.slice(5, 7), hd = +H.slice(8, 10);
+const ymd = (y, m, d) => { const x = new Date(Date.UTC(y, m - 1, d)); return x.toISOString().slice(0, 10); };
+const fimMes = (y, m) => ymd(y, m + 1, 0);
+const lim = (s) => s > H ? H : s;
+const dm = s => s ? s.slice(8, 10) + '/' + s.slice(5, 7) : '';
+const ICO = { ok: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg>', av: '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 9v4"/><path d="M12 17h.01"/><path d="M10.3 3.9L1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>', seta: '<svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>' };
+
+// ---------- classes: tipo (R/D/A/X/O), grupo e folha ----------
+const semCod = s => String(s || '').replace(/^[\d.]+\s+/, '');
+const CL = DD.cls.map((c, i) => {
+  const raiz = c.pais[0] || { cod: c.cod, nome: c.nome };
+  const g = c.pais[1] || (c.pais.length === 1 ? { cod: c.cod, nome: c.nome } : raiz);
+  const n = (raiz.nome || '').toLowerCase();
+  let tipo = /aporte/.test(n) ? 'A' : /retirad/.test(n) ? 'X' : /(outras|n[aã]o operac)/.test(n) ? 'O' : /receit/.test(n) ? 'R' : /(despes|custo)/.test(n) ? 'D' : '';
+  return { i, tipo, raiz: (raiz.cod ? raiz.cod + ' ' : '') + raiz.nome, gk: g.cod || g.nome, gn: (g.cod ? g.cod + ' ' : '') + g.nome, fn: (c.cod ? c.cod + ' ' : '') + c.nome, cod: c.cod };
+});
+const tot0 = DD.cls.map(() => [0, 0]); DD.l.forEach(r => { tot0[r[3]][0] += r[4]; tot0[r[3]][1] += r[5]; });
+CL.forEach(c => { if (!c.tipo) c.tipo = tot0[c.i][0] >= tot0[c.i][1] ? 'R' : 'D'; if (!c.cod) { c.gk = c.tipo === 'R' ? '~R' : '~D'; c.gn = 'Sem classificação no ERP'; c.raiz = c.tipo === 'R' ? 'Receitas' : 'Despesas'; } });
+const val = (r) => { const c = CL[r[3]]; return c.tipo === 'R' || c.tipo === 'A' ? r[4] - r[5] : r[5] - r[4]; };
+const valTxt = (tipo, v) => tipo === 'A' ? (v >= 0 ? 'entrou ' + R$(v) : 'saiu ' + R$(-v)) : (tipo === 'X' || tipo === 'O') ? (v >= 0 ? 'saiu ' + R$(v) : 'voltou ' + R$(-v)) : R$(v);
+const NOMES = { R: 'Receitas', D: 'Despesas', O: 'Outras despesas / não operacionais', A: 'Aportes', X: 'Retiradas de sócio' };
+
+// ---------- estado ----------
+const S = { un: -1, cc: -1, per: 'mes_ant', sel: null, abertos: new Set(), ano: hy, dreAb: new Set(), graf: 'res', ccTodos: false, abT: { rec: 'V', pag: 'V' }, abTodos: {}, abAb: new Set(), mesAb: hm > 1 ? hy + '-' + (hm - 2) : null };
+const leHash = () => { try { const h = new URLSearchParams(location.hash.slice(1)); if (h.get('un')) S.un = +h.get('un'); if (h.get('cc')) S.cc = +h.get('cc'); if (h.get('per')) S.per = h.get('per'); } catch (e) {} };
+leHash();
+let hashMeu = false;
+const salva = () => { try { hashMeu = true; history.replaceState(null, '', location.search + '#un=' + S.un + '&cc=' + S.cc + '&per=' + S.per); } catch (e) {} };
+addEventListener('hashchange', () => { leHash(); tudo(); });
+const pm = hm === 1 ? 12 : hm - 1, py = hm === 1 ? hy - 1 : hy;
+const periodo = () => {
+  if (S.per === 'mes') { const cf = ymd(py, pm, Math.min(hd, +fimMes(py, pm).slice(8))); return { a: ymd(hy, hm, 1), b: H, ca: ymd(py, pm, 1), cb: cf, nome: MESL[hm - 1] + ' (até hoje)', curto: MESL[hm - 1], cnome: '1º a ' + hd + ' de ' + MESL[pm - 1], aberto: true, mes: [hy, hm] }; }
+  if (S.per === 'mes_ant') { const qm = pm === 1 ? 12 : pm - 1, qy = pm === 1 ? py - 1 : py; return { a: ymd(py, pm, 1), b: fimMes(py, pm), ca: ymd(qy, qm, 1), cb: fimMes(qy, qm), nome: MESL[pm - 1] + ' de ' + py, curto: MESL[pm - 1], cnome: MESL[qm - 1], aberto: false, mes: [py, pm] }; }
+  if (S.per === '12m') return { a: ymd(hy, hm - 11, 1), b: H, ca: ymd(hy, hm - 23, 1), cb: ymd(hy, hm - 11, 0), nome: 'últimos 12 meses', curto: 'nos últimos 12 meses', cnome: '12 meses anteriores', aberto: true };
+  return { a: ymd(hy, 1, 1), b: H, ca: ymd(hy - 1, 1, 1), cb: ymd(hy - 1, hm, hd), nome: 'ano de ' + hy + ' (até hoje)', curto: 'em ' + hy, cnome: 'mesmo período de ' + (hy - 1), aberto: true };
+};
+const filtra = (r, ign) => (S.un < 0 || r[1] === S.un || ign === 'un') && (S.cc < 0 || r[2] === S.cc || ign === 'cc');
+const soma = (rows, a, b) => { const o = { R: 0, D: 0, O: 0, A: 0, X: 0, E: 0, S: 0 }; for (const r of rows) { if (r[0] < a || r[0] > b) continue; o[CL[r[3]].tipo] += val(r); o.E += r[4]; o.S += r[5]; } return o; };
+
+// ---------- completude dos lançamentos ----------
+const conta = (a, b) => DD.l.reduce((n, r) => n + (r[0] >= a && r[0] <= b ? 1 : 0), 0);
+const ultData = (i) => DD.l.reduce((m, r) => r[i] > 0 && r[0] > m ? r[0] : m, '');
+const COMP = (() => {
+  const cur = conta(ymd(hy, hm, 1), H);
+  const base = [1, 2, 3].map(k => { const d = new Date(Date.UTC(hy, hm - 1 - k, 1)); const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1; return conta(ymd(y, m, 1), ymd(y, m, Math.min(hd, +fimMes(y, m).slice(8)))); });
+  const esp = base.reduce((s, x) => s + x, 0) / 3;
+  const fech = conta(ymd(py, pm, 1), fimMes(py, pm));
+  const fbase = [1, 2, 3].map(k => { const d = new Date(Date.UTC(py, pm - 1 - k, 1)); const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1; return conta(ymd(y, m, 1), fimMes(y, m)); });
+  const fesp = fbase.reduce((s, x) => s + x, 0) / 3;
+  return { cur, esp: Math.round(esp), r: esp ? cur / esp : 1, fech, fesp: Math.round(fesp), fr: fesp ? fech / fesp : 1, ultE: ultData(4), ultS: ultData(5) };
+})();
+const incompleto = () => S.per === 'mes' && COMP.r < 0.5;
+
+// ---------- controles ----------
+const ccsDaEmpresa = () => { const s = new Set(); DD.l.forEach(r => { if (S.un < 0 || r[1] === S.un) s.add(r[2]); }); return [...s].sort((x, y) => DD.cc[x].localeCompare(DD.cc[y])); };
+function controles() {
+  const fu = $('fUn'); fu.innerHTML = ''; fu.append(new Option('Todas as empresas', -1)); DD.un.forEach((u, i) => { if (u !== '—') fu.append(new Option(u, i)); }); fu.value = S.un;
+  const fc = $('fCc'); fc.innerHTML = ''; fc.append(new Option('Todos', -1)); ccsDaEmpresa().forEach(i => fc.append(new Option(DD.cc[i], i))); if (S.cc >= 0 && ![...fc.options].some(o => +o.value === S.cc)) S.cc = -1; fc.value = S.cc;
+  const fp = $('fPer'); fp.innerHTML = '';
+  [['mes_ant', cap(MESL[pm - 1])], ['mes', cap(MESL[hm - 1]) + ' · parcial'], ['12m', '12 meses'], ['ano', 'Ano ' + hy]].forEach(([k, n]) => { const b = el('button', '', n); b.type = 'button'; b.setAttribute('aria-pressed', String(S.per === k)); b.onclick = () => { S.per = k; tudo(); }; fp.append(b); });
+}
+$('fUn').onchange = e => { S.un = +e.target.value; S.cc = -1; S.sel = null; tudo(); };
+$('fCc').onchange = e => { S.cc = +e.target.value; S.sel = null; tudo(); };
+$('badge').onclick = () => $('secSaude').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+// ---------- agregados do ano ----------
+const somaA = a => a.reduce((s, x) => s + x, 0);
+const plu = (n, s1, sn) => n + ' ' + (n === 1 ? s1 : sn);
+function agrAno(rows, ano) {
+  const G = {}, F = {}, Tm = { R: Array(12).fill(0), D: Array(12).fill(0), X: Array(12).fill(0), O: Array(12).fill(0), A: Array(12).fill(0) };
+  for (const r of rows) {
+    if (+r[0].slice(0, 4) !== ano) continue;
+    const c = CL[r[3]], m = +r[0].slice(5, 7) - 1, v = val(r); Tm[c.tipo][m] += v;
+    const gk = c.tipo + '|' + c.gk; const g = G[gk] = G[gk] || { t: c.tipo, k: c.gk, n: semCod(c.gn), m: Array(12).fill(0), s: 0 }; g.m[m] += v; g.s += v;
+    if (c.tipo === 'D') { const f = F[c.i] = F[c.i] || { i: c.i, n: semCod(c.fn), g: semCod(c.gn), m: Array(12).fill(0), s: 0 }; f.m[m] += v; f.s += v; }
+  }
+  const ult = ano === hy ? hm : 12, fech = ano === hy ? hm - 1 : 12;
+  return { G, F, Tm, ult, fech };
+}
+const mediana = a => { const z = a.filter(v => v > 1).sort((x, y) => x - y); return z.length ? z[Math.floor(z.length / 2)] : 0; };
+const resMes = (rows, y, m) => { const o = soma(rows, ymd(y, m, 1), lim(fimMes(y, m))); return { r: o.R - o.D, tem: o.R + o.D > 0 }; };
+
+function tudo() {
+  salva(); controles();
+  const P = periodo();
+  const inc = incompleto();
+  const rows = DD.l.filter(r => filtra(r));
+  const cur = soma(rows, P.a, P.b), ant = soma(rows, P.ca, P.cb);
+  const res = cur.R - cur.D, resA = ant.R - ant.D;
+  const alvo = (S.un >= 0 ? DD.un[S.un] : 'Todas as empresas') + (S.cc >= 0 ? ' › ' + DD.cc[S.cc] : '');
+  $('titulo').textContent = DD.nome;
+
+  // trilha
+  const tr = $('trilha'); tr.innerHTML = '';
+  if (S.un >= 0 || S.cc >= 0) {
+    tr.append(document.createTextNode('Vendo: '));
+    const lk = (t, f) => { const a = el('button', 'lk', t); a.type = 'button'; a.onclick = f; return a; };
+    tr.append(lk('Todas as empresas', () => { S.un = -1; S.cc = -1; S.sel = null; tudo(); }));
+    if (S.un >= 0) { tr.append(document.createTextNode(' › ')); tr.append(lk(DD.un[S.un], () => { S.cc = -1; S.sel = null; tudo(); })); }
+    if (S.cc >= 0) tr.append(document.createTextNode(' › ' + DD.cc[S.cc]));
+  }
+
+  // selo de confiança
+  const bd = $('badge');
+  let bTipo, bTxt;
+  if (DD.erro) { bTipo = 'ruim'; bTxt = 'Não consegui atualizar agora'; }
+  else if (S.per === 'mes' && inc) { bTipo = 'av'; bTxt = cap(MESL[hm - 1]) + ' ainda está sendo lançado'; }
+  else if (S.per === 'mes_ant' && COMP.fr < 0.7) { bTipo = 'av'; bTxt = cap(MESL[pm - 1]) + ' parece incompleto'; }
+  else if (S.per === 'mes') { bTipo = 'inf'; bTxt = cap(MESL[hm - 1]) + ' em andamento'; }
+  else { bTipo = 'bom'; bTxt = S.per === 'mes_ant' ? 'Dados de ' + MESL[pm - 1] + ' completos' : 'Dados atualizados'; }
+  const bc = { bom: ['var(--bom)', 'var(--bomf)'], av: ['var(--av)', 'var(--avf)'], ruim: ['var(--ruim)', 'var(--ruimf)'], inf: ['var(--inf)', 'var(--inff)'] }[bTipo];
+  bd.style.color = bc[0]; bd.style.background = bc[1]; bd.style.borderColor = 'transparent';
+  bd.innerHTML = (bTipo === 'bom' ? ICO.ok : ICO.av) + '<span>' + bTxt + '</span>' + ICO.seta;
+  bd.setAttribute('aria-label', bTxt + '. Ver detalhes da conferência dos dados');
+
+  // ---------- resposta em uma frase ----------
+  const hero = $('hero'); hero.className = 'card hero' + (inc ? ' parcial' : '');
+  const quando = S.per === 'mes_ant' ? 'Em ' + MESL[pm - 1] : S.per === 'mes' ? 'Em ' + MESL[hm - 1] + ', até agora' : S.per === '12m' ? 'Nos últimos 12 meses' : 'Em ' + hy + ', até agora';
+  const over = S.per === 'mes_ant' ? cap(MESL[pm - 1]) + ' de ' + py + ' em uma frase' : S.per === 'mes' ? cap(MESL[hm - 1]) + ' até hoje' : S.per === '12m' ? 'Últimos 12 meses em uma frase' : hy + ' até hoje em uma frase';
+  if (inc) {
+    hero.innerHTML = `<span class="over">${esc(over)}</span><h2>${esc(cap(MESL[hm - 1]))} ainda não dá para comparar: a maior parte dos lançamentos não entrou no ERP.</h2>
+<div class="pq"><div><span class="sub">Lançamentos até ${dm(H)}</span><span class="ser" style="font-size:28px">${COMP.cur} <span style="font-size:16px;color:var(--mut)">de ~${COMP.esp}</span></span><span style="font-size:13px;color:var(--tx2)">Média dos mesmos dias nos 3 meses anteriores.</span></div>
+<div><span class="sub">Última receita lançada</span><span class="ser" style="font-size:28px">${COMP.ultE ? dm(COMP.ultE) : '—'}</span><span style="font-size:13px;color:var(--tx2)">Última despesa lançada: ${COMP.ultS ? dm(COMP.ultS) : '—'}.</span></div>
+<div><span class="sub">O que fazer</span><span style="font-size:15px;font-weight:600">Use ${esc(MESL[pm - 1])} para decidir.</span><span style="font-size:13px;color:var(--tx2)">Os números abaixo servem para acompanhar o que já saiu, não para comparar.</span></div></div>`;
+  } else if (cur.R + cur.D < 1) {
+    hero.innerHTML = `<span class="over">${esc(over)}</span><h2>Nada lançado neste período com o filtro escolhido.</h2>`;
+  } else {
+    const p = cur.R > 0 ? Math.round(cur.D / cur.R * 100) : null;
+    let streak = '';
+    if (P.mes) { let n = 0, s = 0, ms = []; let y = P.mes[0], m = P.mes[1]; for (let k = 0; k < 12; k++) { const x = resMes(rows, y, m); if (x.tem && x.r < 0) { n++; s += x.r; ms.unshift(MESL[m - 1]); } else break; m--; if (m < 1) { m = 12; y--; } }
+      if (n >= 2 && res < 0) streak = ` É o <strong>${n}º mês seguido no vermelho</strong> (${ms.length > 3 ? 'desde ' + ms[0] : ms.slice(0, -1).join(', ') + ' e ' + ms[ms.length - 1]} somam ${R$(-s)} a menos).`;
+      else { let q = 0; y = P.mes[0]; m = P.mes[1]; for (let k = 0; k < 12; k++) { const x = resMes(rows, y, m); if (x.tem && x.r > 0) q++; else break; m--; if (m < 1) { m = 12; y--; } } if (q >= 2 && res > 0) streak = ` É o <strong>${q}º mês seguido no azul</strong>.`; } }
+    const frase = res < 0 ? `${quando}, a ${S.cc >= 0 || S.un >= 0 ? 'seleção' : 'empresa'} gastou mais do que recebeu: <span class="c-ruim" style="white-space:nowrap">faltaram ${R$(-res)}</span> na operação.` : `${quando}, a operação se pagou: <span class="c-bom" style="white-space:nowrap">sobraram ${R$(res)}</span>.`;
+    const expl = p == null ? `Não entrou receita no período e saíram ${R$(cur.D)} em despesas.` : `Para cada <strong>R$ 100</strong> que os clientes pagaram, saíram <strong>R$ ${p}</strong> em despesas.`;
+    let barra = '';
+    if (p != null) {
+      if (p > 100) { const w = 100 / p * 100; barra = `<div class="b100" role="img" aria-label="Saíram R$ ${p} para cada R$ 100 que entraram"><i style="left:0;width:${w}%;background:var(--up)"></i><i style="left:${w}%;width:${100 - w}%;background:var(--dn)"></i></div><div class="bl"><span style="color:var(--bom)">R$ 100 que entraram</span><span style="color:var(--ruim)">+ R$ ${p - 100} que faltaram</span></div><span class="sub">A barra inteira são os R$ ${p} que saíram. A parte vermelha saiu do caixa, não das vendas.</span>`; }
+      else { barra = `<div class="b100" role="img" aria-label="De cada R$ 100 que entraram, R$ ${p} foram para despesas e sobraram R$ ${100 - p}"><i style="left:0;width:${p}%;background:var(--neu)"></i><i style="left:${p}%;width:${100 - p}%;background:var(--up)"></i></div><div class="bl"><span>R$ ${p} em despesas</span><span style="color:var(--bom)">sobraram R$ ${100 - p}</span></div><span class="sub">A barra inteira são os R$ 100 que entraram.</span>`; }
+    }
+    hero.innerHTML = `<span class="over">${esc(over)}</span><h2>${frase}</h2><p>${expl}${streak}</p>${barra ? '<div style="display:flex;flex-direction:column;gap:6px">' + barra + '</div>' : ''}`;
+  }
+
+  // ---------- 4 números ----------
+  const selo = (a, b, maisEhBom) => { if (inc) return `<span class="selo s-av">parcial</span><span>sem comparação</span>`; const p = pc(a, b); if (p == null) return `<span>sem base de comparação</span>`; if (p === 0) return `<span class="selo s-inf">igual</span><span>vs ${esc(P.cnome)}</span>`; const bom = maisEhBom ? p > 0 : p < 0; return `<span class="selo ${bom ? 's-bom' : 's-ruim'}">${bom ? 'melhor' : 'pior'} · ${p > 0 ? '+' : '−'}${Math.abs(p)}%</span><span>vs ${esc(P.cnome)}</span>`; };
+  const foraL = [cur.X ? (cur.X >= 0 ? `Retiradas de sócio: saiu ${R$(cur.X)}` : `Retiradas devolvidas: voltou ${R$(-cur.X)}`) : '', cur.A ? (cur.A >= 0 ? `Aporte dos sócios: entrou ${R$(cur.A)}` : `Devolução de aporte: saiu ${R$(-cur.A)}`) : '', cur.O ? (cur.O >= 0 ? `Empréstimos e não operacionais: saiu ${R$(cur.O)}` : `Não operacionais: voltou ${R$(-cur.O)}`) : ''].filter(Boolean);
+  const cx = cur.E - cur.S;
+  const kcard = (cls, t, o, v, cor, x) => `<div class="card${cls}"><span class="t">${t}</span><span class="o">${o}</span><span class="v" style="color:${cor}">${v}</span><span class="x">${x}</span></div>`;
+  const tr2 = inc ? ' tr' : '';
+  $('kpis').innerHTML =
+    kcard(tr2, 'Entrou', inc ? 'até ' + dm(H) : 'o que os clientes pagaram', R$(cur.R), inc && cur.R < 1 ? 'var(--ax)' : 'var(--tx)', inc && cur.R < 1 ? '<span class="selo s-av">aguardando lançamento</span>' : selo(cur.R, ant.R, true)) +
+    kcard(tr2, 'Saiu em despesas', inc ? 'até ' + dm(H) : 'equipe, fornecedores, impostos, aluguel', R$(cur.D), 'var(--tx)', selo(cur.D, ant.D, false)) +
+    kcard(tr2, 'Resultado da operação', 'entrou − saiu em despesas', inc && cur.R < 1 ? '—' : R$(res), inc && cur.R < 1 ? 'var(--ax)' : res < 0 ? 'var(--ruim)' : 'var(--bom)', inc && cur.R < 1 ? '<span>Aparece quando houver receitas lançadas.</span>' : (cur.R > 0 ? `<span class="selo ${res < 0 ? 's-ruim' : 's-bom'}">${res < 0 ? 'faltou' : 'sobrou'}</span><span>R$ ${Math.abs(Math.round(res / cur.R * 100))} ${res < 0 ? 'a menos' : 'a mais'} a cada R$ 100</span>` : `<span class="selo s-ruim">sem receita</span>`)) +
+    `<div class="card${tr2}"><span class="t">Variação do caixa</span><span class="o">resultado + o que mexeu fora da operação</span><span class="v" style="color:${inc && cur.R < 1 ? 'var(--ax)' : cx < 0 ? 'var(--ruim)' : 'var(--bom)'}">${inc && cur.R < 1 ? '—' : R$(cx)}</span>${inc && cur.R < 1 ? '<span class="x">Aparece quando houver receitas lançadas.</span>' : `<span class="x"><span class="selo ${cx < 0 ? 's-ruim' : 's-bom'}">${cx < 0 ? 'saiu do caixa' : 'entrou no caixa'}</span></span>${foraL.length ? '<span class="fx">' + foraL.join('<br>') + '</span>' : ''}`}</div>`;
+
+  // ---------- grupos ----------
+  const grupos = (tipo, a, b) => { const m = new Map(); for (const r of rows) { if (r[0] < a || r[0] > b) continue; const c = CL[r[3]]; if (c.tipo !== tipo) continue; const g = m.get(c.gk) || { k: c.gk, n: c.gn, v: 0, f: new Map() }; const v = val(r); g.v += v; const f = g.f.get(c.i) || { i: c.i, n: c.fn, v: 0 }; f.v += v; g.f.set(c.i, f); m.set(c.gk, g); } return m; };
+
+  // ---------- resultado linha a linha: cascata + extrato ----------
+  const MK = (y, m) => y + '-' + String(m).padStart(2, '0');
+  const mesesAte = (y, m, n) => { const a = []; for (let k = n - 1; k >= 0; k--) { const d = new Date(Date.UTC(y, m - 1 - k, 1)); a.push(MK(d.getUTCFullYear(), d.getUTCMonth() + 1)); } return a; };
+  const fimM = P.mes || [hy, hm];
+  const kSp = mesesAte(fimM[0], fimM[1], 12);
+  const kMed = P.mes ? mesesAte(fimM[1] === 1 ? fimM[0] - 1 : fimM[0], fimM[1] === 1 ? 12 : fimM[1] - 1, 12) : null;
+  const MB = new Map(); rows.forEach(r => { const k = r[0].slice(0, 7); if (!MB.has(k)) MB.set(k, []); MB.get(k).push(r); });
+  const serie = (fn, ks) => ks.map(k => (MB.get(k) || []).reduce((s, r) => s + fn(r), 0));
+  const fT = t => r => CL[r[3]].tipo === t ? val(r) : 0;
+  const fG = (t, gk) => r => { const c = CL[r[3]]; return c.tipo === t && c.gk === gk ? val(r) : 0; };
+  const fRes = r => { const t = CL[r[3]].tipo; return t === 'R' ? val(r) : t === 'D' ? -val(r) : 0; };
+  const fFora = r => { const t = CL[r[3]].tipo; return t === 'X' || t === 'O' ? val(r) : t === 'A' ? -val(r) : 0; };
+  const fCx = r => r[4] - r[5];
+  const media = fn => { if (!kMed) return null; const a = serie(fn, kMed); return a.reduce((s, x) => s + x, 0) / a.length; };
+  const seloX = (a, b, maisBom, ref) => { if (inc || b == null) return ''; const p = pc(a, b); if (p == null) return '<span class="selo s-inf">novo</span>'; if (Math.abs(p) < 1) return `<span class="selo s-inf">igual${ref ? ' à média' : ''}</span>`; if (maisBom == null) return `<span class="selo s-inf">${p > 0 ? '+' : '−'}${Math.abs(p)}%</span>`; const bom = maisBom ? p > 0 : p < 0; return `<span class="selo ${bom ? 's-bom' : 's-ruim'}">${bom ? 'melhor' : 'pior'} · ${p > 0 ? '+' : '−'}${Math.abs(p)}%</span>`; };
+  const seloRes = (a, b) => { if (inc || b == null) return ''; const d = a - b; if (Math.abs(d) < 1) return '<span class="selo s-inf">igual</span>'; return `<span class="selo ${d > 0 ? 's-bom' : 's-ruim'}">${d > 0 ? 'melhor' : 'pior'} · ${d > 0 ? '+' : '−'}${k$(Math.abs(d))}</span>`; };
+  const spark = a => { const mx = Math.max(1, ...a.map(Math.abs)); return '<span class="sp" aria-hidden="true">' + a.map((v, i) => `<i style="height:${Math.max(2, Math.round(Math.abs(v) / mx * 22))}px;background:${v < 0 ? 'var(--dn)' : i === a.length - 1 ? 'var(--tx)' : '#9DB0C0'}"></i>`).join('') + '</span>'; };
+  const por = v => cur.R > 0 ? (v < 0 ? '−' : '') + 'R$ ' + Math.round(Math.abs(v) / cur.R * 100) : '';
+  const XR = [];
+  const addGrupos = (tipo, maisBom) => { const g = grupos(tipo, P.a, P.b), ga = grupos(tipo, P.ca, P.cb); [...g.values()].filter(x => Math.abs(x.v) >= 1).sort((x, y) => Math.abs(y.v) - Math.abs(x.v)).forEach(x => { const fn = fG(tipo, x.k); const g0 = ga.get(x.k); const nm = semCod(x.n), suf = (tipo === 'X' && !/retirad|s[oó]cio/i.test(nm)) ? ' · retirada de sócio' : (tipo === 'A' && !/aporte/i.test(nm)) ? ' · aporte' : ''; const fo = maisBom == null, mb = fo || !kMed ? null : media(fn); XR.push({ niv: 2, nome: nm + suf, v: x.v, pv: tipo === 'R' || tipo === 'D' ? x.v : Math.abs(x.v), txt: tipo === 'R' || tipo === 'D' ? R$(x.v) : valTxt(tipo, x.v), a: fo || inc ? '' : (g0 && g0.v > 0 && x.v > 0) ? seloX(x.v, g0.v, maisBom) : (!g0 || Math.abs(g0.v) < 1 ? '<span class="selo s-inf">novo</span>' : ''), b: mb != null && mb > 0 && x.v > 0 ? seloX(x.v, mb, maisBom, 1) : '', sp: serie(fn, kSp), key: 'x|' + x.k, f: x.f, ga: g0, tipo }); }); };
+  XR.push({ niv: 1, nome: 'Entrou', v: cur.R, txt: R$(cur.R), a: seloX(cur.R, ant.R, true), b: kMed ? seloX(cur.R, media(fT('R')), true, 1) : '', sp: serie(fT('R'), kSp) });
+  addGrupos('R', true);
+  XR.push({ niv: 1, sinal: '−', nome: 'Despesas da operação', v: cur.D, txt: R$(cur.D), a: seloX(cur.D, ant.D, false), b: kMed ? seloX(cur.D, media(fT('D')), false, 1) : '', sp: serie(fT('D'), kSp) });
+  addGrupos('D', false);
+  XR.push({ niv: 0, sinal: '=', nome: 'Resultado da operação', v: res, txt: R$(res), cor: res < 0 ? 'var(--ruim)' : 'var(--bom)', a: seloRes(res, resA), b: kMed ? seloRes(res, media(fRes)) : '', sp: serie(fRes, kSp) });
+  const fora = cur.X + cur.O - cur.A;
+  if (Math.abs(cur.X) + Math.abs(cur.O) + Math.abs(cur.A) >= 1) { XR.push({ niv: 1, sinal: '−', nome: 'Fora da operação', v: fora, txt: fora >= 0 ? 'saiu ' + R$(fora) : 'entrou ' + R$(-fora), a: '', b: '', sp: serie(fFora, kSp) }); addGrupos('X', null); addGrupos('A', null); addGrupos('O', null); }
+  XR.push({ niv: 0, sinal: '=', nome: 'Variação do caixa', v: cx, txt: R$(cx), cor: cx < 0 ? 'var(--ruim)' : 'var(--bom)', a: '', b: '', sp: serie(fCx, kSp) });
+  {
+    let xh = `<div class="xr xh"><span>${esc(cap(P.nome))}</span><span>Valor</span><span class="c3">De cada R$ 100</span><span class="c4">${inc ? '' : 'vs ' + esc(P.cnome)}</span><span class="c5">${kMed && !inc ? 'vs média de 12 meses' : ''}</span><span class="c6">12 meses</span></div>`;
+    XR.forEach(o => {
+      const ab = !!o.key && S.abertos.has(o.key);
+      xh += `<div class="xr n${o.niv}"${o.key ? ` data-k="${esc(o.key)}" role="button" tabindex="0" aria-expanded="${ab}"` : ''}><span class="xn"><span class="sg2">${o.sinal || ''}</span>${o.key ? `<span class="sx">${ab ? '▾' : '▸'}</span>` : ''}<span>${esc(o.nome)}</span></span><span class="xv"${o.cor ? ` style="color:${o.cor}"` : ''}>${o.txt}</span><span class="c3">${por(o.pv != null ? o.pv : o.v)}</span><span class="c4">${o.a || ''}</span><span class="c5">${o.b || ''}</span><span class="c6">${spark(o.sp)}</span></div>`;
+      if (ab) xh += '<div class="xf">' + [...o.f.values()].filter(f => Math.abs(f.v) >= 1).sort((x, y) => Math.abs(y.v) - Math.abs(x.v)).map(f => { const fa = o.ga && o.ga.f.get(f.i) ? o.ga.f.get(f.i).v : 0; const p = pc(f.v, fa); const dir = o.tipo === 'R' || o.tipo === 'D'; const pior = o.tipo === 'R' ? p < 0 : p > 0; return `<button type="button" class="folha" data-c="${f.i}"><span>${esc(semCod(f.n))}</span><b>${valTxt(o.tipo, f.v)}</b><i class="${p == null || !dir ? 'cmp' : pior ? 'neg' : 'pos'}" title="vs ${esc(P.cnome)}">${inc ? '' : p == null ? 'novo' : (p >= 0 ? '+' : '') + p + '%'}</i></button>`; }).join('') + `<button type="button" class="folha" data-g="${esc(o.key.slice(2))}" data-n="${esc(o.nome)}"><span><u>ver o grupo no gráfico mês a mês</u></span></button></div>`;
+    });
+    const ex = $('extrato'); ex.innerHTML = xh;
+    ex.querySelectorAll('.xr[data-k]').forEach(d => { const go = () => { const k = d.dataset.k; S.abertos.has(k) ? S.abertos.delete(k) : S.abertos.add(k); tudo(); }; d.onclick = go; d.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); go(); } }; });
+    ex.querySelectorAll('button[data-c]').forEach(b => b.onclick = () => { const i = +b.dataset.c; S.sel = { c: i, nome: semCod(CL[i].fn) }; tudo(); $('secEvo').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+    ex.querySelectorAll('button[data-g]').forEach(b => b.onclick = () => { S.sel = { g: b.dataset.g, nome: b.dataset.n }; tudo(); $('secEvo').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  }
+  {
+    const cz = $('cascata');
+    if (inc || cur.R + cur.D < 1) cz.innerHTML = '';
+    else {
+      const gD = [...grupos('D', P.a, P.b).values()].filter(x => x.v >= 1).sort((a, b) => b.v - a.v);
+      const st = [['Entrou', cur.R, 'in']];
+      gD.slice(0, 3).forEach(g => st.push([semCod(g.n).replace(/^Despesas (com |)/i, ''), -g.v, 'd']));
+      const rest = gD.slice(3).reduce((s, g) => s + g.v, 0); if (rest >= 1) st.push(['Outras despesas', -rest, 'd']);
+      st.push(['= Resultado da operação', null, 'tot']);
+      if (Math.abs(cur.X) >= 1) st.push([cur.X >= 0 ? 'Retiradas de sócio' : 'Retiradas devolvidas', -cur.X, 'f']);
+      if (Math.abs(cur.A) >= 1) st.push([cur.A >= 0 ? 'Aporte dos sócios' : 'Devolução de aporte', cur.A, 'f']);
+      if (Math.abs(cur.O) >= 1) st.push(['Não operacionais', -cur.O, 'f']);
+      if (st[st.length - 1][2] !== 'tot') st.push(['= Variação do caixa', null, 'tot']);
+      let lvl = 0, hi = 0, lo = 0;
+      const B = st.map(s => { let a, b; if (s[2] === 'tot') { a = 0; b = lvl; } else { a = lvl; b = lvl + s[1]; lvl = b; } hi = Math.max(hi, a, b); lo = Math.min(lo, a, b); return { n: s[0], a, b, t: s[2] }; });
+      const HH = 240, sc = HH / ((hi - lo) || 1), yy = v => 22 + (hi - v) * sc;
+      let h = `<div class="czin" role="img" aria-label="Cascata: do que entrou até a variação do caixa"><div class="czp" style="height:${HH + 46}px"><span class="czz" style="top:${yy(0)}px"></span>`;
+      h += B.map(s => { const top = yy(Math.max(s.a, s.b)), hh = Math.max(3, Math.abs(s.b - s.a) * sc); const cor = s.t === 'in' ? 'var(--up)' : s.t === 'd' ? '#C07A3A' : s.t === 'f' ? '#B07A1A' : (s.b < 0 ? 'var(--dn)' : 'var(--up)'); const v = s.b - s.a; const desce = s.t === 'tot' ? s.b < 0 : v < 0; const lab = s.t === 'tot' ? (s.b < 0 ? '−' : '+') + k$(Math.abs(s.b)) : (v < 0 ? '−' : '+') + k$(Math.abs(v)); return `<div class="czc"><i style="top:${top}px;height:${hh}px;background:${cor}"></i><span style="top:${desce ? top + hh + 4 : top - 18}px${s.t === 'tot' ? ';font-weight:700;color:' + (s.b < 0 ? 'var(--ruim)' : 'var(--bom)') : ''}">${lab}</span></div>`; }).join('');
+      h += '</div><div class="czn">' + B.map(s => `<span${s.t === 'tot' ? ' style="font-weight:600;color:var(--tx)"' : ''}>${esc(s.n)}</span>`).join('') + '</div></div>';
+      cz.className = 'cz'; cz.innerHTML = h;
+    }
+  }
+
+  // ---------- centros de custo ----------
+  const secCc = $('secCc');
+  if (S.cc >= 0) secCc.style.display = 'none';
+  else {
+    secCc.style.display = '';
+    const emp = $('emp'); emp.innerHTML = '';
+    if (S.un < 0) {
+      DD.un.forEach((u, i) => { if (u === '—') return; const o = soma(DD.l.filter(r => r[1] === i), P.a, P.b); if (!o.R && !o.D) return; const b = el('button'); b.type = 'button'; const rs = o.R - o.D; b.innerHTML = `<b>${esc(u)}</b><span class="${rs >= 0 ? 'pos' : 'neg'}">${rs >= 0 ? 'sobrou' : 'faltou'} ${R$(Math.abs(rs))}</span>`; b.title = 'Entrou ' + R$(o.R) + ' · despesas ' + R$(o.D); b.onclick = () => { S.un = i; S.cc = -1; S.sel = null; tudo(); }; emp.append(b); });
+    }
+    $('ccTit').textContent = 'Quem trouxe e quem consumiu dinheiro' + (S.un >= 0 ? ' · ' + DD.un[S.un] : '');
+    const m = new Map(); for (const r of rows) { if (r[0] < P.a || r[0] > P.b) continue; const t = CL[r[3]].tipo; if (t !== 'R' && t !== 'D') continue; const o = m.get(r[2]) || { R: 0, D: 0, rt: 0 }; o[t] += val(r); o.rt += r[6] || 0; m.set(r[2], o); }
+    const L = [...m.entries()].map(([i, o]) => ({ i, ...o, res: o.R - o.D })).filter(x => Math.abs(x.R) + Math.abs(x.D) >= 1).sort((a, b) => b.res - a.res);
+    const mx = Math.max(1, ...L.map(x => Math.abs(x.res)));
+    const box = $('tbCc'); box.innerHTML = '';
+    const linhaCc = x => { const b = el('button'); b.type = 'button'; b.title = `Entrou ${R$(x.R)} · despesas ${R$(x.D)}` + (x.rt >= 1 ? ` · inclui ${R$(x.rt)} de lançamentos divididos com outros centros` : ''); const w = Math.abs(x.res) / mx * 100;
+      b.innerHTML = `<span class="nm">${esc(DD.cc[x.i])}</span><span class="ng">${x.res < 0 ? `<i style="width:${w}%"></i>` : ''}</span><span class="ps">${x.res > 0 ? `<i style="width:${w}%"></i>` : ''}</span><span class="vl ${x.res < 0 ? 'neg' : 'pos'}">${x.res < 0 ? '−' : '+'}R$ ${Math.abs(Math.round(x.res)).toLocaleString('pt-BR')}</span>`;
+      b.onclick = () => { S.cc = x.i; S.sel = null; tudo(); window.scrollTo({ top: 0, behavior: 'smooth' }); }; return b; };
+    if (!L.length) box.append(el('p', 'vazio', 'Nada no período.'));
+    else if (L.length > 10 && !S.ccTodos) { L.slice(0, 5).forEach(x => box.append(linhaCc(x))); box.append(el('div', 'gap', '··· ' + (L.length - 10) + ' centros no meio')); L.slice(-5).forEach(x => box.append(linhaCc(x))); }
+    else L.forEach(x => box.append(linhaCc(x)));
+    if (L.length > 10) { const b = el('button', 'lk', S.ccTodos ? 'Mostrar só os 5 de cada ponta' : 'Ver os ' + L.length + ' centros de custo'); b.type = 'button'; b.style.marginTop = '10px'; b.onclick = () => { S.ccTodos = !S.ccTodos; tudo(); }; box.append(b); }
+  }
+
+  // ---------- contas em aberto ----------
+  const doFiltro = L => L.filter(x => (S.un < 0 || x[2] === S.un) && (S.cc < 0 || x[3] === S.cc));
+  const sm = L => L.reduce((s, x) => s + x[1], 0);
+  const pl = (n, u) => n + ' ' + (n === 1 ? u.replace(/ças$/, 'ça').replace(/s$/, '') : u);
+  const dias = d => Math.round((Date.parse(H) - Date.parse(d)) / 864e5);
+  const idadeTxt = n => n <= 0 ? 'vence hoje' : n < 60 ? 'há ' + n + (n > 1 ? ' dias' : ' dia') : n < 365 ? 'há ' + Math.round(n / 30) + ' meses' : (() => { const a = Math.floor(n / 365), m = Math.round((n - a * 365) / 30); return 'há ' + a + (a > 1 ? ' anos' : ' ano') + (m ? ' e ' + m + (m > 1 ? ' meses' : ' mês') : ''); })();
+  const limpa = s => { s = String(s || '').trim(); if (!s) return ''; if (/^[\d\s.]{15,}$/.test(s)) return 'boleto'; if (/aceitar pagamento|cobrar juros|ap[oó]s \d+ dia|n[aã]o receber|ap[oó]s o vencimento/i.test(s)) return ''; return s; };
+  const caixa = (box, L, lado, unid) => {
+    const F = doFiltro(L);
+    const d7 = ymd(hy, hm, hd + 7), d30 = ymd(hy, hm, hd + 30);
+    const V = F.filter(x => x[0] < H), A7 = F.filter(x => x[0] >= H && x[0] <= d7), A30 = F.filter(x => x[0] >= H && x[0] <= d30);
+    const velho = V.reduce((m, x) => !m || x[0] < m ? x[0] : m, '');
+    const qual = S.abT[lado] || 'V';
+    const L2 = { V, A7, A30 }[qual];
+    const grp = new Map();
+    L2.forEach(x => { const k = x[4] || '(sem nome)'; const g = grp.get(k) || { n: k, v: 0, it: [], d: x[0], cc: new Set(), ds: new Set() }; g.v += x[1]; g.it.push(x); if (x[0] < g.d) g.d = x[0]; if (DD.cc[x[3]] && DD.cc[x[3]] !== '—') g.cc.add(DD.cc[x[3]]); const ds = limpa(x[5]); if (ds && ds !== 'boleto') g.ds.add(ds); grp.set(k, g); });
+    const G = [...grp.values()].sort((a, b) => b.v - a.v);
+    const todos = !!S.abTodos[lado];
+    const mostra = todos ? G : G.slice(0, 8);
+    const aba = (k, t, Lx) => `<button type="button" class="abt${k === qual ? ' on' : ''}${k === 'V' ? ' ve' : ''}" data-ab="${k}" aria-pressed="${k === qual}"><span>${t}</span><b>${R$(sm(Lx))}</b><small>${pl(Lx.length, unid)}</small></button>`;
+    let h = `<div class="abts">${aba('V', 'Já venceu', V)}${aba('A7', 'Vence em 7 dias', A7)}${aba('A30', 'Vence em 30 dias', A30)}</div>`;
+    if (!G.length) h += `<p class="vazio">${qual === 'V' ? 'Nada vencido.' : 'Nada previsto.'}</p>`;
+    else h += '<div class="abl">' + mostra.map(g => {
+      const n = qual === 'V' ? dias(g.d) : -dias(g.d);
+      const idade = qual === 'V' ? idadeTxt(n) : (n <= 0 ? 'vence hoje' : 'vence em ' + n + (n > 1 ? ' dias' : ' dia'));
+      const cls = qual !== 'V' ? 's-inf' : n > 90 ? 's-ruim' : 's-av';
+      const key = lado + '|' + g.n, aberto = S.abAb.has(key);
+      const info = [[...g.ds][0], [...g.cc].slice(0, 2).join(' e ')].filter(Boolean).join(' · ') + (qual === 'V' && n > 180 ? ' · pode ser lançamento antigo sem baixa no ERP' : '');
+      const sub = aberto ? '<div class="abs">' + g.it.slice().sort((a, b) => b[1] - a[1]).map(x => `<div><span>${dm(x[0])}${x[0].slice(0, 4) !== String(hy) ? '/' + x[0].slice(2, 4) : ''}</span><span>${esc(limpa(x[5]) || '—')}${DD.cc[x[3]] && DD.cc[x[3]] !== '—' ? ' · ' + esc(DD.cc[x[3]]) : ''}</span><b>${R$(x[1])}</b></div>`).join('') + '</div>' : '';
+      return `<div class="abi"><button type="button" class="abh" data-k="${esc(key)}" aria-expanded="${aberto}"><span class="nm"><span class="sx">${aberto ? '▾' : '▸'}</span><span>${esc(g.n)}</span></span><span class="vl">${R$(g.v)}</span><span class="mt"><span class="selo ${cls}">${idade}</span>${info ? '<span>' + esc(info) + '</span>' : ''}</span><span class="qt">${pl(g.it.length, unid)}</span></button>${sub}</div>`;
+    }).join('') + '</div>';
+    if (G.length > 8) h += `<button type="button" class="lk abm" style="margin-top:10px">${todos ? 'Mostrar só os 8 maiores' : (unid === 'contas' ? 'Ver as ' + G.length + ' pessoas e empresas' : 'Ver os ' + G.length + ' clientes')}</button>`;
+    box.innerHTML = h;
+    box.querySelectorAll('.abt').forEach(b => b.onclick = () => { S.abT[lado] = b.dataset.ab; S.abTodos[lado] = false; tudo(); });
+    box.querySelectorAll('.abh').forEach(b => b.onclick = () => { const k = b.dataset.k; S.abAb.has(k) ? S.abAb.delete(k) : S.abAb.add(k); tudo(); });
+    const mm = box.querySelector('.abm'); if (mm) mm.onclick = () => { S.abTodos[lado] = !todos; tudo(); };
+    return { V, velho };
+  };
+  const RV = caixa($('rec'), DD.rec, 'rec', 'cobranças'), PV = caixa($('pag'), DD.pag, 'pag', 'contas');
+
+  // ---------- o que olhar primeiro ----------
+  const cand = [];
+  const anoA = agrAno(rows, hy);
+  if (anoA.fech >= 6) {
+    const f = Object.values(anoA.F).map(f => { const med = mediana(f.m.slice(0, anoA.fech)); const rec = somaA(f.m.slice(anoA.fech - 3, anoA.fech)) / 3; return { ...f, med, rec }; })
+      .filter(f => f.med > 3000 && f.rec - f.med > 10000 && f.rec > f.med * 1.5).sort((a, b) => (b.rec - b.med) - (a.rec - a.med))[0];
+    if (f) { const x = f.rec / f.med; cand.push({ peso: (f.rec - f.med) * 3, selo: ['s-ruim', 'despesa fora do normal'], t: `${f.n} custa ${x >= 2 ? Math.round(x) + ' vezes' : (x.toFixed(1).replace('.', ',') + ' vezes')} o normal`, b: `${R$(f.rec)} por mês nos últimos 3 meses. O normal dela é ${R$(f.med)} por mês.`, a: 'Ver no gráfico mês a mês', go: () => { S.sel = { c: f.i, nome: f.n }; tudo(); $('secEvo').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); }
+  }
+  if (S.cc < 0 && !inc) {
+    const m = new Map(); for (const r of rows) { if (r[0] < P.a || r[0] > P.b) continue; const t = CL[r[3]].tipo; if (t !== 'R' && t !== 'D') continue; const o = m.get(r[2]) || { R: 0, D: 0 }; o[t] += val(r); m.set(r[2], o); }
+    const sem = [...m.entries()].filter(([, o]) => o.D > 5000 && o.R < 1).sort((a, b) => b[1].D - a[1].D)[0];
+    if (sem) cand.push({ peso: sem[1].D, selo: ['s-ruim', 'atenção'], t: `${DD.cc[sem[0]]} gastou ${R$(sem[1].D)} sem receita própria`, b: `É ${Math.round(sem[1].D / (cur.D || 1) * 100)}% de todas as despesas ${S.per === 'mes_ant' ? 'de ' + MESL[pm - 1] : 'do período'}.`, a: 'Ver só ' + DD.cc[sem[0]], go: () => { S.cc = sem[0]; S.sel = null; tudo(); window.scrollTo({ top: 0, behavior: 'smooth' }); } });
+  }
+  if (!inc && S.per !== '12m') { const gA = grupos('D', P.ca, P.cb); let pior = null; grupos('D', P.a, P.b).forEach((g, k) => { const a = gA.get(k); if (!a || a.v < 2000) return; const p = pc(g.v, a.v); if (p > 25 && g.v - a.v > 3000 && (!pior || g.v - a.v > pior.d)) pior = { k, n: semCod(g.n), p, d: g.v - a.v }; });
+    if (pior) cand.push({ peso: pior.d, selo: ['s-ruim', 'subiu'], t: `${pior.n} subiu ${pior.p}%`, b: `${R$(pior.d)} a mais que em ${P.cnome}.`, a: 'Abrir as categorias', go: () => { S.abertos.add('x|' + pior.k); tudo(); $('secDre').scrollIntoView({ behavior: 'smooth', block: 'start' }); } }); }
+  const rvs = sm(RV.V); if (rvs > 1) cand.push({ peso: rvs, selo: ['s-av', 'cobrar'], t: `${R$(rvs)} a receber já venceram`, b: `${pl(RV.V.length, 'cobranças')} em atraso.` + (res < 0 && !inc ? ` Se entrassem hoje, cobririam ${Math.min(100, Math.round(rvs / -res * 100))}% do que faltou.` : ''), a: 'Ver quem deve', go: () => { S.abT.rec = 'V'; tudo(); $('secAb').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+  const pvs = sm(PV.V); if (pvs > 1) cand.push({ peso: pvs * 0.8, selo: ['s-av', 'pagar'], t: `${R$(pvs)} em contas a pagar vencidas`, b: `${pl(PV.V.length, 'contas')}.` + (PV.velho && PV.velho.slice(0, 4) < String(hy) ? ` A mais antiga venceu em ${dm(PV.velho)}/${PV.velho.slice(2, 4)}: pode ser lançamento antigo sem baixa no ERP.` : ''), a: 'Ver as contas', go: () => { S.abT.pag = 'V'; tudo(); $('secAb').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+  const top3 = cand.sort((a, b) => b.peso - a.peso).slice(0, 3);
+  const ol = $('olhar'); ol.innerHTML = '';
+  top3.forEach((c, i) => { const d = el('div', 'card'); d.innerHTML = `<div class="row"><span class="n">${i + 1}</span><span class="selo ${c.selo[0]}">${c.selo[1]}</span></div><span class="t">${esc(c.t)}</span><span class="b">${esc(c.b)}</span>`; const b = el('button', 'lk', c.a + ' →'); b.type = 'button'; b.onclick = c.go; d.append(b); ol.append(d); });
+  if (!top3.length) ol.innerHTML = '<p class="vazio">Nada fora do normal com o filtro escolhido.</p>';
+
+  // ---------- gráfico mês a mês ----------
+  const em = $('evoModo'); em.innerHTML = '';
+  if (!S.sel) [['res', 'Sobrou ou faltou'], ['rs', 'Entrou × saiu']].forEach(([k, n]) => { const b = el('button', '', n); b.type = 'button'; b.setAttribute('aria-pressed', String(S.graf === k)); b.onclick = () => { S.graf = k; tudo(); }; em.append(b); });
+  const meses = []; for (let k = -11; k <= 0; k++) { const d = new Date(Date.UTC(hy, hm - 1 + k, 1)); const y = d.getUTCFullYear(), m = d.getUTCMonth() + 1; meses.push({ y, m, a: ymd(y, m, 1), b: lim(fimMes(y, m)), r: MES[m - 1] + '/' + String(y).slice(2), aberto: k === 0, on: S.per === 'mes_ant' ? k === -1 : S.per === 'mes' ? k === 0 : false }); }
+  const W = 760, Hh = 220, X0 = 44, bw = (W - X0) / 12;
+  let svg = '', leg = '';
+  if (S.sel) {
+    const ok = r => S.sel.c != null ? r[3] === S.sel.c : CL[r[3]].gk === S.sel.g;
+    meses.forEach(M => { M.v1 = rows.filter(r => ok(r) && r[0] >= M.a && r[0] <= M.b).reduce((s, r) => s + val(r), 0); });
+    const mx = Math.max(1, ...meses.map(M => M.v1 || 0));
+    $('evoTit').textContent = 'Mês a mês · ' + S.sel.nome;
+    $('evoEx').innerHTML = 'Últimos 12 meses com o filtro escolhido. <button type="button" class="lk" id="limpaSel">Voltar para sobrou ou faltou</button>';
+    svg = `<svg viewBox="0 0 ${W} ${Hh + 36}" class="graf" role="img" aria-label="${esc(S.sel.nome)} por mês">`;
+    [0.5, 1].forEach(f => { svg += `<line x1="${X0}" x2="${W}" y1="${Hh - f * Hh}" y2="${Hh - f * Hh}" class="grade"/><text x="0" y="${Hh - f * Hh - 4}" class="eixo">${k$(mx * f)}</text>`; });
+    svg += `<line x1="${X0}" x2="${W}" y1="${Hh}" y2="${Hh}" stroke="var(--ax)"/>`;
+    meses.forEach((M, i) => { const cx = X0 + i * bw + bw / 2, w = bw * 0.56, h = Math.max(0, M.v1) / mx * (Hh - 18); svg += `<g><title>${M.r}: ${R$(M.v1)}</title><rect x="${cx - w / 2}" y="${Hh - h}" width="${w}" height="${h}" rx="3" fill="${M.aberto ? 'var(--open)' : 'var(--neu)'}"/><rect x="${cx - bw / 2}" y="0" width="${bw}" height="${Hh}" fill="transparent"/></g>${M.v1 ? `<text x="${cx}" y="${Hh - h - 5}" class="res">${k$(M.v1)}</text>` : ''}<text x="${cx}" y="${Hh + 18}" class="mes${M.on ? ' on' : ''}">${M.r}${M.aberto ? '*' : ''}</text>`; });
+    svg += '</svg>';
+    leg = '<span>* mês em andamento</span>';
+  } else if (S.graf === 'rs') {
+    meses.forEach(M => { const o = soma(rows, M.a, M.b); M.v1 = o.R; M.v2 = o.D; });
+    const mx = Math.max(1, ...meses.map(M => Math.max(M.v1, M.v2)));
+    $('evoTit').textContent = 'Entrou × saiu, mês a mês';
+    $('evoEx').textContent = 'Receitas e despesas da operação nos últimos 12 meses de ' + alvo + '. Passe o mouse para ver os valores.';
+    svg = `<svg viewBox="0 0 ${W} ${Hh + 36}" class="graf" role="img" aria-label="Receitas e despesas por mês">`;
+    [0.5, 1].forEach(f => { svg += `<line x1="${X0}" x2="${W}" y1="${Hh - f * Hh}" y2="${Hh - f * Hh}" class="grade"/><text x="0" y="${Hh - f * Hh - 4}" class="eixo">${k$(mx * f)}</text>`; });
+    svg += `<line x1="${X0}" x2="${W}" y1="${Hh}" y2="${Hh}" stroke="var(--ax)"/>`;
+    meses.forEach((M, i) => { const cx = X0 + i * bw + bw / 2, w = bw * 0.32, h1 = Math.max(0, M.v1) / mx * Hh, h2 = Math.max(0, M.v2) / mx * Hh;
+      svg += `<g><title>${M.r}: entrou ${R$(M.v1)} · saiu ${R$(M.v2)} · ${M.v1 - M.v2 >= 0 ? 'sobrou' : 'faltou'} ${R$(Math.abs(M.v1 - M.v2))}</title><rect x="${cx - w - 1}" y="${Hh - h1}" width="${w}" height="${h1}" rx="2" fill="${M.aberto ? 'var(--open)' : 'var(--neu)'}"/><rect x="${cx + 1}" y="${Hh - h2}" width="${w}" height="${h2}" rx="2" fill="${M.aberto ? 'var(--open)' : '#C07A3A'}" opacity="${M.aberto ? .7 : 1}"/><rect x="${cx - bw / 2}" y="0" width="${bw}" height="${Hh}" fill="transparent"/></g><text x="${cx}" y="${Hh + 18}" class="mes${M.on ? ' on' : ''}">${M.r}${M.aberto ? '*' : ''}</text>`; });
+    svg += '</svg>';
+    leg = '<span><i style="background:var(--neu)"></i>entrou</span><span><i style="background:#C07A3A"></i>saiu em despesas</span><span><i style="background:var(--open)"></i>mês ainda aberto</span>';
+  } else {
+    meses.forEach(M => { const o = soma(rows, M.a, M.b); M.v1 = o.R - o.D; M.tem = o.R + o.D > 0; });
+    const up = Math.max(1, ...meses.map(M => Math.max(0, M.v1))), dn = Math.max(1, ...meses.map(M => Math.max(0, -M.v1)));
+    const zy = 18 + (Hh - 36) * up / (up + dn), esc2 = (Hh - 36) / (up + dn);
+    $('evoTit').textContent = 'Sobrou ou faltou, mês a mês';
+    $('evoEx').textContent = 'Resultado da operação: o que entrou menos as despesas. Barra para cima, sobrou; para baixo, faltou.';
+    svg = `<svg viewBox="0 0 ${W} ${Hh + 30}" class="graf" role="img" aria-label="Resultado da operação por mês">`;
+    svg += `<line x1="${X0 - 8}" x2="${W}" y1="${zy}" y2="${zy}" stroke="var(--ax)"/><text x="0" y="${zy + 4}" class="eixo">0</text>`;
+    meses.forEach((M, i) => { const cx = X0 + i * bw + bw / 2, w = bw * 0.56, h = Math.max(M.tem ? 2 : 0, Math.abs(M.v1) * esc2), pos = M.v1 >= 0;
+      const cor = M.aberto ? 'var(--open)' : pos ? 'var(--up)' : 'var(--dn)';
+      const y = pos ? zy - h : zy;
+      svg += `<g><title>${M.r}: ${pos ? 'sobrou' : 'faltou'} ${R$(Math.abs(M.v1))}${M.aberto ? ' (mês em andamento)' : ''}</title><rect x="${cx - w / 2}" y="${y}" width="${w}" height="${h}" rx="3" fill="${cor}"/><rect x="${cx - bw / 2}" y="0" width="${bw}" height="${Hh}" fill="transparent"/></g>`;
+      if (M.tem) svg += `<text x="${cx}" y="${pos ? y - 5 : y + h + 14}" class="res">${M.v1 >= 0 ? '+' : ''}${k$(M.v1)}</text>`;
+      svg += `<text x="${cx}" y="${Hh + 22}" class="mes${M.on ? ' on' : ''}">${M.r}${M.aberto ? '*' : ''}</text>`; });
+    svg += '</svg>';
+    const best = meses.filter(M => !M.aberto && M.tem).sort((a, b) => b.v1 - a.v1)[0];
+    leg = '<span><i style="background:var(--up)"></i>sobrou</span><span><i style="background:var(--dn)"></i>faltou</span><span><i style="background:var(--open)"></i>mês ainda aberto</span>' + (best && best.v1 > 0 ? `<span>Melhor mês: ${best.r}, sobraram ${R$(best.v1)}.</span>` : '');
+  }
+  $('evo').innerHTML = svg; $('evoLeg').innerHTML = leg;
+  const ls = $('limpaSel'); if (ls) ls.onclick = () => { S.sel = null; tudo(); };
+
+  resumo(rows); visoes(rows); dre(rows); saude(P, rows);
+  $('dreSum').textContent = 'Ver mês a mês, igual ao DRE do ERP (' + S.ano + ')';
+  const lido = DD.atualizado.slice(8, 10) + '/' + DD.atualizado.slice(5, 7) + ' · ' + DD.atualizado.slice(11, 16);
+  $('lido').textContent = 'lido ' + lido + ' · guarda ' + DD.cache + ' min';
+  $('rod').innerHTML = `Fonte: ERP financeiro (movimentação financeira, contas a receber e a pagar). Os números seguem a classificação do ERP. Lido em ${lido}. · dados fictícios de demonstração`;
+}
+
+// ---------- saúde dos dados ----------
+function saude(P, rows) {
+  const it = [];
+  const add = (t, titulo, texto, acao, go) => it.push({ t, titulo, texto, acao, go });
+  if (DD.erro) add('ruim', 'Não consegui atualizar agora', 'O ERP respondeu com erro: ' + DD.erro + '. Os números são da última leitura que deu certo.');
+  if (S.per === 'mes') {
+    if (COMP.r < 0.5) add('av', cap(MESL[hm - 1]) + ' ainda está sendo lançado', `${COMP.cur} movimentos até ${dm(DD.hoje)}. Nos mesmos dias dos 3 meses anteriores, a média foi ${COMP.esp}. Comparações ficam escondidas até o mês ter pelo menos metade disso.`);
+    else add('inf', cap(MESL[hm - 1]) + ' em andamento', `${COMP.cur} movimentos até ${dm(DD.hoje)}, perto da média de ${COMP.esp} nos mesmos dias. A comparação é com os mesmos dias de ${MESL[pm - 1]}.`);
+  } else if (S.per === 'mes_ant') {
+    if (COMP.fr >= 0.7) add('bom', cap(MESL[pm - 1]) + ' está completo', `${COMP.fech} movimentos no mês. A média dos 3 meses anteriores é ${COMP.fesp}, então não falta nada grande.`);
+    else add('av', cap(MESL[pm - 1]) + ' pode estar incompleto', `${COMP.fech} movimentos no mês, contra uma média de ${COMP.fesp} nos 3 meses anteriores. Confira se há lançamentos pendentes no ERP.`);
+  } else add('inf', 'O período inclui o mês em andamento', `${cap(MESL[hm - 1])} ainda está sendo lançado e pode deixar o total menor do que será.`);
+  add(COMP.ultE && COMP.ultE < ymd(hy, hm, Math.max(1, hd - 7)) ? 'av' : 'bom', 'Última receita lançada: ' + (COMP.ultE ? dm(COMP.ultE) : '—'), 'Última despesa lançada: ' + (COMP.ultS ? dm(COMP.ultS) : '—') + '. Se a receita estiver muito para trás, o mês corrente vai parecer pior do que é.');
+  const semC = rows.filter(r => r[0] >= P.a && r[0] <= P.b && !CL[r[3]].cod);
+  if (semC.length) add('av', plu(semC.length, 'movimento', 'movimentos') + ' sem classificação no ERP', `Somam ${R$(semC.reduce((s, r) => s + r[4] + r[5], 0))} no período. O painel decide se é receita ou despesa pelo sentido do dinheiro e mostra como "Sem classificação".`, 'Ver nas despesas', () => { S.abertos.add('x|~D'); S.abertos.add('x|~R'); tudo(); $('secDre').scrollIntoView({ behavior: 'smooth', block: 'start' }); });
+  else add('bom', 'Tudo classificado', 'Todos os movimentos do período têm classificação no ERP.');
+  const iSem = DD.cc.indexOf('Sem centro de custo');
+  const semCc = iSem >= 0 ? rows.filter(r => r[2] === iSem && r[0] >= P.a && r[0] <= P.b) : [];
+  if (semCc.length) add('av', plu(semCc.length, 'movimento', 'movimentos') + ' sem centro de custo', `Somam ${R$(semCc.reduce((s, r) => s + r[4] + r[5], 0))} no período e aparecem como "Sem centro de custo".`, S.cc < 0 ? 'Ver só eles' : null, () => { S.cc = iSem; tudo(); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+  if (DD.ratPend != null) { if (DD.ratPend > 0) add('av', plu(DD.ratPend, 'lançamento esperando', 'lançamentos esperando') + ' divisão entre centros', 'Lançamentos divididos entre mais de um centro de custo ainda não foram separados. A próxima atualização busca o que falta.'); else add('bom', 'Divisão entre centros de custo em dia', (DD.ratN ? DD.ratN + ' lançamentos divididos entre mais de um centro' : 'Lançamentos divididos entre centros') + ', nenhum esperando.'); }
+  add('inf', 'Empréstimo contratado conta como receita', 'O ERP classifica assim, e o painel segue o ERP para bater com o DRE dela.');
+  add('inf', 'O saldo das contas bancárias não aparece', 'O ERP não envia o saldo pela integração. O painel mostra o que entrou e saiu, não quanto tem no banco.');
+  const ul = $('saude'); ul.innerHTML = '';
+  const SL = { bom: ['s-bom', 'ok'], av: ['s-av', 'atenção'], ruim: ['s-ruim', 'erro'], inf: ['s-inf', 'saiba'] };
+  it.forEach(x => { const li = el('li'); li.innerHTML = `<span class="selo ${SL[x.t][0]}">${SL[x.t][1]}</span><span><b>${esc(x.titulo)}</b><span class="e">${esc(x.texto)}</span></span>`; if (x.acao) { const b = el('button', 'lk', x.acao); b.type = 'button'; b.style.whiteSpace = 'nowrap'; b.onclick = x.go; li.append(b); } ul.append(li); });
+}
+
+// ===== resumo em frases (leituras do ano) e visões do ano =====
+const PAL = ['#c2413a', '#e08a3c', '#d4b02c', '#4f8f6a', '#3f74a8', '#8a6aa8', '#a3aaa6'];
+function resumo(rows) {
+  const { F, Tm, fech } = agrAno(rows, hy);
+  const fr = [];
+  const ul = fech - 1;
+  if (ul >= 0 && Tm.R[ul] > 1) {
+    const R = Tm.R[ul], Dd = Tm.D[ul] + Tm.X[ul] + Tm.O[ul], p = Math.round(Dd / R * 100);
+    fr.push([p > 100 ? 'ruim' : 'bom', `Contando retiradas de sócio e não operacionais, em <b>${MESL[ul]}</b> saíram <b>R$ ${p}</b> para cada R$ 100 que entraram (entrou ${R$(R)}, saiu ${R$(Dd)}).`]);
+  }
+  if (fech >= 6) {
+    const q = Object.values(F).map(f => ({ ...f, ant: somaA(f.m.slice(fech - 6, fech - 3)) / 3, rec: somaA(f.m.slice(fech - 3, fech)) / 3 })).filter(f => f.ant > 10000 && f.rec < f.ant * .5).sort((a, b) => (b.ant - b.rec) - (a.ant - a.rec))[0];
+    if (q) fr.push(['bom', `<b>${esc(q.n)}</b> caiu de ${R$(q.ant)} para ${R$(q.rec)} por mês (média dos últimos 3 meses contra os 3 anteriores).`]);
+    Object.values(F).map(f => { const med = mediana(f.m.slice(0, fech)); const rec = somaA(f.m.slice(fech - 3, fech)) / 3; return { ...f, med, rec }; })
+      .filter(f => f.med > 3000 && f.rec - f.med > 10000 && f.rec > f.med * 1.5).sort((a, b) => (b.rec - b.med) - (a.rec - a.med)).slice(1, 3)
+      .forEach(f => fr.push(['atencao', `<b>${esc(f.n)}</b> está em ${R$(f.rec)} por mês nos últimos 3 meses, ${(f.rec / f.med).toFixed(1).replace('.', ',')} vezes o normal dela (${R$(f.med)}).`]));
+  }
+  if (fech >= 2) { const m = Tm.R.slice(0, fech).map((v, i) => [v - Tm.D[i], i]).sort((a, b) => b[0] - a[0])[0]; if (m[0] > 0) fr.push(['neutro', `O melhor mês do ano foi <b>${MESL[m[1]]}</b>, com ${R$(m[0])} de resultado.`]); }
+  const ret = somaA(Tm.X.slice(0, fech)), rt = somaA(Tm.R.slice(0, fech));
+  if (ret > 1 && rt > 1) fr.push(['neutro', `Retiradas de sócio somam ${R$(ret)} no ano, R$ ${Math.round(ret / rt * 100)} de cada R$ 100 que entraram.`]);
+  const SL = { bom: ['s-bom', 'bom'], ruim: ['s-ruim', 'atenção'], atencao: ['s-av', 'atenção'], neutro: ['s-inf', 'saiba'] };
+  $('resumo').innerHTML = fr.map(([c, t]) => `<div><span class="selo ${SL[c][0]}">${SL[c][1]}</span><span>${t}</span></div>`).join('');
+  $('maisSum').textContent = 'Mais leituras do ano (' + fr.length + ')';
+  $('maisDet').style.display = fr.length ? '' : 'none';
+}
+
+function visoes(rows) {
+  const ano = S.ano;
+  const { G, F, Tm, ult, fech } = agrAno(rows, ano);
+  $('anoTit').textContent = 'O ano de ' + ano + ' em detalhe';
+  const nada = !Object.keys(G).length;
+  ['vA', 'vB', 'vC'].forEach(id => { if (nada) $(id).innerHTML = '<p class="vazio">Nada neste ano com o filtro escolhido.</p>'; });
+  if (nada) return;
+  {
+    const L = Object.values(F).filter(f => f.s > 1).sort((a, b) => b.s - a.s).slice(0, 14);
+    const base = Math.max(fech, 1);
+    let h = `<div class="hm2" style="grid-template-columns:minmax(120px,230px) repeat(${ult},1fr)"><div></div>` + MES.slice(0, ult).map((m, i) => `<div class="h">${m}${ano === hy && i === hm - 1 ? '*' : ''}</div>`).join('');
+    L.forEach(f => {
+      const med = mediana(f.m.slice(0, base)) || 1;
+      h += `<div class="n" title="${esc(f.g)} › ${esc(f.n)}">${esc(f.n)}</div>`;
+      for (let i = 0; i < ult; i++) {
+        const v = f.m[i], r = v / med; let bg = 'transparent', cor = 'var(--mut)';
+        if (v > 1) { if (r >= 1.3) { const a = Math.min(1, .25 + (r - 1.3) / 2); bg = `rgba(194,65,58,${a.toFixed(2)})`; cor = a > .55 ? '#fff' : 'var(--tx)'; } else if (r <= .7) bg = 'var(--soft)'; else { bg = 'rgba(160,160,150,.18)'; cor = 'var(--tx)'; } }
+        h += `<div class="c" style="background:${bg};color:${cor}" title="${MES[i]}: ${R$(v)} · normal dessa despesa ≈ ${R$(med)}">${v > 1 ? k$(v) : ''}</div>`;
+      }
+    });
+    $('vC').innerHTML = L.length ? h + '</div>' + (ano === hy ? '<p class="cmp" style="margin:6px 0 0">* mês em andamento</p>' : '') : '<p class="vazio">Sem despesas neste ano.</p>';
+  }
+  {
+    const Lg = Object.values(G).filter(g => g.t === 'D' && g.s > 1).sort((a, b) => b.s - a.s);
+    const op = Lg.slice(0, 3).map(g => ({ n: g.n, v: g.s })); const resto = somaA(Lg.slice(3).map(g => g.s)); if (resto > 1) op.push({ n: 'Outras despesas', v: resto });
+    const xt = somaA(Tm.X), ot = somaA(Tm.O), at = somaA(Tm.A);
+    const fo = []; if (xt > 1) fo.push({ n: 'Retiradas de sócio', v: xt }); const nop = Math.max(0, ot) + (at < 0 ? -at : 0); if (nop > 1) fo.push({ n: at < -1 ? 'Não operacionais e devolução de aporte' : 'Não operacionais', v: nop });
+    const ent = somaA(Tm.R) + (at > 0 ? at : 0);
+    const sOp = somaA(op.map(x => x.v)), sFo = somaA(fo.map(x => x.v)), sai = sOp + sFo;
+    if (ent < 1) $('vA').innerHTML = '<p class="vazio">Sem receitas neste ano com o filtro escolhido.</p>';
+    else {
+      const p = v => Math.round(v / ent * 100), tot = p(sai), e100 = Math.max(100, sai / ent * 100);
+      const bar = (x, cor) => `<div class="cb"><div class="ln"><span>${esc(x.n)}</span><span><b>R$ ${p(x.v)}</b> <small>· ${R$(x.v)}</small></span></div><div class="tk"><i style="width:${Math.max(.6, x.v / ent * 100 / e100 * 100)}%;background:${cor}"></i><span class="l100" style="left:${100 / e100 * 100}%"></span></div></div>`;
+      const dif = ent - sai;
+      let h = `<p style="margin:0;font-size:14px;color:var(--tx2)">Entraram <strong>${R$(ent)}</strong> e saíram <strong>${R$(sai)}</strong>${at > 1 ? ' (contando aporte dos sócios)' : ''}. Para cada R$ 100, saíram <strong class="${tot > 100 ? 'neg' : 'pos'}">R$ ${tot}</strong>: ${dif < 0 ? 'os R$ ' + (tot - 100) + ' a mais (' + R$(-dif) + ') saíram do caixa.' : 'sobraram R$ ' + (100 - tot) + ' (' + R$(dif) + ').'}</p>`;
+      h += `<div class="sgr">Despesas da operação · R$ ${p(sOp)}</div>` + op.map(x => bar(x, 'var(--neu)')).join('');
+      if (fo.length) h += `<div class="sgr">Fora da operação · R$ ${p(sFo)}</div>` + fo.map(x => bar(x, '#B07A1A')).join('');
+      h += '<span class="cmp">A linha tracejada marca os R$ 100 que entraram.</span>';
+      $('vA').innerHTML = '<div class="ag">' + h + '</div>';
+    }
+  }
+  {
+    const t3 = Object.values(G).filter(g => g.t === 'D' && g.s > 1).sort((a, b) => b.s - a.s).slice(0, 3);
+    let h = '<div class="mb">', n = 0;
+    for (let i = 0; i < ult; i++) {
+      const R = Tm.R[i]; if (R < 1) continue; n++;
+      const sai = Tm.D[i] + Tm.X[i] + Tm.O[i], p = Math.round(sai / R * 100), bom = p <= 100;
+      const ab = S.mesAb === ano + '-' + i;
+      h += `<button type="button" class="${ab ? 'on' : ''}" data-m="${i}" aria-expanded="${ab}"><span style="font-weight:${ab ? 600 : 400}">${MES[i]}${ano === hy && i === hm - 1 ? '*' : ''}</span><span class="br"><i style="width:${Math.min(p, 200) / 2}%;background:${bom ? 'var(--up)' : 'var(--dn)'}"></i><span class="l100"></span></span><span class="rt ${bom ? 'pos' : 'neg'}">${bom ? 'sobraram R$ ' + (100 - p) : 'saíram R$ ' + p} <small>· entrou ${k$(R)}</small></span></button>`;
+      if (ab) {
+        const comp = t3.map(g => [g.n, g.m[i], 'var(--neu)']);
+        comp.push(['Outras despesas', Tm.D[i] - somaA(t3.map(g => g.m[i])), 'var(--neu)']);
+        if (Tm.X[i] > 1) comp.push(['Retiradas de sócio', Tm.X[i], '#B07A1A']);
+        if (Tm.O[i] > 1) comp.push(['Não operacionais', Tm.O[i], '#B07A1A']);
+        const mx = Math.max(1, ...comp.map(c => c[1]));
+        h += `<div class="mbc"><b>${cap(MESL[i])}: para onde foi cada R$ 100</b>` + comp.filter(c => c[1] > 1).map(c => `<div><span>${esc(c[0])}</span><span class="t"><i style="width:${c[1] / mx * 100}%;background:${c[2]}"></i></span><b>R$ ${Math.round(c[1] / R * 100)}</b></div>`).join('') + '</div>';
+      }
+    }
+    h += '</div><div class="mbx"><span>R$ 0</span><span>R$ 100</span><span>R$ 200</span></div>' + (ano === hy ? '<p class="cmp" style="margin:4px 0 0">* mês em andamento</p>' : '');
+    $('vB').innerHTML = n ? h : '<p class="vazio">Sem receitas neste ano com o filtro escolhido.</p>';
+    $('vB').querySelectorAll('.mb>button').forEach(b => b.onclick = () => { const k = ano + '-' + b.dataset.m; S.mesAb = S.mesAb === k ? null : k; visoes(DD.l.filter(r => filtra(r))); });
+  }
+}
+
+function dre(rows) {
+  const anos = [...new Set(DD.l.map(r => +r[0].slice(0, 4)))].sort();
+  const ca = $('dreAno'); ca.innerHTML = ''; anos.forEach(a => { const b = el('button', S.ano === a ? 'on' : '', String(a)); b.type = 'button'; b.onclick = () => { S.ano = a; const fr = DD.l.filter(r => filtra(r)); visoes(fr); dre(fr); }; ca.append(b); });
+  const ano = String(S.ano); const ult = S.ano === hy ? hm : 12;
+  $('dreSum').textContent = 'Ver mês a mês, igual ao DRE do ERP (' + ano + ')';
+  const T = {};
+  const add = (o, m, v) => { o.m = o.m || Array(12).fill(0); o.m[m] += v; };
+  for (const r of rows) { if (r[0].slice(0, 4) !== ano) continue; const c = CL[r[3]], m = +r[0].slice(5, 7) - 1, v = val(r);
+    const t = T[c.tipo] = T[c.tipo] || { g: {} }; add(t, m, v); const g = t.g[c.gk] = t.g[c.gk] || { n: c.gn, f: {} }; add(g, m, v); const f = g.f[c.i] = g.f[c.i] || { n: c.fn }; add(f, m, v); }
+  const cel = (v, neg) => { const x = Math.round(v || 0); return x === 0 ? '<td class="zero">0</td>' : `<td>${neg ? '-' : ''}${x.toLocaleString('pt-BR')}</td>`; };
+  const linha = (cls, nome, m, neg, tg, key) => { const tot = m.reduce((s, v) => s + v, 0); return `<tr class="${cls}${tg ? ' tg' : ''}" ${tg ? 'data-k="' + key + '"' : ''}><td>${tg ? (S.dreAb.has(key) ? '▾ ' : '▸ ') : ''}${esc(nome)}</td>${m.slice(0, ult).map(v => cel(v, neg)).join('')}${ult < 12 ? '<td class="zero" colspan="' + (12 - ult) + '"></td>' : ''}<td style="font-weight:700">${neg ? '-' : ''}${Math.round(tot).toLocaleString('pt-BR')}</td></tr>`; };
+  let h = `<table><thead><tr><th></th>${MES.map(m => '<th>' + m + '</th>').join('')}<th>Total</th></tr></thead><tbody>`;
+  const ordem = ['R', 'D', 'O', 'A', 'X'];
+  const zero = Array(12).fill(0);
+  const resM = zero.map((_, i) => ((T.R && T.R.m[i]) || 0) - ((T.D && T.D.m[i]) || 0));
+  ordem.forEach(t => { if (!T[t]) return; const neg = t !== 'R' && t !== 'A'; h += linha('k1', NOMES[t], T[t].m, neg, true, t);
+    if (S.dreAb.has(t)) Object.entries(T[t].g).sort((a, b) => a[1].n.localeCompare(b[1].n, 'pt', { numeric: true })).forEach(([gk, g]) => { const key = t + '|' + gk; const fs = Object.values(g.f); const so = fs.length === 1 && fs[0].n === g.n; h += linha('k2', g.n, g.m, neg, !so, key); if (!so && S.dreAb.has(key)) fs.sort((a, b) => a.n.localeCompare(b.n, 'pt', { numeric: true })).forEach(f => { h += linha('k3', f.n, f.m, neg, false); }); });
+    if (t === 'D') h += linha('k1', 'Resultado da operação (receitas − despesas)', resM, false, false); });
+  h += '</tbody></table>';
+  if (!Object.keys(T).length) h = '<p class="vazio">Nada neste ano com o filtro escolhido.</p>';
+  $('dre').innerHTML = h;
+  $('dre').querySelectorAll('tr.tg').forEach(tr => tr.onclick = () => { const k = tr.dataset.k; S.dreAb.has(k) ? S.dreAb.delete(k) : S.dreAb.add(k); dre(DD.l.filter(r => filtra(r))); });
+}
+$('dreAbre').onclick = () => { CL.forEach(c => { S.dreAb.add(c.tipo); S.dreAb.add(c.tipo + '|' + c.gk); }); dre(DD.l.filter(r => filtra(r))); };
+$('dreFecha').onclick = () => { S.dreAb.clear(); dre(DD.l.filter(r => filtra(r))); };
+function esc(s) { return String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+tudo();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,551 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Portfólio de automação e IA aplicada a operações: CRM automático, painéis financeiros e de atendimento, monitor de automações. Dados fictícios.">
+<title>Casos de Automação</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..800&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+body{margin:0}
+/* Layout: sala de operações — uma coluna de leitura larga; cada caso é uma "ficha" com problema → fluxo → demonstração ao vivo → resultado. */
+:root{
+  --bg:#EEF1F5; --surface:#FFFFFF; --sunk:#F6F8FA; --ink:#121A26; --muted:#5A6576; --line:#D9DFE7;
+  --accent:#2445D6; --accent-soft:#E2E8FF; --accent-ink:#FFFFFF;
+  --good:#1E7A4E; --good-soft:#DFF2E7; --warn:#935600; --warn-soft:#FBEFD8; --bad:#B42318; --bad-soft:#FCE6E3;
+  --chat-in:#FFFFFF; --chat-out:#DCF3E3;
+  --f-display:"Archivo","Helvetica Neue",Arial,sans-serif;
+  --f-body:"IBM Plex Sans","Segoe UI",Roboto,Arial,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0D1219; --surface:#151C27; --sunk:#111823; --ink:#E6EBF2; --muted:#97A2B2; --line:#263142;
+  --accent:#8AA2FF; --accent-soft:#1D2850; --accent-ink:#0D1219;
+  --good:#52C68F; --good-soft:#14301F; --warn:#F0B354; --warn-soft:#3A2C14; --bad:#F27A72; --bad-soft:#3D1D1B;
+  --chat-in:#1C2533; --chat-out:#1B3A29; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0D1219; --surface:#151C27; --sunk:#111823; --ink:#E6EBF2; --muted:#97A2B2; --line:#263142;
+  --accent:#8AA2FF; --accent-soft:#1D2850; --accent-ink:#0D1219;
+  --good:#52C68F; --good-soft:#14301F; --warn:#F0B354; --warn-soft:#3A2C14; --bad:#F27A72; --bad-soft:#3D1D1B;
+  --chat-in:#1C2533; --chat-out:#1B3A29; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.6 var(--f-body);-webkit-font-smoothing:antialiased}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+a{color:var(--accent)}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;letter-spacing:-.01em}
+.mono{font-family:var(--f-mono)}
+.eyebrow{font:500 12px/1.2 var(--f-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* topo */
+.top{padding-block:18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.top .mark{font:700 15px/1 var(--f-display);font-stretch:118%;letter-spacing:.02em}
+.top .mark span{color:var(--accent)}
+.li{display:inline-flex;align-items:center;gap:8px;font:500 14px/1 var(--f-body);color:var(--ink);text-decoration:none;border:1px solid var(--line);background:var(--surface);padding:9px 14px;border-radius:999px}
+.li svg{width:16px;height:16px;fill:currentColor}
+.li.vazio{border-style:dashed;color:var(--muted)}
+
+/* hero */
+.hero{padding-block:28px 22px;display:grid;gap:22px}
+.hero h1{font-size:clamp(34px,6.2vw,64px);line-height:1.02;font-weight:800;font-stretch:112%;max-width:15ch}
+.hero h1 em{font-style:normal;color:var(--accent)}
+.hero p.lede{font-size:clamp(17px,2vw,19px);color:var(--muted);max-width:60ch;margin:0}
+.stack{display:flex;flex-wrap:wrap;gap:8px;margin:0;padding:0;list-style:none}
+.stack li{font:500 12.5px/1 var(--f-mono);padding:7px 10px;border-radius:6px;background:var(--surface);border:1px solid var(--line);color:var(--ink)}
+.facts{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.facts div{background:var(--surface);padding:14px 16px}
+.facts b{display:block;font:700 26px/1.1 var(--f-display);font-stretch:110%;font-variant-numeric:tabular-nums}
+.facts span{font-size:13.5px;color:var(--muted)}
+
+/* índice */
+.toc{display:flex;gap:8px;flex-wrap:wrap;padding-block:6px 4px}
+.toc a{font:500 13.5px/1 var(--f-body);text-decoration:none;color:var(--ink);padding:8px 12px;border-radius:999px;background:var(--sunk);border:1px solid var(--line)}
+.toc a:hover{border-color:var(--accent);color:var(--accent)}
+
+/* caso */
+.caso{margin-block:34px;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.caso-head{padding:22px 22px 4px;display:grid;gap:8px}
+.caso-head h2{font-size:clamp(24px,3.4vw,34px);line-height:1.1;font-weight:750;font-stretch:108%}
+.setor{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.tag{font:500 12px/1 var(--f-mono);padding:5px 8px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
+.tag.neutro{background:var(--sunk);color:var(--muted);border:1px solid var(--line)}
+.pv{display:grid;grid-template-columns:1fr 1fr;gap:18px;padding:12px 22px 6px}
+.pv>div{min-width:0}
+.pv h3{font:600 13px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.07em;color:var(--muted);margin-bottom:6px}
+.pv p{margin:0;max-width:62ch}
+@media (max-width:720px){.pv{grid-template-columns:1fr}}
+
+/* fluxo estilo nós */
+.fluxo{padding:12px 22px 4px;overflow-x:auto}
+.fluxo ol{list-style:none;margin:0;padding:0 0 6px;display:flex;align-items:stretch;gap:0;min-width:min-content}
+.fluxo li{display:flex;align-items:center}
+.no{border:1px solid var(--line);background:var(--sunk);border-radius:8px;padding:9px 12px;min-width:132px;max-width:190px}
+.no b{display:block;font:600 13.5px/1.25 var(--f-body)}
+.no small{display:block;font:12px/1.35 var(--f-mono);color:var(--muted);margin-top:3px}
+.no.gat{border-color:var(--accent);background:var(--accent-soft)}
+.liga{width:26px;height:2px;background:var(--line);position:relative;flex:none}
+.liga::after{content:"";position:absolute;right:-1px;top:-4px;border:5px solid transparent;border-left-color:var(--line)}
+
+/* demo */
+.demo{margin:14px 22px 0;border:1px solid var(--line);border-radius:var(--r);background:var(--sunk);overflow:hidden}
+.demo-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.demo-bar .eyebrow{display:flex;align-items:center;gap:8px}
+.demo-bar .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block}
+.demo-body{padding:14px;min-width:0}
+.btn{border:0;background:var(--accent);color:var(--accent-ink);padding:9px 14px;border-radius:8px;font:600 14px/1 var(--f-body)}
+.btn.sec{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.55;cursor:default}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 11px;border-radius:999px;font:500 13px/1 var(--f-body)}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.res{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;padding:16px 22px 22px}
+.res div{border-top:2px solid var(--ink);padding-top:8px}
+.res b{display:block;font:700 22px/1.15 var(--f-display);font-stretch:108%}
+.res span{font-size:14px;color:var(--muted)}
+
+
+/* painel real */
+.real{display:block;margin:14px 22px 0;border:1px solid var(--line);border-radius:var(--r);overflow:hidden;background:var(--sunk);text-decoration:none;color:var(--ink)}
+.real-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;padding:10px 14px;border-bottom:1px solid var(--line);background:var(--surface)}
+.real-bar .eyebrow{display:flex;align-items:center;gap:8px}
+.real-bar .eyebrow i{width:8px;height:8px;border-radius:50%;background:var(--good);display:inline-block}
+.abrir{font:600 14px/1 var(--f-body);color:var(--accent-ink);background:var(--accent);padding:9px 14px;border-radius:8px}
+.real img{display:block;width:100%;height:auto;max-height:560px;object-fit:cover;object-position:top;border-bottom:1px solid var(--line);transition:transform .3s}
+.real:hover img{transform:scale(1.01)}
+.real-leg{display:block;padding:10px 14px;font-size:14px;color:var(--muted)}
+
+/* demo CRM */
+.crm{display:grid;grid-template-columns:260px 1fr;gap:14px}
+@media (max-width:820px){.crm{grid-template-columns:1fr}}
+.inbox{display:grid;gap:6px;align-content:start;min-width:0}
+.conv{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;transition:border-color .2s,opacity .3s}
+.conv .nm{display:flex;justify-content:space-between;gap:6px;font-weight:600;font-size:13.5px}
+.conv .nm span{font:500 11px/1.6 var(--f-mono);color:var(--muted);font-weight:400}
+.conv .bal{font-size:12.5px;line-height:1.4;margin-top:4px;padding:5px 8px;border-radius:7px;background:var(--chat-in);border:1px solid var(--line);color:var(--ink)}
+.conv .bal.out{background:var(--chat-out);border-color:transparent}
+.conv.lendo{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.conv.feito{opacity:.45}
+.board-wrap{overflow-x:auto;min-width:0}
+.board{display:grid;grid-template-columns:repeat(5,minmax(150px,1fr));gap:8px;min-width:780px}
+.col{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px;min-height:230px}
+.col h4{margin:0 0 8px;font:600 12px/1.2 var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);display:flex;justify-content:space-between}
+.card{border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:6px;padding:7px 8px;margin-bottom:6px;background:var(--sunk);font-size:12.5px;line-height:1.35}
+.card b{display:block;font-size:13px}
+.card .val{font:500 12px var(--f-mono)}
+.card .why{color:var(--muted);display:block;margin-top:3px}
+.card.novo{animation:entra .45s ease-out}
+.col[data-k="venda"] .card{border-left-color:var(--good)}
+.col[data-k="sem"] .card{border-left-color:var(--bad)}
+.col[data-k="nao"] .card{border-left-color:var(--warn)}
+@keyframes entra{from{transform:translateY(-6px);opacity:.2}to{transform:none;opacity:1}}
+.log{margin-top:10px;font:12px/1.6 var(--f-mono);color:var(--muted);background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;max-height:120px;overflow:auto}
+.log div{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* demo financeiro */
+.fin-frase{font:650 clamp(19px,2.6vw,24px)/1.3 var(--f-display);font-stretch:104%;margin:4px 0 12px;max-width:40ch}
+.fin-frase .neg{color:var(--bad)} .fin-frase .pos{color:var(--good)}
+.cem{display:flex;height:34px;border-radius:6px;overflow:hidden;position:relative;background:var(--surface);border:1px solid var(--line)}
+.cem div{height:100%;display:flex;align-items:center;justify-content:center;font:500 11.5px var(--f-mono);color:#fff;white-space:nowrap;overflow:hidden;min-width:0}
+.cem-legenda{display:flex;flex-wrap:wrap;gap:4px 14px;margin-top:8px;font-size:13px;color:var(--muted)}
+.cem-legenda i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+.fin-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:14px;margin-top:14px}
+@media (max-width:820px){.fin-grid{grid-template-columns:1fr}}
+.painel{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;min-width:0}
+.painel h4{margin:0 0 8px;font:600 13px/1.2 var(--f-body)}
+.svgbox{overflow-x:auto}
+.abertas .tabs{display:flex;gap:6px;margin-bottom:8px;flex-wrap:wrap}
+.ab-l{display:grid;gap:6px}
+.ab-l div{display:flex;justify-content:space-between;gap:10px;font-size:13.5px;padding:6px 0;border-bottom:1px solid var(--line)}
+.ab-l div span:last-child{font-family:var(--f-mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+.idade{font:500 11px var(--f-mono);padding:2px 6px;border-radius:4px;background:var(--warn-soft);color:var(--warn);margin-left:6px}
+.idade.velha{background:var(--bad-soft);color:var(--bad)}
+
+/* demo diretoria */
+.uni{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.uni button{text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:12px;color:var(--ink);display:grid;gap:4px}
+.uni button[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.uni .n{font-weight:600;font-size:14px}
+.uni .v{font:700 22px/1.1 var(--f-display);font-stretch:106%;font-variant-numeric:tabular-nums}
+.uni .d{font:500 12px var(--f-mono)}
+.up{color:var(--good)} .down{color:var(--bad)}
+.pill{justify-self:start;font:500 11.5px/1 var(--f-mono);padding:4px 7px;border-radius:4px}
+.pill.ok{background:var(--good-soft);color:var(--good)} .pill.at{background:var(--warn-soft);color:var(--warn)} .pill.ma{background:var(--bad-soft);color:var(--bad)}
+.dir-det{margin-top:10px;font-size:14.5px;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+
+/* demo atendimento */
+.camp{display:grid;gap:10px}
+.camp-row{display:grid;grid-template-columns:170px 1fr 120px;gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+@media (max-width:640px){.camp-row{grid-template-columns:1fr}}
+.camp-row .nm{font-weight:600;font-size:14px}
+.camp-row .nm small{display:block;font:12px var(--f-mono);color:var(--muted);font-weight:400}
+.funil{display:grid;gap:4px;min-width:0}
+.funil div{display:grid;grid-template-columns:78px 1fr 46px;gap:8px;align-items:center;font-size:12.5px}
+.funil .b{height:10px;border-radius:3px;background:var(--line);overflow:hidden}
+.funil .b i{display:block;height:100%;background:var(--accent)}
+.funil .b i.v{background:var(--good)}
+.funil span:last-child{font-family:var(--f-mono);text-align:right}
+.camp-row .taxa{font:700 18px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.camp-row .taxa small{display:block;font:400 12px var(--f-body);color:var(--muted)}
+.destaque{margin-top:10px;font-size:14.5px}
+
+/* demo monitor */
+.mon{display:grid;gap:10px}
+.flx{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+.flx-h{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap}
+.flx-h b{font-size:14.5px}
+.dot{width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px;background:var(--good)}
+.st{font:500 12px/1 var(--f-mono);padding:4px 8px;border-radius:999px;background:var(--good-soft);color:var(--good)}
+.st.ruim{background:var(--bad-soft);color:var(--bad)} .dot.ruim{background:var(--bad)}
+.fita{display:grid;grid-template-columns:repeat(84,1fr);gap:1px;height:18px;margin-top:8px}
+.fita i{background:var(--good);opacity:.7;border-radius:1px}
+.fita i.a{background:var(--warn);opacity:1} .fita i.r{background:var(--bad);opacity:1}
+.flx .msg{font-size:13px;color:var(--bad);margin-top:6px}
+.email{margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.email .cab{padding:8px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--muted);display:grid;gap:2px}
+.email .cab b{color:var(--ink)}
+.email .corpo{padding:10px 12px;font-size:14px;border-left:4px solid var(--bad);margin:10px 12px;background:var(--sunk)}
+
+/* demo reengajamento */
+.re-top{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}
+.re-n{font:650 15px var(--f-body)}
+.tbl{overflow-x:auto;background:var(--surface);border:1px solid var(--line);border-radius:8px}
+table{border-collapse:collapse;width:100%;min-width:640px;font-size:13.5px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px var(--f-mono);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);background:var(--sunk)}
+td .q{color:var(--muted);font-style:italic}
+.cl{font:500 11.5px/1 var(--f-mono);padding:4px 7px;border-radius:4px;white-space:nowrap}
+.cl.sr{background:var(--accent-soft);color:var(--accent)} .cl.ca{background:var(--warn-soft);color:var(--warn)} .cl.si{background:var(--bad-soft);color:var(--bad)} .cl.pg{background:var(--good-soft);color:var(--good)}
+tr.fora td{opacity:.45}
+
+/* como trabalho */
+.passos{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin:0;padding:0;list-style:none;counter-reset:p}
+.passos li{counter-increment:p;background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px}
+.passos li::before{content:counter(p);font:700 28px/1 var(--f-display);font-stretch:115%;color:var(--accent);display:block;margin-bottom:8px}
+.passos b{display:block;margin-bottom:4px}
+.passos span{font-size:14.5px;color:var(--muted)}
+section.bloco{padding-block:30px}
+section.bloco h2{font-size:clamp(24px,3.4vw,32px);font-weight:750;font-stretch:108%;margin-bottom:14px}
+footer{padding-block:26px 40px;border-top:1px solid var(--line);margin-top:20px;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center;color:var(--muted);font-size:14px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div class="mark">AUTOMAÇÃO <span>&amp;</span> IA · OPERAÇÕES</div>
+    <a class="li vazio" id="linkedin" href="#contato" target="_blank" rel="noopener">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1v6.45h-4v-5.72c0-1.36-.03-3.12-1.9-3.12-1.9 0-2.2 1.48-2.2 3.02v5.82h-4z"/></svg>
+      <span>LinkedIn</span>
+    </a>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Portfólio · casos reais com dados fictícios</div>
+    <h1>Automações que tiram o trabalho <em>repetido</em> das pessoas.</h1>
+    <p class="lede">Construo fluxos que leem conversas de WhatsApp, sistemas de gestão e planilhas, entendem o que aconteceu e deixam CRM, painéis e alertas prontos sozinhos. Os painéis abaixo são os de verdade, abertos com dados fictícios: dá para clicar e navegar.</p>
+    <ul class="stack" aria-label="Ferramentas">
+      <li>n8n</li><li>JavaScript</li><li>APIs REST</li><li>Webhooks</li><li>MCP / JSON-RPC</li><li>Google Sheets</li><li>HTML · CSS · SVG</li><li>IA generativa</li>
+    </ul>
+    <div class="facts">
+      <div><b>6</b><span>projetos entregues em 2026</span></div>
+      <div><b>~2.400</b><span>conversas lidas por mês, sem ninguém abrir</span></div>
+      <div><b>23:41</b><span>horário em que o CRM se atualiza sozinho</span></div>
+      <div><b>0</b><span>cards de CRM digitados à mão</span></div>
+    </div>
+    <nav class="toc" aria-label="Casos">
+      <a href="#crm">CRM que se preenche</a><a href="#financeiro">Painel financeiro</a><a href="#diretoria">Painel da diretoria</a><a href="#atendimento">Atendimento e campanhas</a><a href="#monitor">Monitor das automações</a><a href="#reengajamento">Lista de reengajamento</a>
+    </nav>
+  </section>
+
+  <!-- CASO CRM -->
+  <article class="caso" id="crm">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Clube social</span><span class="tag neutro">Vendas · WhatsApp · CRM</span></div>
+      <h2>O CRM que se preenche sozinho toda noite</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>Os consultores do Clube Serra Azul passavam o valor do título pelo WhatsApp, mas o funil de vendas ficava vazio: ninguém tinha tempo de criar e mover card. A diretoria não sabia quantas negociações estavam abertas.</p></div>
+      <div><h3>O que eu construí</h3><p>Um fluxo que roda às 23:41, lê as conversas do dia, encontra quem recebeu o valor, entende o estágio da negociação e cria ou move o card no nome do consultor certo, com o valor que foi realmente oferecido.</p></div>
+    </div>
+    <div class="fluxo" aria-label="Como funciona">
+      <ol>
+        <li><div class="no gat"><b>Agenda 23:41</b><small>ou link manual</small></div></li>
+        <li><span class="liga"></span><div class="no"><b>Ler conversas</b><small>API do WhatsApp</small></div></li>
+        <li><span class="liga"></span><div class="no"><b>Achar o valor</b><small>ignora preço riscado e parcelas</small></div></li>
+        <li><span class="liga"></span><div class="no"><b>Classificar</b><small>pagou · caro · vai pensar · sumiu</small></div></li>
+        <li><span class="liga"></span><div class="no"><b>Conferir pagamento</b><small>sistema de matrículas</small></div></li>
+        <li><span class="liga"></span><div class="no"><b>Criar / mover card</b><small>respeita o que foi mexido à mão</small></div></li>
+      </ol>
+    </div>
+    <div class="demo">
+      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · conversas de hoje</span>
+        <div class="chips"><button class="btn" id="crm-rodar" type="button">Rodar a automação</button><button class="btn sec" id="crm-reset" type="button">Recomeçar</button></div></div>
+      <div class="demo-body">
+        <div class="crm">
+          <div class="inbox" id="crm-inbox" aria-label="Conversas de hoje"></div>
+          <div style="min-width:0">
+            <div class="board-wrap"><div class="board" id="crm-board"></div></div>
+            <div class="log mono" id="crm-log" aria-live="polite"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="res">
+      <div><b>~350 negociações</b><span>organizadas na primeira carga, um mês de histórico</span></div>
+      <div><b>Valor real no card</b><span>o desconto dado pelo consultor entra, o preço de tabela não</span></div>
+      <div><b>Nada é sobrescrito</b><span>card movido à mão pelo consultor fica onde ele colocou</span></div>
+    </div>
+  </article>
+
+  <!-- CASO FINANCEIRO -->
+  <article class="caso" id="financeiro">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Holding de empresas</span><span class="tag neutro">Financeiro · ERP · Painel</span></div>
+      <h2>Um painel financeiro que qualquer sócio entende em um minuto</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>O ERP do Grupo Itacaré tinha todos os lançamentos, mas a DRE era uma tabela de códigos contábeis. Os sócios não conseguiam responder a pergunta mais simples: este mês sobrou ou faltou dinheiro, e por quê?</p></div>
+      <div><h3>O que eu construí</h3><p>Uma página que lê a API do ERP, divide lançamentos rateados entre centros de custo e responde em português no topo. Abaixo vêm a cascata do resultado, "de cada R$ 100" e as contas vencidas agrupadas por pessoa. Os totais foram conferidos com a DRE oficial.</p></div>
+    </div>
+    <div class="fluxo"><ol>
+      <li><div class="no gat"><b>Alguém abre o link</b><small>guarda 15 min</small></div></li>
+      <li><span class="liga"></span><div class="no"><b>Ler o ERP</b><small>movimentos · a pagar · a receber</small></div></li>
+      <li><span class="liga"></span><div class="no"><b>Dividir rateios</b><small>por centro de custo</small></div></li>
+      <li><span class="liga"></span><div class="no"><b>Agrupar o plano de contas</b><small>em 5 grupos legíveis</small></div></li>
+      <li><span class="liga"></span><div class="no"><b>Escrever a resposta</b><small>frase + gráficos</small></div></li>
+    </ol></div>
+    <a class="real" href="painel-financeiro.html">
+      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
+      <img src="img/financeiro.jpg" alt="Painel financeiro do Grupo Itacaré: frase-resposta de outubro, barra de cada R$ 100 e os quatro números do mês" width="1800" loading="lazy">
+      <span class="real-leg">O mesmo painel que os sócios usam: filtre empresa, centro de custo e período, abra a DRE linha a linha, as contas em aberto por pessoa e o “Posso confiar nestes números?”.</span>
+    </a>
+    <div class="res">
+      <div><b>Bate com a DRE oficial</b><span>receitas, despesas e resultado conferidos mês a mês</span></div>
+      <div><b>Avisa quando não dá para confiar</b><span>mês com poucos lançamentos esconde as comparações</span></div>
+      <div><b>Sem planilha no meio</b><span>lê direto da API, com limite de consultas respeitado</span></div>
+    </div>
+  </article>
+
+  <!-- CASO DIRETORIA -->
+  <article class="caso" id="diretoria">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Grupo com 4 negócios</span><span class="tag neutro">Painel executivo</span></div>
+      <h2>Quatro empresas, uma tela para a diretoria</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>Loteamento, clube e parque aquático tinham cada um seu sistema e sua planilha. A reunião de segunda começava com uma hora de gente juntando números.</p></div>
+      <div><h3>O que eu construí</h3><p>Um painel que se atualiza a cada 15 minutos e junta vendas, recebimentos e atendimento de cada negócio, com o mesmo formato para todos e um sinal claro de quem está fora da meta.</p></div>
+    </div>
+    <div class="demo">
+      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · toque em um negócio</span><span class="mono" style="font-size:12px;color:var(--muted)">receita do mês · últimos 6 meses</span></div>
+      <div class="demo-body"><div class="uni" id="dir-uni"></div><div class="dir-det" id="dir-det" aria-live="polite"></div></div>
+    </div>
+    <div class="res">
+      <div><b>15 minutos</b><span>de atraso máximo entre o sistema e o painel</span></div>
+      <div><b>Um formato só</b><span>cada negócio responde as mesmas três perguntas</span></div>
+    </div>
+  </article>
+
+  <!-- CASO ATENDIMENTO -->
+  <article class="caso" id="atendimento">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Parque aquático</span><span class="tag neutro">Call center · Campanhas</span></div>
+      <h2>Qual campanha de WhatsApp traz gente de verdade</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>O Parque Correnteza disparava milhares de mensagens por semana para eventos. O sistema mostrava quantas saíram, mas ninguém sabia quantas viraram agendamento, e menos ainda quantas pessoas apareceram.</p></div>
+      <div><h3>O que eu construí</h3><p>Um painel que cruza cada disparo com a planilha de agendamentos do call center (pelo telefone, em até 10 dias) e com a presença marcada no dia do evento. A conta sai por campanha e por atendente.</p></div>
+    </div>
+    <a class="real" href="atendimento.html">
+      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
+      <img src="img/atendimento.jpg" alt="Painel de atendimento do Parque Correnteza: situação de agora, agendamentos, conversão dos disparos e call center" width="1800" loading="lazy">
+      <span class="real-leg">Troque entre últimos 7 dias, este mês e mês passado. Veja a conversão de cada campanha, o call center por consultor e os agendados por evento.</span>
+    </a>
+    <div class="res">
+      <div><b>Disparo → agenda → presença</b><span>as três etapas na mesma linha</span></div>
+      <div><b>Cobrança fica de fora</b><span>só entram campanhas de evento na conta</span></div>
+    </div>
+  </article>
+
+  <!-- CASO MONITOR -->
+  <article class="caso" id="monitor">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Todos os fluxos</span><span class="tag neutro">Confiabilidade · Alertas</span></div>
+      <h2>Um monitor que avisa antes de alguém perceber</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>Automação que falha em silêncio é pior que nenhuma: o CRM para de atualizar numa terça e só alguém nota na sexta.</p></div>
+      <div><h3>O que eu construí</h3><p>Um fluxo que confere de hora em hora se cada painel abre e se a rodada da noite aconteceu. Ele também recebe na hora qualquer erro dos outros fluxos e manda e-mail quando algo para e quando volta. Fica tudo numa página de saúde com o histórico de 7 dias.</p></div>
+    </div>
+    <a class="real" href="saude-dos-fluxos.html">
+      <span class="real-bar"><span class="eyebrow"><i></i>Painel real · dados fictícios</span><span class="abrir">Abrir o painel completo <span aria-hidden="true">→</span></span></span>
+      <img src="img/saude.jpg" alt="Página de saúde dos fluxos: três automações funcionando, faixa de 7 dias e histórico das rodadas do CRM" width="1800" loading="lazy">
+      <span class="real-leg">A página de saúde de verdade, com uma semana de histórico: um aviso de lentidão, uma queda do CRM que voltou sozinha e o erro registrado.</span>
+    </a>
+    <div class="res">
+      <div><b>Alerta em até 1 hora</b><span>e na hora quando o erro acontece dentro do fluxo</span></div>
+      <div><b>Sem spam</b><span>o mesmo erro gera no máximo um e-mail por hora</span></div>
+      <div><b>Silêncio = tudo certo</b><span>só chega e-mail quando muda alguma coisa</span></div>
+    </div>
+  </article>
+
+  <!-- CASO REENGAJAMENTO -->
+  <article class="caso" id="reengajamento">
+    <div class="caso-head">
+      <div class="setor"><span class="tag">Clube social</span><span class="tag neutro">Análise de conversas</span></div>
+      <h2>Quem recebeu a proposta e sumiu, separado de quem disse não</h2>
+    </div>
+    <div class="pv">
+      <div><h3>Problema</h3><p>A gerência queria religar para quem recebeu o valor e não fechou. Mas ligar para quem já disse "é caro, não tenho interesse" queima o contato e o tempo da equipe.</p></div>
+      <div><h3>O que eu construí</h3><p>Uma leitura de 2.000 conversas de quatro meses que acha a mensagem com o valor, lê só as últimas respostas do cliente e separa quatro grupos. A lista sai em planilha com o link de cada conversa. Antes de entregar, revisei os casos que o sistema confundia.</p></div>
+    </div>
+    <div class="demo">
+      <div class="demo-bar"><span class="eyebrow"><i></i>Demonstração · filtre a lista</span><div class="chips" id="re-chips"></div></div>
+      <div class="demo-body">
+        <div class="re-top"><span class="re-n" id="re-n" aria-live="polite"></span><span class="mono" style="font-size:12px;color:var(--muted)">amostra de 12 de 2.000 conversas</span></div>
+        <div class="tbl"><table><thead><tr><th>Cliente</th><th>Valor passado</th><th>Última resposta do cliente</th><th>Grupo</th></tr></thead><tbody id="re-corpo"></tbody></table></div>
+      </div>
+    </div>
+    <div class="res">
+      <div><b>318 contatos</b><span>para religar, entre 2.000 conversas</span></div>
+      <div><b>Leitura do fim da conversa</b><span>"não consigo ir hoje" não vira "sem interesse"</span></div>
+    </div>
+  </article>
+
+  <section class="bloco" id="como">
+    <h2>Como eu trabalho</h2>
+    <ol class="passos">
+      <li><b>Entendo a pergunta do negócio</b><span>Antes da ferramenta: o que a diretoria precisa decidir com isso?</span></li>
+      <li><b>Leio os dados de verdade</b><span>APIs, planilhas e conversas reais, para achar onde a regra óbvia falha.</span></li>
+      <li><b>Simulo antes de gravar</b><span>Toda carga em massa passa por uma simulação aprovada antes de mexer no sistema.</span></li>
+      <li><b>Confiro com a fonte oficial</b><span>Números batidos com o relatório do sistema, centavo a centavo.</span></li>
+      <li><b>Deixo vigiado</b><span>Alertas e página de saúde, para a automação não falhar em silêncio.</span></li>
+    </ol>
+    <p style="color:var(--muted);max-width:68ch;margin-top:16px">Uso IA generativa como parceira de trabalho: para escrever e revisar código, analisar milhares de conversas e desenhar painéis que um leigo entende. As decisões de negócio e a conferência final continuam comigo.</p>
+  </section>
+
+  <footer id="contato">
+    <span>Todas as empresas, pessoas e números desta página são fictícios.</span>
+    <a class="li vazio" id="linkedin2" href="#contato" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5a2.5 2.5 0 1 1 0 5 2.5 2.5 0 0 1 0-5zM3 9.75h4v11H3zM9.5 9.75h3.8v1.5h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.1v6.45h-4v-5.72c0-1.36-.03-3.12-1.9-3.12-1.9 0-2.2 1.48-2.2 3.02v5.82h-4z"/></svg><span>Falar comigo no LinkedIn</span></a>
+  </footer>
+</div>
+
+<script>
+(function(){
+const LINKEDIN = ''; // endereço do perfil
+if (LINKEDIN) ['linkedin','linkedin2'].forEach(id => { const a = document.getElementById(id); a.href = LINKEDIN; a.classList.remove('vazio'); });
+const $ = id => document.getElementById(id);
+const brl = v => 'R$ ' + Math.round(v).toLocaleString('pt-BR');
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;');
+const css = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+
+/* ---------- CRM ---------- */
+const COLS = [['valor','Valor enviado'],['aguard','Aguardando resposta'],['nao','Não respondeu'],['sem','Sem interesse'],['venda','Venda realizada']];
+const JA = [
+  { k:'valor', nome:'Henrique A.', cons:'Rafael', valor:9800, why:'conversando desde ontem' },
+  { k:'nao', nome:'Sueli R.', cons:'Marina', valor:10500, why:'sem resposta desde 02/11' },
+  { k:'venda', nome:'Otávio P.', cons:'Lúcia', valor:9200, why:'joia paga no sistema' }
+];
+const NOVAS = [
+  { nome:'Paula M.', cons:'Marina', hora:'10:12', a:'Título familiar com joia promocional: ~R$ 12.500~ por R$ 9.800 à vista ou 10x de R$ 1.050.', c:'Vou conversar com meu marido e te falo amanhã', k:'aguard', valor:9800, why:'disse "vou conversar com meu marido"' },
+  { nome:'Diego F.', cons:'Rafael', hora:'11:40', a:'O valor da joia hoje está R$ 10.500, e a mensalidade fica R$ 390.', c:'Achei caro, não vai dar agora', k:'sem', valor:10500, why:'disse "achei caro"' },
+  { nome:'Carla T.', cons:'Lúcia', hora:'14:05', a:'Consegui uma condição especial: joia por R$ 9.200.', c:'Fechado! Te mandei o pix', k:'venda', valor:9200, why:'pagamento confirmado no sistema' },
+  { nome:'Marcos V.', cons:'Rafael', hora:'15:22', a:'Segue o valor da joia: R$ 10.500. Posso reservar para você?', c:null, k:'valor', valor:10500, why:'valor enviado hoje, aguardando' },
+  { nome:'Renata S.', cons:'Marina', hora:'09:03', a:'Joia de admissão: R$ 9.800. Quer agendar uma visita?', c:null, k:'nao', valor:9800, why:'sem resposta há mais de 1 dia' },
+  { nome:'Bruno L.', cons:'Lúcia', hora:'16:48', a:'Ficou assim: ~R$ 10.500~ R$ 9.500 para fechar até sexta.', c:'Gostei, me manda o contrato pra eu ver', k:'valor', valor:9500, why:'conversando' }
+];
+let rodando = false;
+function crmInit(){
+  $('crm-inbox').innerHTML = NOVAS.map((n,i)=>`<div class="conv" id="cv${i}"><div class="nm">${esc(n.nome)}<span>${n.hora} · ${esc(n.cons)}</span></div><div class="bal">${esc(n.a).replace(/~([^~]+)~/g,'<s>$1</s>')}</div>${n.c?`<div class="bal out">${esc(n.c)}</div>`:''}</div>`).join('');
+  $('crm-board').innerHTML = COLS.map(([k,t])=>`<div class="col" data-k="${k}"><h4>${t}<span id="n-${k}">0</span></h4><div id="c-${k}"></div></div>`).join('');
+  JA.forEach(c=>addCard(c,false));
+  $('crm-log').innerHTML = '<div>Última rodada: ontem 23:41 · 3 cards no funil. Toque em "Rodar a automação".</div>';
+  $('crm-rodar').disabled = false; rodando = false;
+}
+function addCard(c, anim){
+  const el = document.createElement('div');
+  el.className = 'card' + (anim?' novo':'');
+  el.innerHTML = `<b>${esc(c.nome)}</b><span class="val">${brl(c.valor)}</span> · ${esc(c.cons)}<span class="why">${esc(c.why)}</span>`;
+  $('c-'+c.k).appendChild(el);
+  const n = $('n-'+c.k); n.textContent = +n.textContent + 1;
+}
+async function crmRodar(){
+  if (rodando) return; rodando = true; $('crm-rodar').disabled = true;
+  const log = $('crm-log'); log.innerHTML = '<div>23:41 · lendo 6 conversas do comercial…</div>';
+  const espera = ms => new Promise(r=>setTimeout(r, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : ms));
+  for (let i=0;i<NOVAS.length;i++){
+    const n = NOVAS[i], cv = $('cv'+i);
+    cv.classList.add('lendo'); await espera(650);
+    addCard(n,true); cv.classList.remove('lendo'); cv.classList.add('feito');
+    const nomeCol = COLS.find(c=>c[0]===n.k)[1];
+    log.insertAdjacentHTML('beforeend', `<div>${esc(n.nome)} → ${nomeCol} · ${esc(n.why)} · ${brl(n.valor)}</div>`);
+    log.scrollTop = log.scrollHeight;
+  }
+  log.insertAdjacentHTML('beforeend','<div>Pronto: 6 cards criados, 0 digitados à mão.</div>'); log.scrollTop = log.scrollHeight;
+}
+$('crm-rodar').addEventListener('click', crmRodar);
+$('crm-reset').addEventListener('click', crmInit);
+crmInit();
+
+/* ---------- DIRETORIA ---------- */
+const UNI = [
+  { n:'Residencial Mirante do Lago', tipo:'Loteamento', s:[410,388,452,430,471,498], meta:480, det:'14 lotes vendidos no mês, 3 distratos. Inadimplência das parcelas em 6,2%.' },
+  { n:'Clube Serra Azul', tipo:'Clube social', s:[188,201,196,214,232,226], meta:240, det:'31 títulos novos, 12 reintegrações. Funil com 214 negociações abertas.' },
+  { n:'Parque Correnteza', tipo:'Parque aquático', s:[302,276,241,318,355,389], meta:360, det:'9.840 visitantes no mês; feriado de 02/11 foi o maior dia do ano.' },
+  { n:'Vila Jatobá', tipo:'Loteamento', s:[126,131,119,108,97,92], meta:130, det:'Vendas caindo há 4 meses. Campanha nova começa dia 15.' }
+];
+let uniAt = 1;
+function spark(s){
+  const W=120,H=30,mx=Math.max(...s),mn=Math.min(...s),x=i=>i*(W/(s.length-1)),y=v=>H-3-(v-mn)/(mx-mn||1)*(H-6);
+  const pts = s.map((v,i)=>`${x(i).toFixed(1)},${y(v).toFixed(1)}`).join(' ');
+  return `<svg viewBox="0 0 ${W} ${H}" width="120" height="30" aria-hidden="true"><polygon points="0,${H} ${pts} ${W},${H}" fill="${css('--accent-soft')}"/><polyline points="${pts}" fill="none" stroke="${css('--accent')}" stroke-width="1.8"/><circle cx="${x(s.length-1)}" cy="${y(s[s.length-1])}" r="2.8" fill="${css('--accent')}"/></svg>`;
+}
+function dirRender(){
+  $('dir-uni').innerHTML = UNI.map((u,i)=>{
+    const at = u.s[5], ant = u.s[4], dv = (at-ant)/ant*100, pr = at/u.meta;
+    const pill = pr>=1?'<span class="pill ok">Meta batida</span>':pr>=.9?'<span class="pill at">Perto da meta</span>':'<span class="pill ma">Abaixo da meta</span>';
+    return `<button type="button" data-i="${i}" aria-pressed="${i===uniAt}"><span class="n">${esc(u.n)}</span><span class="mono" style="font-size:12px;color:var(--muted)">${u.tipo}</span><span class="v">${brl(at*1000)}</span><span class="d ${dv>=0?'up':'down'}">${dv>=0?'▲':'▼'} ${Math.abs(dv).toFixed(1)}% vs mês anterior</span>${spark(u.s)}${pill}</button>`;
+  }).join('');
+  const u = UNI[uniAt];
+  $('dir-det').innerHTML = `<b>${esc(u.n)}:</b> ${esc(u.det)} Meta do mês ${brl(u.meta*1000)}.`;
+}
+$('dir-uni').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; uniAt=+b.dataset.i; dirRender(); });
+dirRender();
+new MutationObserver(dirRender).observe(document.documentElement,{attributes:true,attributeFilter:['data-theme']});
+
+/* ---------- REENGAJAMENTO ---------- */
+const GRP = { sr:'Sem retorno', ca:'Disse que é caro', si:'Sem interesse', pg:'Já pagou' };
+const RE = [
+  ['Aline Moraes','R$ 9.800 · 12/08','Vou ver com calma e te aviso','sr'],
+  ['Fábio Nunes','R$ 10.500 · 19/08','Muito salgado pra mim agora','ca'],
+  ['Gisele Prado','R$ 9.800 · 22/08','(não respondeu)','sr'],
+  ['Hugo Teixeira','R$ 9.200 · 03/09','Pix feito, segue comprovante','pg'],
+  ['Ivone Castro','R$ 10.500 · 05/09','Não tenho interesse, obrigada','si'],
+  ['Jonas Batista','R$ 9.800 · 11/09','Hoje não consigo ir, outro dia passo aí','sr'],
+  ['Karina Lopes','R$ 9.500 · 18/09','(não respondeu)','sr'],
+  ['Leonardo Sá','R$ 10.500 · 26/09','Fora do meu orçamento no momento','ca'],
+  ['Mirela Quadros','R$ 9.800 · 02/10','Me manda o regulamento?','sr'],
+  ['Nilton Freire','R$ 9.200 · 09/10','Desisti, vou ficar no outro clube','si'],
+  ['Olga Ramos','R$ 9.800 · 15/10','(não respondeu)','sr'],
+  ['Pedro Antunes','R$ 10.500 · 21/10','Achei caro demais','ca']
+];
+let reAt = 'sr';
+function reRender(){
+  $('re-corpo').innerHTML = RE.map(([n,v,q,g])=>`<tr class="${reAt!=='todos'&&g!==reAt?'fora':''}"><td><b>${n}</b></td><td class="mono">${v}</td><td><span class="q">“${esc(q)}”</span></td><td><span class="cl ${g}">${GRP[g]}</span></td></tr>`).join('');
+  const k = reAt==='todos' ? RE.length : RE.filter(r=>r[3]===reAt).length;
+  $('re-n').textContent = reAt==='sr' ? `${k} pessoas para religar nesta amostra` : reAt==='todos' ? `${k} conversas com valor passado` : `${k} em "${GRP[reAt]}", ficam fora da lista`;
+}
+$('re-chips').innerHTML = [['sr','Para religar'],['ca','Disse que é caro'],['si','Sem interesse'],['pg','Já pagou'],['todos','Todas']].map(([k,t])=>`<button class="chip" type="button" data-r="${k}" aria-pressed="${k===reAt}">${t}</button>`).join('');
+$('re-chips').addEventListener('click', e=>{ const b=e.target.closest('button'); if(!b) return; reAt=b.dataset.r; [...$('re-chips').children].forEach(x=>x.setAttribute('aria-pressed', x===b)); reRender(); });
+reRender();
+})();
+</script>
+
+</body>
+</html>
